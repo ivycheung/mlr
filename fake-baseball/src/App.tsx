@@ -24,6 +24,7 @@ export default function App() {
   const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState('');
+  const [pitcherOption, setPitcherOption] = React.useState('')
 
   const theme = createTheme({
     colorSchemes: {
@@ -62,6 +63,10 @@ export default function App() {
   }, [players])
 
   async function handleChangePitcher(event: SelectChangeEvent) {
+    let player = players.find(player => player.playerID === Number(event.target.value))
+    if (player) {
+      setPitcherOption(player.playerName)
+    }
     try {
       const response = await axios.get(
         `https://api.mlr.gg/legacy/api/plateappearances/pitching/fcb/${event.target.value}`,
@@ -137,6 +142,7 @@ export default function App() {
               label="Pitcher"
               onChange={handleChangePitcher}
               color="warning"
+              value={pitcherOption}
             >
               {
                 pitchers.map((pitcher) => {
