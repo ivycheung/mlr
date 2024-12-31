@@ -1,0 +1,43 @@
+import {z} from 'zod'
+
+export const pitchSchema = z.object({
+    inningID: z.number(),
+    pitcherID: z.number(),
+    oldResult: z.string(),
+    pr3B: z.string(),
+    playNumber: z.number(),
+    hitterTeam: z.string(),
+    resultAtNeutral: z.string(),
+    pr2B: z.string(),
+    outs: z.number(),
+    hitterName: z.string(),
+    resultAllNeutral: z.string(),
+    pr1B: z.string(),
+    paID: z.number(),
+    session: z.number(),
+    obc: z.number(),
+    hitterID: z.number(),
+    prAB: z.string(),
+    pitch_requested: z.number(),
+    season: z.number(),
+    awayScore: z.number(),
+    pitch: z.number(),
+    rbi: z.number(),
+    pitch_submitted: z.number(),
+    league: z.string(),
+    homeScore: z.number(),
+    swing: z.number(),
+    run: z.number(),
+    swing_requested: z.number(),
+    gameID: z.number(),
+    pitcherTeam: z.string(),
+    diff: z.number(),
+    batterWPA: z.string(),
+    swing_submitted: z.number(),
+    inning: z.string(),
+    pitcherName: z.string(),
+    exactResult: z.string(),
+    pitcherWPA: z.string()
+})
+
+export type FormSchemaPitch = z.infer<typeof pitchSchema>
