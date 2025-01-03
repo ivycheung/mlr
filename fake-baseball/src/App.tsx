@@ -29,6 +29,9 @@ export default function App() {
   const [pitchNumbers, setPitchNumbers] = React.useState<number[]>([])
   const [swingNumbers, setSwingNumbers] = React.useState<number[]>([])
   const [pitchCount, setPitchCount] = React.useState<number[]>([])
+  const [pitch1Numbers, setPitch1Numbers] = React.useState<number[]>([])
+  const [swing1Numbers, setSwing1Numbers] = React.useState<number[]>([])
+  const [pitch1Count, setPitch1Count] = React.useState<number[]>([])
 
   const theme = createTheme({
     colorSchemes: {
@@ -73,19 +76,34 @@ export default function App() {
     const pNumbers = []
     const sNumbers = []
     const pCount = []
+    const p1Numbers = []
+    const s1Numbers = []
+    const p1Count = []
+    let p = 1
+
     try {
       const response = await axios.get(
         `https://api.mlr.gg/legacy/api/plateappearances/pitching/fcb/${event.target.value}`,
       )
+      console.log(response.data)
       for (let i = 0; i < response.data.length; i++) {
         pNumbers.push(response.data[i].pitch)
         sNumbers.push(response.data[i].swing)
         pCount.push(i+1)
+        if ( response.data[i].inning !== (response?.data[i-1]?.inning ?? '0')) {
+          p1Numbers.push(response.data[i].pitch)
+          s1Numbers.push(response.data[i].swing)
+          p1Count.push(p)
+          p++  
+        }
       }
       setPitches(response.data);
       setPitchNumbers(pNumbers)
       setSwingNumbers(sNumbers)
       setPitchCount(pCount)
+      setPitch1Numbers(p1Numbers)
+      setSwing1Numbers(s1Numbers)
+      setPitch1Count(p1Count)
       
     } catch (err) {
       setError('Error Fetching Pitches');
@@ -193,9 +211,11 @@ export default function App() {
                 </Table>
               </TableContainer>
             </Grid>
-              <Grid size={12} alignItems="center" justifyContent="center">
+            <Grid container justifyContent="center">
+              <Grid size={6} alignItems="center" justifyContent="center">
                 {pitchCount.length != 0 && pitchNumbers.length != 0 && swingNumbers.length != 0 &&
                   <LineChart
+                    title="All Pitches"
                     xAxis={[{ data: pitchCount }]}
                     series={[
                       {
@@ -205,11 +225,30 @@ export default function App() {
                         label: "Swing", data: swingNumbers
                       },
                     ]}
-                    width={document.documentElement.clientWidth * 0.80}
+                    // width={document.documentElement.clientWidth * 0.50}
                     height={300}
                   />
                 }
               </Grid>
+              <Grid size={6} alignItems="center" justifyContent="center">
+                {pitchCount.length != 0 && pitchNumbers.length != 0 && swingNumbers.length != 0 &&
+                  <LineChart
+                    title="First Pitches"
+                    xAxis={[{ data: pitch1Count }]}
+                    series={[
+                      {
+                        label: "Pitch", data: pitch1Numbers, color:"red"
+                      },
+                      {
+                        label: "Swing", data: swing1Numbers
+                      },
+                    ]}
+                    width={document.documentElement.clientWidth * 0.50}
+                    height={300}
+                  />
+                }
+              </Grid>
+            </Grid>
             </Grid>
 
         </ThemeProvider>
