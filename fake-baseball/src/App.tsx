@@ -59,11 +59,12 @@ export default function App() {
     if (players != null) {
       const pitchersList = []
       for (let i = 0; i < players.length; i++) {
-        if(players[i].pitchType != "") {
+        if(players[i].pitchType != "" && (players[i].Team == "UWU" || players[i].Team == "ZOO" || players[i].Team == "KSU" || players[i].Team == "BSU" || players[i].Team == "BDE" || players[i].Team == "CSU")) {
           pitchersList.push(players[i])
         }
       }
       pitchersList.sort((a, b) => a.playerName.localeCompare(b.playerName));
+      console.log(pitchersList)
       setPitchers(pitchersList)
     }
   }, [players])

@@ -2,7 +2,7 @@ import {z} from 'zod'
 
 export const playerSchema = z.array(z.object({
     status : z.number(),
-    team : z.string(),
+    Team : z.string(),
     batType : z.string(),
     batter_ping_location : z.string(),
     discordID: z.number(),
