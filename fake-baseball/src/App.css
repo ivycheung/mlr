@@ -7,6 +7,10 @@
   justify-content: center;
 }
 
+body {
+  padding-top: 50;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

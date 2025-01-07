@@ -1,0 +1,10 @@
+.navbarContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-width: 1225px;
+    position: sticky;
+    top: 0;
+    opacity: 100;
+  }
