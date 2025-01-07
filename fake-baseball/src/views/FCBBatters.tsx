@@ -17,8 +17,6 @@ import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import Grid from '@mui/material/Grid2';
 import { LineChart } from '@mui/x-charts/LineChart';
-import { getModel1, getModel2, getModel3, getModel4, getModel5, getModel6, getModel7, getModel8, getModel9, getModel10, getModel11, getModel12, getModel13, getModel14, getModel15, getModel16 } from '../utils/utils';
-
 
 export default function FCBBatters() {
     const [players, setPlayers] = React.useState<FormSchemaPlayers>([])
@@ -30,10 +28,6 @@ export default function FCBBatters() {
     const [pitchNumbers, setPitchNumbers] = React.useState<number[]>([])
     const [swingNumbers, setSwingNumbers] = React.useState<number[]>([])
     const [pitchCount, setPitchCount] = React.useState<number[]>([])
-    const [pitch1Numbers, setPitch1Numbers] = React.useState<number[]>([])
-    const [pitch1Count, setPitch1Count] = React.useState<number[]>([])
-    const [pitch2Numbers, setPitch2Numbers] = React.useState<number[]>([])
-    const [pitch3Numbers, setPitch3Numbers] = React.useState<number[]>([])
   
     const theme = createTheme({
       colorSchemes: {
@@ -117,10 +111,6 @@ export default function FCBBatters() {
         setPitchNumbers(pNumbers)
         setSwingNumbers(sNumbers)
         setPitchCount(pCount)
-        setPitch1Numbers(p1Numbers)
-        setPitch1Count(p1Count)
-        setPitch2Numbers(p2Numbers)
-        setPitch3Numbers(p3Numbers)
         
       } catch (err) {
         setError('Error Fetching Swings');
@@ -174,7 +164,7 @@ export default function FCBBatters() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {pitches.map((pitch, i , array) => {
+                      {pitches.map((pitch) => {
                           return <TableRow
                           key={pitch.playNumber}
                           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
