@@ -32,9 +32,7 @@ export default function App() {
   const [pitch1Numbers, setPitch1Numbers] = React.useState<number[]>([])
   const [pitch1Count, setPitch1Count] = React.useState<number[]>([])
   const [pitch2Numbers, setPitch2Numbers] = React.useState<number[]>([])
-  const [pitch2Count, setPitch2Count] = React.useState<number[]>([])
   const [pitch3Numbers, setPitch3Numbers] = React.useState<number[]>([])
-  const [pitch3Count, setPitch3Count] = React.useState<number[]>([])
 
   const theme = createTheme({
     colorSchemes: {
@@ -121,9 +119,7 @@ export default function App() {
       setPitch1Numbers(p1Numbers)
       setPitch1Count(p1Count)
       setPitch2Numbers(p2Numbers)
-      setPitch2Count(p2Count)
       setPitch3Numbers(p3Numbers)
-      setPitch3Count(p3Count)
       
     } catch (err) {
       setError('Error Fetching Pitches');
