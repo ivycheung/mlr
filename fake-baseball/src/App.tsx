@@ -30,8 +30,11 @@ export default function App() {
   const [swingNumbers, setSwingNumbers] = React.useState<number[]>([])
   const [pitchCount, setPitchCount] = React.useState<number[]>([])
   const [pitch1Numbers, setPitch1Numbers] = React.useState<number[]>([])
-  const [swing1Numbers, setSwing1Numbers] = React.useState<number[]>([])
   const [pitch1Count, setPitch1Count] = React.useState<number[]>([])
+  const [pitch2Numbers, setPitch2Numbers] = React.useState<number[]>([])
+  const [pitch2Count, setPitch2Count] = React.useState<number[]>([])
+  const [pitch3Numbers, setPitch3Numbers] = React.useState<number[]>([])
+  const [pitch3Count, setPitch3Count] = React.useState<number[]>([])
 
   const theme = createTheme({
     colorSchemes: {
@@ -64,7 +67,6 @@ export default function App() {
         }
       }
       pitchersList.sort((a, b) => a.playerName.localeCompare(b.playerName));
-      console.log(pitchersList)
       setPitchers(pitchersList)
     }
   }, [players])
@@ -78,40 +80,56 @@ export default function App() {
     const sNumbers = []
     const pCount = []
     const p1Numbers = []
-    const s1Numbers = []
     const p1Count = []
-    let p = 1
+    const p2Numbers = []
+    const p2Count = []
+    const p3Numbers = []
+    const p3Count = []
+    let p1 = 1
+    let p2 = 1
+    let p3 = 1
 
     try {
       const response = await axios.get(
         `https://api.mlr.gg/legacy/api/plateappearances/pitching/fcb/${event.target.value}`,
       )
-      console.log(response.data)
       for (let i = 0; i < response.data.length; i++) {
         pNumbers.push(response.data[i].pitch)
         sNumbers.push(response.data[i].swing)
         pCount.push(i+1)
         if ( response.data[i].inning !== (response?.data[i-1]?.inning ?? '0')) {
           p1Numbers.push(response.data[i].pitch)
-          s1Numbers.push(response.data[i].swing)
-          p1Count.push(p)
-          p++  
+          p1Count.push(p1)
+          p1++
         }
+        if ( response.data[i].inning === (response?.data[i-1]?.inning ?? '0') && response.data[i].inning !== (response?.data[i-2]?.inning ?? '0') ) {
+          p2Numbers.push(response.data[i].pitch)
+          p2Count.push(p2)
+          p2++
+        }
+        if ( response.data[i].inning === (response?.data[i-1]?.inning ?? '0') && response.data[i].inning === (response?.data[i-2]?.inning ?? '0') && response.data[i].inning !== (response?.data[i-3]?.inning ?? '0') ) {
+          p3Numbers.push(response.data[i].pitch)
+          p3Count.push(p3)
+          p3++
+        }
+        
       }
       setPitches(response.data);
       setPitchNumbers(pNumbers)
       setSwingNumbers(sNumbers)
       setPitchCount(pCount)
       setPitch1Numbers(p1Numbers)
-      setSwing1Numbers(s1Numbers)
       setPitch1Count(p1Count)
+      setPitch2Numbers(p2Numbers)
+      setPitch2Count(p2Count)
+      setPitch3Numbers(p3Numbers)
+      setPitch3Count(p3Count)
       
     } catch (err) {
       setError('Error Fetching Pitches');
     } finally {
       setIsLoading(false);
     }
-    console.log(pitchCount)
   }
 
   
@@ -129,7 +147,7 @@ export default function App() {
                 <Select
                   labelId="demo-simple-select-helper-label"
                   id="demo-simple-select-helper"
-                  label="Pitcher"
+                  label={pitcherOption}
                   onChange={handleChangePitcher}
                   color="warning"
                   value={pitcherOption}
@@ -234,14 +252,17 @@ export default function App() {
               <Grid size={6} alignItems="center" justifyContent="center">
                 {pitchCount.length != 0 && pitchNumbers.length != 0 && swingNumbers.length != 0 &&
                   <LineChart
-                    title="First Pitches"
-                    xAxis={[{ data: pitch1Count }]}
+                    title="Pitches by Placement in Inning"
+                    xAxis={[{ label: "Inning", data: pitch1Count }]}
                     series={[
                       {
-                        label: "Pitch", data: pitch1Numbers, color:"red"
+                        label: "First Pitches", data: pitch1Numbers, color:"red"
                       },
                       {
-                        label: "Swing", data: swing1Numbers
+                        label: "Second Pitches", data: pitch2Numbers, color:"green"
+                      },
+                      {
+                        label: "Third Pitches", data: pitch3Numbers, color:"white"
                       },
                     ]}
                     width={document.documentElement.clientWidth * 0.50}
@@ -250,7 +271,7 @@ export default function App() {
                 }
               </Grid>
             </Grid>
-            </Grid>
+          </Grid>
 
         </ThemeProvider>
       } 
