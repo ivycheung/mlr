@@ -82,9 +82,16 @@ export default function FCBPitchers() {
       7: 'violet',
       8: 'gray',
       9: 'white',
+      10: 'crimson',
+      11: 'coral',
+      12: 'khaki',
+      13: 'mediumseagreen',
+      14: 'aqua',
+      15: 'mediumslateblue',
     };
   
     async function handleChangePitcher(event: SelectChangeEvent) {
+      setPitches([])
       let player = players.find(player => player.playerID === Number(event.target.value))
       if (player) {
         setPitcherOption(player.playerName)
