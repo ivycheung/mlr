@@ -18,7 +18,7 @@ import TableBody from '@mui/material/TableBody';
 import Grid from '@mui/material/Grid2';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { getModel1, getModel2, getModel3, getModel4, getModel5, getModel6, getModel7, getModel8, getModel9, getModel10, getModel11, getModel12, getModel13, getModel14, getModel15, getModel16 } from '../utils/utils';
-
+import { FormSchemaPitchInInning } from '../types/schemas/pitch-in-inning-schema';
 
 export default function FCBPitchers() {
     const [players, setPlayers] = React.useState<FormSchemaPlayers>([])
@@ -34,6 +34,8 @@ export default function FCBPitchers() {
     const [pitch1Count, setPitch1Count] = React.useState<number[]>([])
     const [pitch2Numbers, setPitch2Numbers] = React.useState<number[]>([])
     const [pitch3Numbers, setPitch3Numbers] = React.useState<number[]>([])
+    const [inningNumbers, setInningNumbers] = React.useState<FormSchemaPitchInInning>([])
+    const [innings, setInnings] = React.useState<number []>([])
   
     const theme = createTheme({
       colorSchemes: {
@@ -69,6 +71,18 @@ export default function FCBPitchers() {
         setPitchers(pitchersList)
       }
     }, [players])
+
+    const colors: { [key: number]: string } = {
+      1: 'red',
+      2: 'orange',
+      3: 'yellow',
+      4: 'green',
+      5: 'blue',
+      6: 'indigo',
+      7: 'violet',
+      8: 'gray',
+      9: 'white',
+    };
   
     async function handleChangePitcher(event: SelectChangeEvent) {
       let player = players.find(player => player.playerID === Number(event.target.value))
@@ -84,9 +98,13 @@ export default function FCBPitchers() {
       const p2Count = []
       const p3Numbers = []
       const p3Count = []
+      let inningPitches = []
+      let currentChunk = []
       let p1 = 1
       let p2 = 1
       let p3 = 1
+      let inningObject: { inning: number, pitches: number[] }[] = [];
+      let innings = []
   
       try {
         const response = await axios.get(
@@ -111,9 +129,26 @@ export default function FCBPitchers() {
             p3Count.push(p3)
             p3++
           }
-          
+          if (currentChunk.length === 0 || response.data[i-1].inning === response.data[i].inning) {
+            currentChunk.push(response.data[i].pitch);
+          } else {
+            inningPitches.push(currentChunk);
+            currentChunk = [response.data[i].pitch];
+          }
         }
-        setPitches(response.data);
+        
+        if (currentChunk.length > 0) {
+          inningPitches.push(currentChunk);
+        }
+
+        for (let i=0; i< inningPitches.length; i++){
+          inningObject.push({inning: i+1, pitches: inningPitches[i]})
+          innings.push(i+1)
+        }
+
+        console.log(inningObject)
+        console.log(innings)
+        setPitches(response.data)
         setPitchNumbers(pNumbers)
         setSwingNumbers(sNumbers)
         setPitchCount(pCount)
@@ -121,6 +156,8 @@ export default function FCBPitchers() {
         setPitch1Count(p1Count)
         setPitch2Numbers(p2Numbers)
         setPitch3Numbers(p3Numbers)
+        setInnings(innings)
+        setInningNumbers(inningObject)
         
       } catch (err) {
         setError('Error Fetching Pitches');
@@ -137,7 +174,7 @@ export default function FCBPitchers() {
         {error && <p>{error}</p>}
         {!isLoading && !error &&
           <ThemeProvider theme={theme}>
-            <Grid container justifyContent="center" style={{padding: 50}}>
+            <Grid container justifyContent="center" style={{padding: 100}}>
               <Grid size={12}>
                 <FormControl sx={{ m: 1, minWidth: 240, color: "red"}}>
                   <InputLabel id="demo-simple-select-helper-label">Pitcher</InputLabel>
@@ -246,7 +283,7 @@ export default function FCBPitchers() {
                     />
                   }
                 </Grid>
-                <Grid size={6} alignItems="center" justifyContent="center">
+                <Grid size={6} alignItems="center" justifyContent="center" >
                   {pitchCount.length != 0 && pitchNumbers.length != 0 && swingNumbers.length != 0 &&
                     <LineChart
                       title="Pitches by Placement in Inning"
@@ -262,8 +299,25 @@ export default function FCBPitchers() {
                           label: "Third Pitches", data: pitch3Numbers, color:"white"
                         },
                       ]}
-                      width={document.documentElement.clientWidth * 0.50}
+                      width={document.documentElement.clientWidth * 0.40}
                       height={document.documentElement.clientHeight * 0.40}
+                    />
+                  }
+                </Grid>
+              </Grid>
+              <Grid container justifyContent="center" >
+                <Grid size={12} alignItems="center" justifyContent="center">
+                  {pitchCount.length != 0 && pitchNumbers.length != 0 && swingNumbers.length != 0 && inningNumbers.length != 0 &&
+                    <LineChart
+                      title="Pitches by Inning"
+                      xAxis={[{ data: innings, label: "Pitch Number", tickInterval: [1,2,3,4,5,6,7,8,9,10] }]}
+                      series={inningNumbers.map((series) =>({
+                        data: series.pitches,
+                        label: `Inning ${series.inning.toString()}`,
+                        color: colors[series.inning]
+                      }))}
+                      width={document.documentElement.clientWidth * 0.90}
+                      height={document.documentElement.clientHeight * 0.50}
                     />
                   }
                 </Grid>
