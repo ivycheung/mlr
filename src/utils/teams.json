@@ -1,0 +1,122 @@
+[
+  {
+    "teamID": "ANA",
+    "teamName": "Anaheim Angels"
+  },
+  {
+    "teamID": "ARI",
+    "teamName": "Arizona Diamondbacks"
+  },
+  {
+    "teamID": "ATL",
+    "teamName": "Atlanta Braves"
+  },
+  {
+    "teamID": "BAL",
+    "teamName": "Baltimore Orioles "
+  },
+  {
+    "teamID": "BOS",
+    "teamName": "Boston Red Sox"
+  },
+  {
+    "teamID": "CWS",
+    "teamName": "Chicago White Sox"
+  },
+  {
+    "teamID": "CHC",
+    "teamName": "Chicago Cubs"
+  },
+  {
+    "teamID": "CIN",
+    "teamName": "Cincinnati Reds"
+  },
+  {
+    "teamID": "CLE",
+    "teamName": "Cleveland Indians"
+  },
+  {
+    "teamID": "COL",
+    "teamName": "Colorado Rockies"
+  },
+  {
+    "teamID": "DET",
+    "teamName": "Detroit Tigers"
+  },
+  {
+    "teamID": "FLA",
+    "teamName": "Florida Marlins"
+  },
+  {
+    "teamID": "HOU",
+    "teamName": "Houston Astros"
+  },
+  {
+    "teamID": "KCR",
+    "teamName": "Kansas City Royals"
+  },
+  {
+    "teamID": "LAD",
+    "teamName": "Los Angeles Dodgers"
+  },
+  {
+    "teamID": "MIL",
+    "teamName": "Milwaukee Brewers"
+  },
+  {
+    "teamID": "MIN",
+    "teamName": "Minnesota Twins"
+  },
+  {
+    "teamID": "MTL",
+    "teamName": "Montreal Expos"
+  },
+  {
+    "teamID": "NYY",
+    "teamName": "New York Yankees"
+  },
+  {
+    "teamID": "NYM",
+    "teamName": "New York Mets"
+  },
+  {
+    "teamID": "OAK",
+    "teamName": "Oakland Athletics"
+  },
+  {
+    "teamID": "PHI",
+    "teamName": "Philadelphia Phillies"
+  },
+  {
+    "teamID": "PIT",
+    "teamName": "Pittsburgh Pirates"
+  },
+  {
+    "teamID": "SDP",
+    "teamName": "San Diego Padres"
+  },
+  {
+    "teamID": "SFG",
+    "teamName": "San Francisco Giants"
+  },
+  {
+    "teamID": "SEA",
+    "teamName": "Seattle Mariners"
+  },
+  {
+    "teamID": "STL",
+    "teamName": "St. Louis Cardinals"
+  },
+  {
+    "teamID": "TBR",
+    "teamName": "Tampa Bay Devil Rays"
+  },
+  {
+    "teamID": "TEX",
+    "teamName": "Texas Rangers"
+  },
+  {
+    "teamID": "TOR",
+    "teamName": "Toronto Blue Jays"
+  }
+]
