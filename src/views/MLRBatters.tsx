@@ -63,6 +63,7 @@ export default function MLRBatters() {
   React.useEffect(() => {
     const teamsList = teamsJson
       setTeams(teamsList)
+      // setBatterOption(0);
   }, [teams])
 
   React.useEffect(() => {
@@ -132,8 +133,9 @@ export default function MLRBatters() {
       const team = teams.find(team => team.teamID === event.target.value)
       if (team) {
         setTeamOption(team.teamID)
-        setBatterOption('');
+        setBatterOption(0);
         setSeasons([]);
+        setSeasonOption(0);
         // reset dashboard
       }
     }
@@ -181,7 +183,7 @@ export default function MLRBatters() {
         {error && <p>{error}</p>}
         {!isLoading && !error &&
           <ThemeProvider theme={theme}>
-            <Grid container justifyContent="center">
+            <Grid container justifyContent="center" >
               <Grid size={12}>
                 <FormControl sx={{ m: 1, minWidth: 240, color: "red" }}>
                   <InputLabel id="team-input-select-label">Team</InputLabel>
