@@ -159,7 +159,6 @@ export default function MLRBatters() {
         setOriginalPitches(response.data);
 
         setSeasons([...seasons].sort((a,b) => a-b))
-        // console.log(seasons)
         setSeasonOption(Number([...seasons].slice(-1))) // last season
       } catch (err) {
         setError('Error Fetching Swings');
