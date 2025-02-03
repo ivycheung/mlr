@@ -20,7 +20,7 @@ import { LineChart } from '@mui/x-charts/LineChart';
 import { getModel1, getModel2, getModel3, getModel4, getModel5, getModel6, getModel7, getModel8, getModel9, getModel10, getModel11, getModel12, getModel13, getModel14, getModel15, getModel16 } from '../utils/utils';
 import { FormSchemaPitchInInning } from '../types/schemas/pitch-in-inning-schema';
 
-export default function FCBPitchers() {
+export default function MLRPitchers() {
     const [players, setPlayers] = React.useState<FormSchemaPlayers>([])
     const [pitchers, setPitchers] = React.useState<FormSchemaPlayers>([])
     const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
@@ -58,14 +58,16 @@ export default function FCBPitchers() {
   
       fetchPlayerData();
     }, []); 
+
+    // Teams
   
+    // Players
     React.useEffect(() => {
       if (players != null) {
         const pitchersList = []
         for (let i = 0; i < players.length; i++) {
-          //if(players[i].pitchType != "" && (players[i].Team == "UWU" || players[i].Team == "ZOO" || players[i].Team == "KSU" || players[i].Team == "BSU" || players[i].Team == "BDE" || players[i].Team == "CSU")) {
+          if (players[i].pitchType != "" && players[i].Team !== '')
             pitchersList.push(players[i])
-          //}
         }
         pitchersList.sort((a, b) => a.playerName.localeCompare(b.playerName));
         setPitchers(pitchersList)
@@ -92,7 +94,7 @@ export default function FCBPitchers() {
   
     async function handleChangePitcher(event: SelectChangeEvent) {
       setPitches([])
-      let player = players.find(player => player.playerID === Number(event.target.value))
+      const player = players.find(player => player.playerID === Number(event.target.value))
       if (player) {
         setPitcherOption(player.playerName)
       }
