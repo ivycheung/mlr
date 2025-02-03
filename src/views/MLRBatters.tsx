@@ -222,7 +222,7 @@ export default function MLRBatters() {
                       })
                     }
                   </Select>
-                  <FormHelperText>Select Batter</FormHelperText>
+                  <FormHelperText>{batterOption ? '' : 'Select Batter'}</FormHelperText>
                 </FormControl>
                 <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
                   <InputLabel id="season-input-select-label">Season</InputLabel>
@@ -243,9 +243,9 @@ export default function MLRBatters() {
                       })
                     }
                   </Select>
-                  <FormHelperText>Select Season</FormHelperText>
+                  <FormHelperText>{seasonOption ? '' : 'Select Season'}</FormHelperText>
                 </FormControl>
-                <TableContainer component={Paper} style={{ maxHeight: document.documentElement.clientHeight * 0.2 }}>
+                <TableContainer component={Paper} style={{ maxHeight: document.documentElement.clientHeight * 0.3 }}>
                   <Table stickyHeader sx={{ minWidth: document.documentElement.clientWidth * 0.80 }} size="small" aria-label="a dense table" >
                     <TableHead>
                       <TableRow>
