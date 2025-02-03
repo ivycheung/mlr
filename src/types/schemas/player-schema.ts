@@ -22,3 +22,5 @@ export const playerSchema = z.array(z.object({
 }))
 
 export type FormSchemaPlayers = z.infer<typeof playerSchema>
+console.log();
+

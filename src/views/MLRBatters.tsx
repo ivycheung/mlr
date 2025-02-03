@@ -1,6 +1,7 @@
 import * as React from 'react'
 import TableContainer from '@mui/material/TableContainer';
 import Paper from '@mui/material/Paper';
+
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 import { FormSchemaPlayers } from '../types/schemas/player-schema';
 import { FormSchemaTeams } from '../types/schemas/team-schema';
@@ -26,14 +27,15 @@ export default function MLRBatters() {
     const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
     const [isLoading, setIsLoading] = React.useState(true);
     const [error, setError] = React.useState('');
-    const [batterOption, setBatterOption] = React.useState('')
+    const [batterOption, setBatterOption] = React.useState<number>(0)
     const [teamOption, setTeamOption] = React.useState('')
     const [pitchNumbers, setPitchNumbers] = React.useState<number[]>([])
     const [swingNumbers, setSwingNumbers] = React.useState<number[]>([])
     const [pitchCount, setPitchCount] = React.useState<number[]>([])
     const [teams, setTeams] = React.useState<FormSchemaTeams>([])
   const [seasons, setSeasons] = React.useState<number[]>([]);
-  const [seasonOption, setSeasonOption] = React.useState('')
+  const [seasonOption, setSeasonOption] = React.useState<number>(0)
+  const [originalPitches, setOriginalPitches] = React.useState<FormSchemaPitches>([])
     // const [gameOption, setGameOption] = React.useState(null);
   
     const theme = createTheme({
@@ -66,32 +68,24 @@ export default function MLRBatters() {
   React.useEffect(() => {
     if (players != null) {
       const battersList = []
-      console.log(teamOption)
       for (let i = 0; i < players.length; i++) {
-        if (players[i].batType != "" && players[i].Team === teamOption) {
+        if (players[i].priPos != 'P' && players[i].Team === teamOption) {
           battersList.push(players[i])
         }
       }
       battersList.sort((a, b) => a.playerName.localeCompare(b.playerName));
       setBatters(battersList)
     }
-  }, [teamOption])
+  }, [players, teamOption])
 
-    async function handleChangeTeam(event: SelectChangeEvent) {
-      const team = teams.find(team => team.teamID === event.target.value)
-      if (team) {
-        setTeamOption(team.teamID)
-        setBatterOption('');
-        setSeasons([]);
-        // reset dashboard
-      }
-    }
-  
-    async function handleChangeBatter(event: SelectChangeEvent) {
-      let player = players.find(player => player.playerID === Number(event.target.value))
-      if (player) {
-        setBatterOption(player.playerName)
-      }
+  React.useEffect(() => {
+    if (players != null) {
+      const seasonPitches = originalPitches.filter(e => 
+        e.season == seasonOption
+      );
+      setPitches(seasonPitches)
+
+      const numberOfSessions = new Set<number>();
       const pNumbers = []
       const sNumbers = []
       const pCount = []
@@ -104,6 +98,53 @@ export default function MLRBatters() {
       let p1 = 1
       let p2 = 1
       let p3 = 1
+
+      for (let i = 0; i < seasonPitches.length; i++) {
+        numberOfSessions.add(seasonPitches[i].session);
+        pNumbers.push(seasonPitches[i].pitch)
+        sNumbers.push(seasonPitches[i].swing)
+        pCount.push(i + 1)
+
+        if (seasonPitches[i].inning !== (seasonPitches[i - 1]?.inning ?? '0')) {
+          p1Numbers.push(seasonPitches[i].pitch)
+          p1Count.push(p1)
+          p1++
+        }
+        if (seasonPitches[i].inning === (seasonPitches[i - 1]?.inning ?? '0') && seasonPitches[i].inning !== (seasonPitches[i - 2]?.inning ?? '0')) {
+          p2Numbers.push(seasonPitches[i].pitch)
+          p2Count.push(p2)
+          p2++
+        }
+        if (seasonPitches[i].inning === (seasonPitches[i - 1]?.inning ?? '0') && seasonPitches[i].inning === (seasonPitches[i - 2]?.inning ?? '0') && seasonPitches[i].inning !== (seasonPitches[i - 3]?.inning ?? '0')) {
+          p3Numbers.push(seasonPitches[i].pitch)
+          p3Count.push(p3)
+          p3++
+        }
+      }
+
+      setPitchNumbers(pNumbers)
+      setSwingNumbers(sNumbers)
+      setPitchCount(pCount)
+    }
+  }, [originalPitches, players, seasonOption])
+
+    async function handleChangeTeam(event: SelectChangeEvent) {
+      const team = teams.find(team => team.teamID === event.target.value)
+      if (team) {
+        setTeamOption(team.teamID)
+        setBatterOption('');
+        setSeasons([]);
+        // reset dashboard
+      }
+    }
+  
+    async function handleChangeBatter(event: SelectChangeEvent) {
+      const player = players.find(player => player.playerID === Number(event.target.value))
+      if (player) {
+        setBatterOption(player.playerID)
+      }
+
+
       const seasons = new Set<number>();
 
       try {
@@ -111,32 +152,15 @@ export default function MLRBatters() {
           `https://api.mlr.gg/legacy/api/plateappearances/batting/mlr/${event.target.value}`,
         )
         for (let i = 0; i < response.data.length; i++) {
-          pNumbers.push(response.data[i].pitch)
-          sNumbers.push(response.data[i].swing)
-          pCount.push(i+1)
-          if ( response.data[i].inning !== (response?.data[i-1]?.inning ?? '0')) {
-            p1Numbers.push(response.data[i].pitch)
-            p1Count.push(p1)
-            p1++
-          }
-          if ( response.data[i].inning === (response?.data[i-1]?.inning ?? '0') && response.data[i].inning !== (response?.data[i-2]?.inning ?? '0') ) {
-            p2Numbers.push(response.data[i].pitch)
-            p2Count.push(p2)
-            p2++
-          }
-          if ( response.data[i].inning === (response?.data[i-1]?.inning ?? '0') && response.data[i].inning === (response?.data[i-2]?.inning ?? '0') && response.data[i].inning !== (response?.data[i-3]?.inning ?? '0') ) {
-            p3Numbers.push(response.data[i].pitch)
-            p3Count.push(p3)
-            p3++
-          }
+
           seasons.add(response.data[i].season);
         }
         setPitches(response.data);
-        setPitchNumbers(pNumbers)
-        setSwingNumbers(sNumbers)
-        setPitchCount(pCount)
-        setSeasons([...seasons])
-        
+        setOriginalPitches(response.data);
+
+        setSeasons([...seasons].sort((a,b) => a-b))
+        // console.log(seasons)
+        setSeasonOption(Number([...seasons].slice(-1))) // last season
       } catch (err) {
         setError('Error Fetching Swings');
       } finally {
@@ -145,9 +169,12 @@ export default function MLRBatters() {
     }
   
   async function handleChangeSeason(event: SelectChangeEvent) {
-    const season = event.target.value;
+    const season = Number(event.target.value);
     setSeasonOption(season)
+
   }
+
+
   
     return (
       <>
@@ -183,15 +210,13 @@ export default function MLRBatters() {
                   <Select
                     labelId="batter-input-select-label"
                     id="batter-input-select"
-                    label={batterOption}
-                    // label={batterOption ? batters.find( b => b.playerID === batterOption)?.playerName : '--'}
                     onChange={handleChangeBatter}
                     value={batterOption ? batterOption.toString() : ''}
                   >
                     {
                       batters.map((batter) => {
                         return (
-                          <MenuItem key={batter.playerID} value={batter.playerID}>
+                          <MenuItem key={batter.playerID} value={(batter === undefined || batter === null || batters.length === 0) ? '' : batter.playerID}>
                             <em>{batter.playerName}</em>
                           </MenuItem>
                         )
@@ -207,12 +232,12 @@ export default function MLRBatters() {
                     id="season-input-select"
                     label={seasonOption}
                     onChange={handleChangeSeason}
-                    value={seasonOption}
+                    value={seasonOption ? seasonOption.toString() : ''}
                   >
                     {
                       seasons.map((season) => {
                         return (
-                          <MenuItem key={season} value={season}>
+                          <MenuItem key={season} value={(season === undefined || season === null || seasons.length === 0) ? '' : season}>
                             <em>{season}</em>
                           </MenuItem>
                         )
@@ -221,22 +246,27 @@ export default function MLRBatters() {
                   </Select>
                   <FormHelperText>Select Season</FormHelperText>
                 </FormControl>
-                <TableContainer component={Paper} style={{ maxHeight: document.documentElement.clientHeight * 0.6 }}>
-                  <Table stickyHeader sx={{ minWidth: document.documentElement.clientWidth * 0.80}} size="small" aria-label="a dense table" >
+                <TableContainer component={Paper} style={{ maxHeight: document.documentElement.clientHeight * 0.2 }}>
+                  <Table stickyHeader sx={{ minWidth: document.documentElement.clientWidth * 0.80 }} size="small" aria-label="a dense table" >
                     <TableHead>
                       <TableRow>
-                          <TableCell width={50} align="center" >Pitch</TableCell>
-                          <TableCell width={50} align="center" >Swing</TableCell>
-                          <TableCell width={50} align="center" >Result</TableCell>
-                          <TableCell width={50} align="center" >Inning</TableCell>
-                          <TableCell width={50} align="center" >Outs</TableCell>
-                          <TableCell width={50} align="center" >OBC</TableCell>
+                          <TableCell width={50} align="center">Pitch</TableCell>
+                          <TableCell width={50} align="center">Swing</TableCell>
+                          <TableCell width={50} align="center">Result</TableCell>
+                          <TableCell width={50} align="center">Inning</TableCell>
+                          <TableCell width={50} align="center">Outs</TableCell>
+                          <TableCell width={50} align="center">OBC</TableCell>
+                          <TableCell width={50} align="center">Session</TableCell>
+                        <TableCell width={50} align="center">Diff</TableCell>
+                        <TableCell width={50} align="center">Result</TableCell>
+                        <TableCell width={50} align="center">Next</TableCell>
+                        <TableCell width={50} align="center">Delta</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {pitches.map((pitch) => {
                           return <TableRow
-                          key={pitch.playNumber}
+                          key={pitch.paID}
                           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                           >
                             <TableCell colSpan= {1} component="th" scope="row" align="center">
@@ -247,6 +277,11 @@ export default function MLRBatters() {
                             <TableCell align="center">{pitch.inning}</TableCell>
                             <TableCell align="center">{pitch.outs}</TableCell>
                             <TableCell align="center">{pitch.obc}</TableCell>
+                            <TableCell align="center">{pitch.session}</TableCell>
+                            <TableCell align="center">{pitch.diff}</TableCell>
+                            <TableCell align="center"></TableCell>
+                            <TableCell align="center"></TableCell>
+                            <TableCell align="center"></TableCell>
                           </TableRow>
                       })}
                     </TableBody>
