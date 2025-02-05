@@ -5,6 +5,7 @@ import Paper from '@mui/material/Paper';
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 import { FormSchemaPlayers } from '../types/schemas/player-schema';
 import { FormSchemaTeams } from '../types/schemas/team-schema';
+
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
@@ -28,11 +29,12 @@ export default function MLRBatters() {
     const [isLoading, setIsLoading] = React.useState(true);
     const [error, setError] = React.useState('');
     const [batterOption, setBatterOption] = React.useState<number>(0)
-    const [teamOption, setTeamOption] = React.useState('')
+
     const [pitchNumbers, setPitchNumbers] = React.useState<number[]>([])
     const [swingNumbers, setSwingNumbers] = React.useState<number[]>([])
     const [pitchCount, setPitchCount] = React.useState<number[]>([])
     const [teams, setTeams] = React.useState<FormSchemaTeams>([])
+    const [teamOption, setTeamOption] = React.useState('')
   const [seasons, setSeasons] = React.useState<number[]>([]);
   const [seasonOption, setSeasonOption] = React.useState<number>(0)
   const [originalPitches, setOriginalPitches] = React.useState<FormSchemaPitches>([])
@@ -61,9 +63,8 @@ export default function MLRBatters() {
     }, []); 
   
   React.useEffect(() => {
-    const teamsList = teamsJson
-      setTeams(teamsList)
-      // setBatterOption(0);
+    const teamsList = teamsJson;
+      setTeams(teamsList);
   }, [teams])
 
   React.useEffect(() => {
@@ -71,20 +72,20 @@ export default function MLRBatters() {
       const battersList = []
       for (let i = 0; i < players.length; i++) {
         if (players[i].priPos != 'P' && players[i].Team === teamOption) {
-          battersList.push(players[i])
+          battersList.push(players[i]);
         }
       }
       battersList.sort((a, b) => a.playerName.localeCompare(b.playerName));
-      setBatters(battersList)
+      setBatters(battersList);
     }
-  }, [players, teamOption])
+  }, [teamOption])
 
   React.useEffect(() => {
     if (players != null) {
       const seasonPitches = originalPitches.filter(e => 
         e.season == seasonOption
       );
-      setPitches(seasonPitches)
+      setPitches(seasonPitches);
 
       const numberOfSessions = new Set<number>();
       const pNumbers = []
@@ -257,7 +258,7 @@ export default function MLRBatters() {
                           <TableCell width={50} align="center">Inning</TableCell>
                           <TableCell width={50} align="center">Outs</TableCell>
                           <TableCell width={50} align="center">OBC</TableCell>
-                          <TableCell width={50} align="center">Session</TableCell>
+                        <TableCell width={50} align="center" style={{ borderRightWidth: 1, borderRightColor: 'lightgrey', borderRightStyle: 'solid' }}>Session</TableCell>
                         <TableCell width={50} align="center">Diff</TableCell>
                         <TableCell width={50} align="center">Result</TableCell>
                         <TableCell width={50} align="center">Next</TableCell>
@@ -278,7 +279,7 @@ export default function MLRBatters() {
                             <TableCell align="center">{pitch.inning}</TableCell>
                             <TableCell align="center">{pitch.outs}</TableCell>
                             <TableCell align="center">{pitch.obc}</TableCell>
-                            <TableCell align="center">{pitch.session}</TableCell>
+                            <TableCell align="center" style={{ borderRightWidth: 1, borderRightColor: 'lightgrey', borderRightStyle: 'solid' }}>{pitch.session}</TableCell>
                             <TableCell align="center">{pitch.diff}</TableCell>
                             <TableCell align="center"></TableCell>
                             <TableCell align="center"></TableCell>
