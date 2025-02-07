@@ -34,6 +34,25 @@ export function calculateHistogram(pitches: Array<FormSchemaPitch>, bucketSize: 
     return bins;
 }
 
+export function getNextPitch(pitches: Array<FormSchemaPitch>, index: number) {
+    // const currentPitch = pitches[index].pitch;
+    return (pitches[index + 1] != undefined ? pitches[index +1].pitch : '-');
+}
+
+export function getDelta(pitches: Array<FormSchemaPitch>, index: number) {
+    const currentPitch = (pitches[index] != undefined ? pitches[index].pitch : null);
+    const previousPitch = (pitches[index - 1] != undefined ? pitches[index - 1].pitch : null);
+    console.log(currentPitch, previousPitch);
+    
+
+    if (currentPitch == undefined || currentPitch == null || previousPitch == undefined || previousPitch == null) {
+        return '-';
+    }
+    else {
+        return Math.abs(previousPitch - currentPitch);
+    }
+}
+
 export function getModel1(pitch: FormSchemaPitch) {
 const average = (pitch.pitch + pitch.swing) / 2;
 const adjustment = Math.abs(pitch.pitch - pitch.swing) > 500 ? 500 : 0;
