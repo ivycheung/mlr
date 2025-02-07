@@ -23,6 +23,17 @@ export function calculateCircleDelta(pitch: FormSchemaPitch, previousPitch: Form
 
 }
 
+export function calculateHistogram(pitches: Array<FormSchemaPitch>, bucketSize: number) {
+    const bins = Array.from({ length: Math.ceil(1000 / bucketSize) }, () => 0); // initialize bins
+    pitches.forEach((pitch) => {
+        if (pitch.pitch >= 1 && pitch.pitch <= 1000) {
+            const index = Math.floor((pitch.pitch - 1) / bucketSize); // Calculate which bucket this number falls into
+            bins[index]++;
+        }
+    });
+    return bins;
+}
+
 export function getModel1(pitch: FormSchemaPitch) {
 const average = (pitch.pitch + pitch.swing) / 2;
 const adjustment = Math.abs(pitch.pitch - pitch.swing) > 500 ? 500 : 0;
