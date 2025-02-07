@@ -23,6 +23,36 @@ export function calculateCircleDelta(pitch: FormSchemaPitch, previousPitch: Form
 
 }
 
+export function calculateHistogram(pitches: Array<FormSchemaPitch>, bucketSize: number) {
+    const bins = Array.from({ length: Math.ceil(1000 / bucketSize) }, () => 0); // initialize bins
+    pitches.forEach((pitch) => {
+        if (pitch.pitch >= 1 && pitch.pitch <= 1000) {
+            const index = Math.floor((pitch.pitch - 1) / bucketSize); // Calculate which bucket this number falls into
+            bins[index]++;
+        }
+    });
+    return bins;
+}
+
+export function getNextPitch(pitches: Array<FormSchemaPitch>, index: number) {
+    // const currentPitch = pitches[index].pitch;
+    return (pitches[index + 1] != undefined ? pitches[index +1].pitch : '-');
+}
+
+export function getDelta(pitches: Array<FormSchemaPitch>, index: number) {
+    const currentPitch = (pitches[index] != undefined ? pitches[index].pitch : null);
+    const previousPitch = (pitches[index - 1] != undefined ? pitches[index - 1].pitch : null);
+    console.log(currentPitch, previousPitch);
+    
+
+    if (currentPitch == undefined || currentPitch == null || previousPitch == undefined || previousPitch == null) {
+        return '-';
+    }
+    else {
+        return Math.abs(previousPitch - currentPitch);
+    }
+}
+
 export function getModel1(pitch: FormSchemaPitch) {
 const average = (pitch.pitch + pitch.swing) / 2;
 const adjustment = Math.abs(pitch.pitch - pitch.swing) > 500 ? 500 : 0;
