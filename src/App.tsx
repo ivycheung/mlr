@@ -13,8 +13,8 @@ export default function App() {
     <BrowserRouter>
       <Nav />
       <Routes>
-        <Route path="/r-slash-fake-baseball/mlr/batters" element={<MLRBatters />} />
-        <Route path="/r-slash-fake-baseball/mlr/pitchers" element={<MLRPitchers />} />
+        <Route path="/mlr/batters" element={<MLRBatters />} />
+        <Route path="/mlr/pitchers" element={<MLRPitchers />} />
       </Routes>
     </BrowserRouter>
   );
