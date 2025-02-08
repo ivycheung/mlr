@@ -1,6 +1,6 @@
 import * as React from 'react'
-import TableContainer from '@mui/material/TableContainer';
-import Paper from '@mui/material/Paper';
+// import TableContainer from '@mui/material/TableContainer';
+// import Paper from '@mui/material/Paper';
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 import { FormSchemaPlayers } from '../types/schemas/player-schema';
 import InputLabel from '@mui/material/InputLabel';
@@ -10,19 +10,19 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import axios from 'axios'
-import Table from '@mui/material/Table';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
-import TableBody from '@mui/material/TableBody';
+
 import Grid from '@mui/material/Grid2';
 import { LineChart } from '@mui/x-charts/LineChart';
-import { getNextPitch, getDelta } from '../utils/utils';
+// import { getNextPitch, getDelta } from '../utils/utils';
 import { FormSchemaPitchInInning } from '../types/schemas/pitch-in-inning-schema';
 import { FormSchemaTeams } from '../types/schemas/team-schema';
 import teamsJson from '../utils/teams.json';
 import { calculateCircleDelta } from '../utils/utils';
 import { ChartsReferenceLine } from '@mui/x-charts/ChartsReferenceLine';
+import PitchSwingChart from '../components/PitchSwingChart';
+import { FormSchemaPitch } from '../types/schemas/pitch-schema';
+import SessionTable from '../components/SessionDataTable';
+import SessionDataTable from '../components/SessionDataTable';
 // import { BarChart } from '@mui/x-charts';
 // import Slider from '@mui/material/Slider';
 
@@ -119,7 +119,7 @@ export default function MLRPitchers() {
 
       // filter the pitches based on season + session
       // const seasonPitches = filterPitchesBySeasonSession(seasonOption, sessionOption)
-      let filteredPitches = []
+      let filteredPitches : FormSchemaPitches = []
       if (sessionOption != -1) {
         filteredPitches = originalPitches.filter(e => {
           if (e.season == seasonOption) {
@@ -134,9 +134,10 @@ export default function MLRPitchers() {
         filteredPitches = originalPitches;
       }
 
+      
 
       // filteredPitches.sort((a,b) => a.playNumber - b.playNumber);
-
+console.log(typeof filteredPitches)
       setPitches(filteredPitches)
       const seasonPitches = filteredPitches
 
@@ -155,7 +156,7 @@ export default function MLRPitchers() {
       let p1 = 1
       let p2 = 1
       let p3 = 1
-      let inningObject: { inning: number, pitches: number[] }[] = [];
+      const inningObject: { inning: number, pitches: number[] }[] = [];
       const innings = []
 
 
@@ -408,68 +409,17 @@ export default function MLRPitchers() {
                 </Select>
                 {/* <FormHelperText>{sessionOption ? '' : 'Select Session'}</FormHelperText> */}
               </FormControl>
-              <TableContainer component={Paper} style={{ maxHeight: document.documentElement.clientHeight * 0.4 }}>
-                <Table stickyHeader sx={{ minWidth: document.documentElement.clientWidth * 0.80 }} size="small" aria-label="a dense table" >
-                  <TableHead>
-                    <TableRow>
-                      <TableCell width={50} align="center" >Pitch</TableCell>
-                      <TableCell width={50} align="center" >Swing</TableCell>
-                      <TableCell width={50} align="center" >Result</TableCell>
-                      <TableCell width={50} align="center" >Inning</TableCell>
-                      <TableCell width={50} align="center" >Outs</TableCell>
-                      <TableCell width={50} align="center">OBC</TableCell>
-                      <TableCell width={50} align="center" style={{ borderRightWidth: 1, borderRightColor: 'lightgrey', borderRightStyle: 'solid' }}>Session</TableCell>
-                      <TableCell width={50} align="center">Diff</TableCell>
-                      <TableCell width={50} align="center">Result</TableCell>
-                      <TableCell width={50} align="center">Next</TableCell>
-                      <TableCell width={50} align="center">Delta</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {pitches.map((pitch, i, array) => {
-                      return <TableRow
-                        key={pitch.paID}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        // style={{ backgroundColor: colors[(pitch.inning).toString().slice(-1)]}}
-                      >
-                        <TableCell colSpan={1} component="th" scope="row" align="center">{pitch.pitch}</TableCell>
-                        <TableCell align="center">{pitch.swing}</TableCell>
-                        <TableCell align="center">{pitch.exactResult}</TableCell>
-                        <TableCell align="center">{pitch.inning}</TableCell>
-                        <TableCell align="center">{pitch.outs}</TableCell>
-                        <TableCell align="center">{pitch.obc}</TableCell>
-                        <TableCell align="center" style={{ borderRightWidth: 1, borderRightColor: 'lightgrey', borderRightStyle: 'solid' }}>{pitch.session}</TableCell>
-                        <TableCell align="center">{pitch.diff}</TableCell>
-                        <TableCell align="center"></TableCell>
-                        <TableCell align="center">{getNextPitch(array, i)}</TableCell>
-                        <TableCell align="center">{getDelta(array, i) }</TableCell>
-                      </TableRow>
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+              <SessionDataTable pitches={pitches} />
             </Grid>
 
             <Grid container justifyContent="center">
               <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
-                {pitchCount.length != 0 && pitchNumbers.length != 0 && swingNumbers.length != 0 &&
-                  <LineChart
-                    title="All Pitches"
-                    xAxis={[{ data: pitchCount }]}
-                    series={[
-                      {
-                        label: "Pitch", data: pitchNumbers, color: "red"
-                      },
-                      {
-                        label: "Swing", data: swingNumbers
-                      },
-                    ]}
-                    width={document.documentElement.clientWidth * 0.50}
-                    height={document.documentElement.clientHeight * 0.50}
-                  />
+                {
+                  <PitchSwingChart
+                    pitches={pitches} />
                 }
               </Grid>
-              <Grid size={6} alignItems="center" justifyContent="center" >
+              {/* <Grid size={6} alignItems="center" justifyContent="center" >
                 {pitchCount.length != 0 && pitchNumbers.length != 0 && swingNumbers.length != 0 &&
                   <LineChart
                     title="Pitches by Placement in Inning"
@@ -531,7 +481,7 @@ export default function MLRPitchers() {
                   />
                 }
               </Grid>
-            </Grid>
+            </Grid> */}
             {/* <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} container justifyContent="center" >
               <Grid alignItems="center" justifyContent="center" width='100%'>
                 <BarChart 
@@ -541,7 +491,7 @@ export default function MLRPitchers() {
                   />
                   
               </Grid> */}
-            {/* </Grid> */}
+            </Grid>
           </Grid>
 
         </ThemeProvider>
