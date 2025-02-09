@@ -8,7 +8,7 @@ export default function Nav() {
     const navigate = useNavigate();
 
     const handleLogoClick = () => {
-        navigate('/'); // Navigate to the  route
+        navigate('/mlr'); // Navigate to the  route
     };
 
     const handleMlrPitchersClick = () => {
@@ -25,8 +25,8 @@ export default function Nav() {
             <Typography variant="h6" component="div" sx={{flexGrow: 1}} onClick={handleLogoClick}>
                 Fake Baseball
             </Typography>
-            <Button onClick={handleMlrPitchersClick} color="inherit">Mlr Pitchers</Button>
-            <Button onClick={handleMlrBattersClick} color="inherit">Mlr Batters</Button>
+            <Button onClick={handleMlrPitchersClick} color="inherit">MLR Pitchers</Button>
+            <Button onClick={handleMlrBattersClick} color="inherit">MLR Batters</Button>
             </Toolbar>
         </AppBar>
     );
