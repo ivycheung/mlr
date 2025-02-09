@@ -21,6 +21,8 @@ import { getModel1, getModel2, getModel3, getModel4, getModel5, getModel6, getMo
 import { FormSchemaPitchInInning } from '../types/schemas/pitch-in-inning-schema';
 import { FormSchemaTeams } from '../types/schemas/team-schema';
 import teamsJson from '../utils/teams.json';
+import { calculateCircleDelta } from '../utils/utils';
+import { ChartsReferenceLine } from '@mui/x-charts/ChartsReferenceLine';
 
 export default function MLRPitchers() {
   const [players, setPlayers] = React.useState<FormSchemaPlayers>([])
@@ -38,6 +40,7 @@ export default function MLRPitchers() {
   const [pitch3Numbers, setPitch3Numbers] = React.useState<number[]>([])
   const [inningNumbers, setInningNumbers] = React.useState<FormSchemaPitchInInning>([])
   const [innings, setInnings] = React.useState<number[]>([])
+  const [deltaNumbers, setDeltaNumbers] = React.useState<number[]>([])
 
   const [teams, setTeams] = React.useState<FormSchemaTeams>([])
   const [teamOption, setTeamOption] = React.useState('')
@@ -93,12 +96,12 @@ export default function MLRPitchers() {
     if (players != null) {
       // Loop through to get the sessions per season
       const numberOfSessions = new Set<number>();
-      originalPitches.map((e)=> {
+      originalPitches.map((e) => {
         if (e.season == seasonOption) {
           numberOfSessions.add(e.session);
         }
       })
-      
+
       // Set default session to first of the game
       // TODO: show all sessions in a season
       if (sessionOption == 0 || sessionOption == undefined) {
@@ -120,10 +123,11 @@ export default function MLRPitchers() {
 
       );
       setPitches(filteredPitches)
-      const seasonPitches = originalPitches
+      const seasonPitches = filteredPitches
 
       const pNumbers = []
       const sNumbers = []
+      const dNumbers = []
       const pCount = []
       const p1Numbers = []
       const p1Count = []
@@ -138,10 +142,10 @@ export default function MLRPitchers() {
       let p3 = 1
       let inningObject: { inning: number, pitches: number[] }[] = [];
       let innings = []
-      
+
 
       for (let i = 0; i < seasonPitches.length; i++) {
-        
+
 
         // if (seasonPitches[i].session !== sessionOption) {
         //   continue;
@@ -149,6 +153,8 @@ export default function MLRPitchers() {
         pNumbers.push(seasonPitches[i].pitch)
         sNumbers.push(seasonPitches[i].swing)
         pCount.push(i + 1)
+        dNumbers.push(calculateCircleDelta(filteredPitches[i], filteredPitches[i - 1]))
+
         if (seasonPitches[i].inning !== (seasonPitches[i - 1]?.inning ?? '0')) {
           p1Numbers.push(seasonPitches[i].pitch)
           p1Count.push(p1)
@@ -185,13 +191,15 @@ export default function MLRPitchers() {
       setPitchNumbers(pNumbers)
       setSwingNumbers(sNumbers)
       setPitchCount(pCount)
+      console.log(pCount)
+      setDeltaNumbers(dNumbers)
       setPitch1Numbers(p1Numbers)
       setPitch1Count(p1Count)
       setPitch2Numbers(p2Numbers)
       setPitch3Numbers(p3Numbers)
       setInnings(innings)
       setInningNumbers(inningObject)
-      
+
       // setPitches(seasonPitches)
 
     }
@@ -265,7 +273,7 @@ export default function MLRPitchers() {
       const response = await axios.get(
         `https://api.mlr.gg/legacy/api/plateappearances/pitching/mlr/${event.target.value}`,
       )
-      
+
 
 
       for (let i = 0; i < response.data.length; i++) {
@@ -277,7 +285,7 @@ export default function MLRPitchers() {
       setSeasonOption(latestSeason) // latest season
 
       setOriginalPitches(response.data)
-      
+      setSessionOption(0);
 
 
     } catch (err) {
@@ -295,7 +303,7 @@ export default function MLRPitchers() {
       {error && <p>{error}</p>}
       {!isLoading && !error &&
         <ThemeProvider theme={theme}>
-          <Grid container justifyContent="center" style={{ padding: 100 }}>
+          <Grid container justifyContent="center" style={{ padding: 50 }}>
             <Grid size={12}>
               <FormControl sx={{ m: 1, minWidth: 240, color: "red" }}>
                 <InputLabel id="team-input-select-label">Team</InputLabel>
@@ -390,8 +398,8 @@ export default function MLRPitchers() {
                       <TableCell width={50} align="center" >Inning</TableCell>
                       <TableCell width={50} align="center" >Outs</TableCell>
                       <TableCell width={50} align="center">OBC</TableCell>
-                      <TableCell width={50} align="center">Season</TableCell>
-                      <TableCell width={50} align="center" style={{ borderRightWidth: 1, borderRightColor: 'lightgrey', borderRightStyle: 'solid' }}>Session</TableCell>
+                      {/* <TableCell width={50} align="center">Season</TableCell> */}
+                      <TableCell width={50} align="center" style={{ borderRightWidth: 1, borderRightColor: 'lightgrey', borderRightStyle: 'solid' }}>S</TableCell>
                       <TableCell width={50} align="center">M 1</TableCell>
                       <TableCell width={50} align="center">M 2</TableCell>
                       <TableCell width={50} align="center">M 3</TableCell>
@@ -424,7 +432,7 @@ export default function MLRPitchers() {
                         <TableCell align="center">{pitch.inning}</TableCell>
                         <TableCell align="center">{pitch.outs}</TableCell>
                         <TableCell align="center">{pitch.obc}</TableCell>
-                        <TableCell align="center">{pitch.season}</TableCell>
+                        {/* <TableCell align="center">{pitch.season}</TableCell> */}
                         <TableCell align="center" style={{ borderRightWidth: 1, borderRightColor: 'lightgrey', borderRightStyle: 'solid' }}>{pitch.session}</TableCell>
                         <TableCell colSpan={1} component="th" scope="row" align="center">
                           {getModel1(pitch)}
@@ -450,8 +458,9 @@ export default function MLRPitchers() {
                 </Table>
               </TableContainer>
             </Grid>
-            {/* <Grid container justifyContent="center">
-              <Grid size={6} alignItems="center" justifyContent="center">
+
+            <Grid container justifyContent="center">
+              <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
                 {pitchCount.length != 0 && pitchNumbers.length != 0 && swingNumbers.length != 0 &&
                   <LineChart
                     title="All Pitches"
@@ -465,49 +474,72 @@ export default function MLRPitchers() {
                       },
                     ]}
                     // width={document.documentElement.clientWidth * 0.50}
-                    height={document.documentElement.clientHeight * 0.40}
+                    height={document.documentElement.clientHeight * 0.50}
                   />
                 }
               </Grid>
               <Grid size={6} alignItems="center" justifyContent="center" >
-                  {pitchCount.length != 0 && pitchNumbers.length != 0 && swingNumbers.length != 0 &&
-                    <LineChart
-                      title="Pitches by Placement in Inning"
-                      xAxis={[{ label: "Inning", data: pitch1Count }]}
-                      series={[
-                        {
-                          label: "First Pitches", data: pitch1Numbers, color:"red"
-                        },
-                        {
-                          label: "Second Pitches", data: pitch2Numbers, color:"green"
-                        },
-                        {
-                          label: "Third Pitches", data: pitch3Numbers, color:"white"
-                        },
-                      ]}
-                      width={document.documentElement.clientWidth * 0.40}
-                      height={document.documentElement.clientHeight * 0.40}
-                    />
-                  }
+                {pitchCount.length != 0 && pitchNumbers.length != 0 && swingNumbers.length != 0 &&
+                  <LineChart
+                    title="Pitches by Placement in Inning"
+                  xAxis={[{ label: "Inning", data: pitch1Count, tickInterval: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }]}
+                    series={[
+                      {
+                        label: "First Pitches", data: pitch1Numbers, color: "red"
+                      },
+                      {
+                        label: "Second Pitches", data: pitch2Numbers, color: "green"
+                      },
+                      {
+                        label: "Third Pitches", data: pitch3Numbers, color: "white"
+                      },
+                    ]}
+                    width={document.documentElement.clientWidth * 0.40}
+                    height={document.documentElement.clientHeight * 0.50}
+                  />
+                }
               </Grid>
-            </Grid> */}
-            {/* <Grid container justifyContent="center" >
-                <Grid size={12} alignItems="center" justifyContent="center">
-                  {pitchCount.length != 0 && pitchNumbers.length != 0 && swingNumbers.length != 0 && inningNumbers.length != 0 &&
-                    <LineChart
-                      title="Pitches by Inning"
-                      xAxis={[{ data: innings, label: "Pitch Number", tickInterval: [1,2,3,4,5,6,7,8,9,10] }]}
-                      series={inningNumbers.map((series) =>({
-                        data: series.pitches,
-                        label: `Inning ${series.inning.toString()}`,
-                        color: colors[series.inning]
-                      }))}
-                      width={document.documentElement.clientWidth * 0.90}
-                      height={document.documentElement.clientHeight * 0.50}
-                    />
-                  }
-                </Grid>
-              </Grid> */}
+            </Grid>
+            <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" width='100%'>
+              {deltaNumbers.length != 0 &&
+                <LineChart
+                  title="Delta from Pitch to Pitch"
+                  xAxis={[{ data: pitchCount }]}
+                  yAxis={[{
+                    min: -500,   // Set the minimum value for Y-Axis
+                    max: 500,    // Set the maximum value for Y-Axis
+                    tickInterval: [-500, -400, -300, -200, -100, 0, 100, 200, 300, 400, 500], // Set custom tick values
+                  },]}
+                  series={[
+                    {
+                      label: "Delta", data: deltaNumbers, color: "teal"
+                    },
+                  ]}
+                  height={document.documentElement.clientHeight * 0.50}
+                  tooltip={{ trigger: 'item' }}
+                >
+                  <ChartsReferenceLine y={0} label="0" labelAlign="end" />
+                </LineChart>
+              }
+            </Grid>
+            <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} container justifyContent="center" >
+              <Grid alignItems="center" justifyContent="center" width='100%'>
+                {pitchCount.length != 0 && pitchNumbers.length != 0 && swingNumbers.length != 0 && inningNumbers.length != 0 &&
+                  <LineChart
+                    title="Pitches by Inning"
+                    xAxis={[{ data: [1, 2, 3, 4, 5, 6, 7, 8], label: "Pitch Number", tickNumber: 15, tickInterval: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], scaleType: 'point', min: 1, max: 10 }
+                    ]}
+                    series={inningNumbers.map((series) => ({
+                      data: series.pitches,
+                      label: `In ${series.inning.toString()}`,
+                      color: colors[series.inning]
+                    }))}
+                    height={document.documentElement.clientHeight * 0.50}
+                    margin={{ top: 100 }}
+                  />
+                }
+              </Grid>
+            </Grid>
           </Grid>
 
         </ThemeProvider>
