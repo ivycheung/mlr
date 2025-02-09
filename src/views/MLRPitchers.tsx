@@ -17,13 +17,13 @@ import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import Grid from '@mui/material/Grid2';
 import { LineChart } from '@mui/x-charts/LineChart';
-import { getModel1, getModel2, getModel3, getModel4, getModel5, getModel6, getModel7, getModel8, getModel9, getModel10, getModel11, getModel12, getModel13, getModel14, getModel15, getModel16, calculateHistogram } from '../utils/utils';
+import { getNextPitch, getDelta } from '../utils/utils';
 import { FormSchemaPitchInInning } from '../types/schemas/pitch-in-inning-schema';
 import { FormSchemaTeams } from '../types/schemas/team-schema';
 import teamsJson from '../utils/teams.json';
 import { calculateCircleDelta } from '../utils/utils';
 import { ChartsReferenceLine } from '@mui/x-charts/ChartsReferenceLine';
-import { BarChart } from '@mui/x-charts';
+// import { BarChart } from '@mui/x-charts';
 // import Slider from '@mui/material/Slider';
 
 export default function MLRPitchers() {
@@ -52,9 +52,9 @@ export default function MLRPitchers() {
   const [sessions, setSessions] = React.useState<number[]>([]);
   const [sessionOption, setSessionOption] = React.useState<number>(0)
 
-  const histogramRange = [1, 51, 101, 151, 201, 251, 301, 351, 401, 451, 501, 551, 601, 651, 701, 751, 801, 851, 901, 951, 1000];
-  type HistogramType = { bucket: string, count: number};
-  const [histogramValue, setHistogramValue] = React.useState<HistogramType[]>();
+  // const histogramRange = [1, 51, 101, 151, 201, 251, 301, 351, 401, 451, 501, 551, 601, 651, 701, 751, 801, 851, 901, 951, 1000];
+  // type HistogramType = { bucket: string, count: number};
+  // const [histogramValue, setHistogramValue] = React.useState<HistogramType[]>();
 
   const theme = createTheme({
     colorSchemes: {
@@ -114,7 +114,7 @@ export default function MLRPitchers() {
         const latestSession: number = [...numberOfSessions][0];
         setSessionOption(latestSession);//latest season but first session
       }
-      numberOfSessions.add(-1);
+      // numberOfSessions.add(-1);
       setSessions([...numberOfSessions].sort((a, b) => {return a - b}))
 
       // filter the pitches based on season + session
@@ -135,6 +135,7 @@ export default function MLRPitchers() {
       }
 
 
+      // filteredPitches.sort((a,b) => a.playNumber - b.playNumber);
 
       setPitches(filteredPitches)
       const seasonPitches = filteredPitches
@@ -197,16 +198,16 @@ export default function MLRPitchers() {
       }
 
       // Histogram
-      const bucketSize = 50;
-      console.log(pitches)
-      const bins: number[] = calculateHistogram(pitches, bucketSize);
+      // const bucketSize = 50;
+      // console.log(pitches)
+      // const bins: number[] = calculateHistogram(pitches, bucketSize);
 
-      const chartData = bins.map((count, index) => ({
-        bucket: `${index * bucketSize + 1}-${(index + 1) * bucketSize}`,
-        count
-      }));
-      console.log(chartData)
-      setHistogramValue(chartData);
+      // const chartData = bins.map((count, index) => ({
+      //   bucket: `${index * bucketSize + 1}-${(index + 1) * bucketSize}`,
+      //   count
+      // }));
+      // console.log(chartData)
+      // setHistogramValue(chartData);
 
       setPitchNumbers(pNumbers)
       setSwingNumbers(sNumbers)
@@ -417,24 +418,11 @@ export default function MLRPitchers() {
                       <TableCell width={50} align="center" >Inning</TableCell>
                       <TableCell width={50} align="center" >Outs</TableCell>
                       <TableCell width={50} align="center">OBC</TableCell>
-                      {/* <TableCell width={50} align="center">Season</TableCell> */}
-                      <TableCell width={50} align="center" style={{ borderRightWidth: 1, borderRightColor: 'lightgrey', borderRightStyle: 'solid' }}>S</TableCell>
-                      <TableCell width={50} align="center">M 1</TableCell>
-                      <TableCell width={50} align="center">M 2</TableCell>
-                      <TableCell width={50} align="center">M 3</TableCell>
-                      <TableCell width={50} align="center">M 4</TableCell>
-                      <TableCell width={50} align="center">M 5</TableCell>
-                      <TableCell width={50} align="center">M 6</TableCell>
-                      <TableCell width={50} align="center">M 7</TableCell>
-                      <TableCell width={50} align="center">M 8</TableCell>
-                      <TableCell width={50} align="center">M 9</TableCell>
-                      <TableCell width={50} align="center">M 10</TableCell>
-                      <TableCell width={50} align="center">M 11</TableCell>
-                      <TableCell width={50} align="center">M 12</TableCell>
-                      <TableCell width={50} align="center">M 13</TableCell>
-                      <TableCell width={50} align="center">M 14</TableCell>
-                      <TableCell width={50} align="center">M 15</TableCell>
-                      <TableCell width={50} align="center">M 16</TableCell>
+                      <TableCell width={50} align="center" style={{ borderRightWidth: 1, borderRightColor: 'lightgrey', borderRightStyle: 'solid' }}>Session</TableCell>
+                      <TableCell width={50} align="center">Diff</TableCell>
+                      <TableCell width={50} align="center">Result</TableCell>
+                      <TableCell width={50} align="center">Next</TableCell>
+                      <TableCell width={50} align="center">Delta</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -442,35 +430,19 @@ export default function MLRPitchers() {
                       return <TableRow
                         key={pitch.paID}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                        // style={{ backgroundColor: colors[(pitch.inning).toString().slice(-1)]}}
                       >
-                        <TableCell colSpan={1} component="th" scope="row" align="center">
-                          {pitch.pitch}
-                        </TableCell>
+                        <TableCell colSpan={1} component="th" scope="row" align="center">{pitch.pitch}</TableCell>
                         <TableCell align="center">{pitch.swing}</TableCell>
                         <TableCell align="center">{pitch.exactResult}</TableCell>
                         <TableCell align="center">{pitch.inning}</TableCell>
                         <TableCell align="center">{pitch.outs}</TableCell>
                         <TableCell align="center">{pitch.obc}</TableCell>
-                        {/* <TableCell align="center">{pitch.season}</TableCell> */}
                         <TableCell align="center" style={{ borderRightWidth: 1, borderRightColor: 'lightgrey', borderRightStyle: 'solid' }}>{pitch.session}</TableCell>
-                        <TableCell colSpan={1} component="th" scope="row" align="center">
-                          {getModel1(pitch)}
-                        </TableCell>
-                        <TableCell align="center">{getModel2(pitch, array[i - 1])}</TableCell>
-                        <TableCell align="center">{getModel3(pitch, array[i - 1])}</TableCell>
-                        <TableCell align="center">{getModel4(pitch)}</TableCell>
-                        <TableCell align="center">{getModel5(pitch, array[i - 1])}</TableCell>
-                        <TableCell align="center">{getModel6(pitch, array[i - 1])}</TableCell>
-                        <TableCell align="center">{getModel7(pitch)}</TableCell>
-                        <TableCell align="center">{getModel8(pitch)}</TableCell>
-                        <TableCell align="center">{getModel9(pitch, array[i - 1])}</TableCell>
-                        <TableCell align="center">{getModel10(pitch, array[i - 1])}</TableCell>
-                        <TableCell align="center">{getModel11(pitch, array[i - 1])}</TableCell>
-                        <TableCell align="center">{getModel12(pitch, array[i - 1])}</TableCell>
-                        <TableCell align="center">{getModel13(pitch)}</TableCell>
-                        <TableCell align="center">{getModel14(pitch, array[i - 1])}</TableCell>
-                        <TableCell align="center">{getModel15(pitch)}</TableCell>
-                        <TableCell align="center">{getModel16(pitch, array[i - 1])}</TableCell>
+                        <TableCell align="center">{pitch.diff}</TableCell>
+                        <TableCell align="center"></TableCell>
+                        <TableCell align="center">{getNextPitch(array, i)}</TableCell>
+                        <TableCell align="center">{getDelta(array, i) }</TableCell>
                       </TableRow>
                     })}
                   </TableBody>
@@ -479,7 +451,7 @@ export default function MLRPitchers() {
             </Grid>
 
             <Grid container justifyContent="center">
-              {/* <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+              <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
                 {pitchCount.length != 0 && pitchNumbers.length != 0 && swingNumbers.length != 0 &&
                   <LineChart
                     title="All Pitches"
@@ -519,7 +491,7 @@ export default function MLRPitchers() {
                 }
               </Grid>
             </Grid>
-            <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }} alignItems="center" justifyContent="center" width='100%'>
+            <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" width='100%'>
               {deltaNumbers.length != 0 &&
                 <LineChart
                   title="Delta from Pitch to Pitch"
@@ -540,7 +512,7 @@ export default function MLRPitchers() {
                   <ChartsReferenceLine y={0} label="0" labelAlign="end" />
                 </LineChart>
               }
-            </Grid> */}
+            </Grid>
             <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} container justifyContent="center" >
               <Grid alignItems="center" justifyContent="center" width='100%'>
                 {pitchCount.length != 0 && pitchNumbers.length != 0 && swingNumbers.length != 0 && inningNumbers.length != 0 &&
@@ -569,7 +541,7 @@ export default function MLRPitchers() {
                   />
                   
               </Grid> */}
-            </Grid>
+            {/* </Grid> */}
           </Grid>
 
         </ThemeProvider>
