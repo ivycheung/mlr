@@ -8,15 +8,15 @@ export default function Nav() {
     const navigate = useNavigate();
 
     const handleLogoClick = () => {
-        navigate('/r-slash-fake-baseball'); // Navigate to the  route
+        navigate('/'); // Navigate to the  route
     };
 
     const handleMlrPitchersClick = () => {
-        navigate('/r-slash-fake-baseball/mlr/pitchers');
+        navigate('/mlr/pitchers');
     };
 
     const handleMlrBattersClick = () => {
-        navigate('/r-slash-fake-baseball/mlr/batters');
+        navigate('/mlr/batters');
     };
     
     return (
