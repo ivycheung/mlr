@@ -39,7 +39,7 @@ export default function MLRPitchers() {
   const [pitch2Numbers, setPitch2Numbers] = React.useState<number[]>([])
   const [pitch3Numbers, setPitch3Numbers] = React.useState<number[]>([])
   const [inningNumbers, setInningNumbers] = React.useState<FormSchemaPitchInInning>([])
-  const [innings, setInnings] = React.useState<number[]>([])
+  // const [innings, setInnings] = React.useState<number[]>([])
   const [deltaNumbers, setDeltaNumbers] = React.useState<number[]>([])
 
   const [teams, setTeams] = React.useState<FormSchemaTeams>([])
@@ -108,20 +108,28 @@ export default function MLRPitchers() {
         const latestSession: number = [...numberOfSessions][0];
         setSessionOption(latestSession);//latest season but first session
       }
-      setSessions([...numberOfSessions])
+      // numberOfSessions.add(-1);
+      setSessions([...numberOfSessions].sort((a, b) => {return a - b}))
 
       // filter the pitches based on season + session
       // const seasonPitches = filterPitchesBySeasonSession(seasonOption, sessionOption)
-      const filteredPitches = originalPitches.filter(e => {
-        if (e.season == seasonOption) {
-          if (e.session != sessionOption) {
-            return false;
+      let filteredPitches = []
+      if (sessionOption != -1) {
+        filteredPitches = originalPitches.filter(e => {
+          if (e.season == seasonOption) {
+            if (e.session != sessionOption) {
+              return false;
+            }
+            return true;
           }
-          return true;
-        }
+        });
+      }
+      else {
+        filteredPitches = originalPitches;
       }
 
-      );
+
+
       setPitches(filteredPitches)
       const seasonPitches = filteredPitches
 
@@ -129,27 +137,22 @@ export default function MLRPitchers() {
       const sNumbers = []
       const dNumbers = []
       const pCount = []
-      const p1Numbers = []
-      const p1Count = []
-      const p2Numbers = []
-      const p2Count = []
-      const p3Numbers = []
-      const p3Count = []
-      let inningPitches = []
-      let currentChunk = []
+      const p1Numbers = [] // first pitch
+      const p1Count = [] // # of first pitch
+      const p2Numbers = [] // second pitch
+      const p2Count = [] // # of second pitch
+      const p3Numbers = [] // third pitch
+      const p3Count = [] // # of third pitch
+      const inningPitches = []
+      let currentChunk: number[] = []
       let p1 = 1
       let p2 = 1
       let p3 = 1
       let inningObject: { inning: number, pitches: number[] }[] = [];
-      let innings = []
+      const innings = []
 
 
       for (let i = 0; i < seasonPitches.length; i++) {
-
-
-        // if (seasonPitches[i].session !== sessionOption) {
-        //   continue;
-        // }
         pNumbers.push(seasonPitches[i].pitch)
         sNumbers.push(seasonPitches[i].swing)
         pCount.push(i + 1)
@@ -187,17 +190,15 @@ export default function MLRPitchers() {
         innings.push(i + 1)
       }
 
-
       setPitchNumbers(pNumbers)
       setSwingNumbers(sNumbers)
       setPitchCount(pCount)
-      console.log(pCount)
       setDeltaNumbers(dNumbers)
       setPitch1Numbers(p1Numbers)
       setPitch1Count(p1Count)
       setPitch2Numbers(p2Numbers)
       setPitch3Numbers(p3Numbers)
-      setInnings(innings)
+      // setInnings(innings)
       setInningNumbers(inningObject)
 
       // setPitches(seasonPitches)
@@ -206,22 +207,22 @@ export default function MLRPitchers() {
   }, [originalPitches, players, seasonOption, sessionOption])
 
   // Sessions
-  React.useEffect(() => {
-    if (players != null) {
-      const pitchersList = []
-      for (let i = 0; i < players.length; i++) {
-        if (players[i].priPos == 'P' && players[i].Team === teamOption)
-          pitchersList.push(players[i])
-      }
-      pitchersList.sort((a, b) => a.playerName.localeCompare(b.playerName));
-      setPitchers(pitchersList)
-    }
-  }, [sessions]);
+  // React.useEffect(() => {
+  //   if (players != null) {
+  //     const pitchersList = []
+  //     for (let i = 0; i < players.length; i++) {
+  //       if (players[i].Team === teamOption && (players[i].priPos == 'P' || players[i].priPos == 'PH') )
+  //         pitchersList.push(players[i])
+  //     }
+  //     pitchersList.sort((a, b) => a.playerName.localeCompare(b.playerName));
+  //     setPitchers(pitchersList)
+  //   }
+  // }, [sessions]);
 
   const colors: { [key: number]: string } = {
     1: 'red',
     2: 'orange',
-    3: 'yellow',
+    3: '#8B8000',
     4: 'green',
     5: 'blue',
     6: 'indigo',
@@ -303,7 +304,7 @@ export default function MLRPitchers() {
       {error && <p>{error}</p>}
       {!isLoading && !error &&
         <ThemeProvider theme={theme}>
-          <Grid container justifyContent="center" style={{ padding: 50 }}>
+          <Grid container justifyContent="center" style={{ padding: 30 }}>
             <Grid size={12}>
               <FormControl sx={{ m: 1, minWidth: 240, color: "red" }}>
                 <InputLabel id="team-input-select-label">Team</InputLabel>
@@ -491,7 +492,7 @@ export default function MLRPitchers() {
                         label: "Second Pitches", data: pitch2Numbers, color: "green"
                       },
                       {
-                        label: "Third Pitches", data: pitch3Numbers, color: "white"
+                        label: "Third Pitches", data: pitch3Numbers, color: "magenta"
                       },
                     ]}
                     width={document.documentElement.clientWidth * 0.40}
