@@ -17,12 +17,14 @@ import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import Grid from '@mui/material/Grid2';
 import { LineChart } from '@mui/x-charts/LineChart';
-import { getModel1, getModel2, getModel3, getModel4, getModel5, getModel6, getModel7, getModel8, getModel9, getModel10, getModel11, getModel12, getModel13, getModel14, getModel15, getModel16 } from '../utils/utils';
+import { getModel1, getModel2, getModel3, getModel4, getModel5, getModel6, getModel7, getModel8, getModel9, getModel10, getModel11, getModel12, getModel13, getModel14, getModel15, getModel16, calculateHistogram } from '../utils/utils';
 import { FormSchemaPitchInInning } from '../types/schemas/pitch-in-inning-schema';
 import { FormSchemaTeams } from '../types/schemas/team-schema';
 import teamsJson from '../utils/teams.json';
 import { calculateCircleDelta } from '../utils/utils';
 import { ChartsReferenceLine } from '@mui/x-charts/ChartsReferenceLine';
+import { BarChart } from '@mui/x-charts';
+// import Slider from '@mui/material/Slider';
 
 export default function MLRPitchers() {
   const [players, setPlayers] = React.useState<FormSchemaPlayers>([])
@@ -49,6 +51,10 @@ export default function MLRPitchers() {
   const [originalPitches, setOriginalPitches] = React.useState<FormSchemaPitches>([])
   const [sessions, setSessions] = React.useState<number[]>([]);
   const [sessionOption, setSessionOption] = React.useState<number>(0)
+
+  const histogramRange = [1, 51, 101, 151, 201, 251, 301, 351, 401, 451, 501, 551, 601, 651, 701, 751, 801, 851, 901, 951, 1000];
+  type HistogramType = { bucket: string, count: number};
+  const [histogramValue, setHistogramValue] = React.useState<HistogramType[]>();
 
   const theme = createTheme({
     colorSchemes: {
@@ -108,7 +114,7 @@ export default function MLRPitchers() {
         const latestSession: number = [...numberOfSessions][0];
         setSessionOption(latestSession);//latest season but first session
       }
-      // numberOfSessions.add(-1);
+      numberOfSessions.add(-1);
       setSessions([...numberOfSessions].sort((a, b) => {return a - b}))
 
       // filter the pitches based on season + session
@@ -189,6 +195,18 @@ export default function MLRPitchers() {
         inningObject.push({ inning: i + 1, pitches: inningPitches[i] })
         innings.push(i + 1)
       }
+
+      // Histogram
+      const bucketSize = 50;
+      console.log(pitches)
+      const bins: number[] = calculateHistogram(pitches, bucketSize);
+
+      const chartData = bins.map((count, index) => ({
+        bucket: `${index * bucketSize + 1}-${(index + 1) * bucketSize}`,
+        count
+      }));
+      console.log(chartData)
+      setHistogramValue(chartData);
 
       setPitchNumbers(pNumbers)
       setSwingNumbers(sNumbers)
@@ -461,7 +479,7 @@ export default function MLRPitchers() {
             </Grid>
 
             <Grid container justifyContent="center">
-              <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+              {/* <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
                 {pitchCount.length != 0 && pitchNumbers.length != 0 && swingNumbers.length != 0 &&
                   <LineChart
                     title="All Pitches"
@@ -474,7 +492,7 @@ export default function MLRPitchers() {
                         label: "Swing", data: swingNumbers
                       },
                     ]}
-                    // width={document.documentElement.clientWidth * 0.50}
+                    width={document.documentElement.clientWidth * 0.50}
                     height={document.documentElement.clientHeight * 0.50}
                   />
                 }
@@ -501,7 +519,7 @@ export default function MLRPitchers() {
                 }
               </Grid>
             </Grid>
-            <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" width='100%'>
+            <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }} alignItems="center" justifyContent="center" width='100%'>
               {deltaNumbers.length != 0 &&
                 <LineChart
                   title="Delta from Pitch to Pitch"
@@ -522,13 +540,13 @@ export default function MLRPitchers() {
                   <ChartsReferenceLine y={0} label="0" labelAlign="end" />
                 </LineChart>
               }
-            </Grid>
+            </Grid> */}
             <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} container justifyContent="center" >
               <Grid alignItems="center" justifyContent="center" width='100%'>
                 {pitchCount.length != 0 && pitchNumbers.length != 0 && swingNumbers.length != 0 && inningNumbers.length != 0 &&
                   <LineChart
                     title="Pitches by Inning"
-                    xAxis={[{ data: [1, 2, 3, 4, 5, 6, 7, 8], label: "Pitch Number", tickNumber: 15, tickInterval: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], scaleType: 'point', min: 1, max: 10 }
+                    xAxis={[{ data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], label: "Pitch Number", tickNumber: 15, tickInterval: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], scaleType: 'point', min: 1, max: 10 }
                     ]}
                     series={inningNumbers.map((series) => ({
                       data: series.pitches,
@@ -536,10 +554,21 @@ export default function MLRPitchers() {
                       color: colors[series.inning]
                     }))}
                     height={document.documentElement.clientHeight * 0.50}
+                    width={document.documentElement.clientWidth * 0.40}
                     margin={{ top: 100 }}
                   />
                 }
               </Grid>
+            </Grid>
+            {/* <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} container justifyContent="center" >
+              <Grid alignItems="center" justifyContent="center" width='100%'>
+                <BarChart 
+                dataset = {histogramValue}
+                  series={[{ dataKey: 'count' }]}
+                  xAxis={[{ dataKey: 'bucket', scaleType: 'band', }]}
+                  />
+                  
+              </Grid> */}
             </Grid>
           </Grid>
 
