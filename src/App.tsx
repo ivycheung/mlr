@@ -6,6 +6,7 @@ import {
 import MLRPitchers from './views/MLRPitchers';
 import MLRBatters from './views/MLRBatters';
 import Nav from './views/Nav';
+import MLRPitchersSeason from './views/MLRPitchersSeason';
 
 export default function App() {
 
@@ -15,6 +16,7 @@ export default function App() {
       <Routes>
         <Route path="/mlr/batters" element={<MLRBatters />} />
         <Route path="/mlr/pitchers" element={<MLRPitchers />} />
+        <Route path="/mlr/pitchersseason" element={<MLRPitchersSeason />} />
       </Routes>
     </BrowserRouter>
   );

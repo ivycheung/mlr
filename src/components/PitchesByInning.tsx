@@ -66,7 +66,6 @@ const PitchesByInning: React.FC<PitchesByInningProps> = ({ pitches }) => {
       label: `Inn. ${series.inning.toString()}`,
       color: colors[series.inning]
     }));
-    console.log(seriesArray)
 
       return (
         <LineChart

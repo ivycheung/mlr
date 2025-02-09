@@ -8,8 +8,13 @@ export default function Nav() {
     const navigate = useNavigate();
 
     const handleLogoClick = () => {
-        navigate('/mlr'); // Navigate to the  route
+        navigate('/mlr'); // Navigate to the route
     };
+
+    const handleMlrPitchersSeasonClick = () => {
+        navigate('/mlr/pitchersseason');
+    };
+
 
     const handleMlrPitchersClick = () => {
         navigate('/mlr/pitchers');
@@ -26,6 +31,7 @@ export default function Nav() {
                 Fake Baseball
             </Typography>
             <Button onClick={handleMlrPitchersClick} color="inherit">MLR Pitchers</Button>
+                <Button onClick={handleMlrPitchersSeasonClick} color="inherit">MLR Pitchers Season</Button>
             <Button onClick={handleMlrBattersClick} color="inherit">MLR Batters</Button>
             </Toolbar>
         </AppBar>
