@@ -11,7 +11,6 @@ import { FormSchemaPitches } from "../types/schemas/pitches-schema";
 interface SessionDataTableProps { pitches: FormSchemaPitches }
 
 const SessionDataTable: React.FC<SessionDataTableProps> = ( {pitches} ) => {
-console.log(pitches)
   if (pitches == undefined) {
     return null
   }

@@ -24,10 +24,12 @@ const PitchSwingChart: React.FC<PitchSwingChartProps> = ( {pitches} ) => {
         xAxis={[{ data: pitchCount }]}
         series={[
           {
-            data: pitchNumbers
+            data: pitchNumbers,
+            label: "Pitch",
           },
           {
-            data: swingNumbers
+            data: swingNumbers,
+            label: "Swing",
           },
         ]}
         width={500}
