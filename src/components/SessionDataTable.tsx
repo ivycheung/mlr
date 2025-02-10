@@ -5,7 +5,7 @@ import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from "@mui/material/TableContainer";
 import Paper from "@mui/material/Paper";
-import { getDelta, getNextPitch } from "../utils/utils";
+import { calculateCircleDelta, getDelta, getNextPitch } from "../utils/utils";
 import { FormSchemaPitches } from "../types/schemas/pitches-schema";
 
 interface SessionDataTableProps { pitches: FormSchemaPitches }
@@ -50,7 +50,7 @@ const SessionDataTable: React.FC<SessionDataTableProps> = ( {pitches} ) => {
                 <TableCell align="center">{pitch.diff}</TableCell>
                 <TableCell align="center"></TableCell>
                 <TableCell align="center">{getNextPitch(array, i)}</TableCell>
-                <TableCell align="center">{getDelta(array, i)}</TableCell>
+                <TableCell align="center">{calculateCircleDelta(pitch, array[i-1])}</TableCell>
               </TableRow>
             })}
           </TableBody>

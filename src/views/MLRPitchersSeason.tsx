@@ -248,7 +248,7 @@ export default function MLRPitchers() {
             <Grid container justifyContent="center" style={{ padding: 30 }}>
               <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
                 { /* histogram */ }
-                <HistogramChart pitches={pitches} bucketSizeOption = {100} />
+                <HistogramChart pitches={pitches} />
               </Grid>
               <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
                 { /* heatmap */}
