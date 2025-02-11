@@ -262,16 +262,16 @@ export default function MLRPitchers() {
               : '')
             }
 
-            <Grid spacing={2} style={{ padding: 30 }}
+            <Grid container spacing={2} style={{ padding: 30 }}
               sx={{
                 justifyContent: "flex-start",
                 alignItems: "center"
               }}>
-              <Grid2 direction="column" size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
+              <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
                 { /* histogram */ }
                 <HistogramChart pitches={pitches} />
               </Grid2>
-              <Grid2 container direction="column" size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
+              <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
                 { /* heatmap */}
                 <Stack
                   direction={'column'}
