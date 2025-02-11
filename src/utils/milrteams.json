@@ -1,0 +1,50 @@
+[
+  {
+    "teamID": "ARA",
+    "teamName": "Arasaka Corporate Softball Team"
+  },
+  {
+    "teamID": "DOG",
+    "teamName": "Kibbletown BigDawgs"
+  },
+  {
+    "teamID": "HOT",
+    "teamName": "Havana Habaneros"
+  },
+  {
+    "teamID": "IDR",
+    "teamName": "Isle Delfino Rainbow Roadsters"
+  },
+  {
+    "teamID": "POS",
+    "teamName": "Pumpkintown Possums"
+  },
+  {
+    "teamID": "PRP",
+    "teamName": "Minnesota Princes"
+  },
+  {
+    "teamID": "OKT",
+    "teamName": "Okinawa Typhoons"
+  },
+  {
+    "teamID": "ROY",
+    "teamName": "Rocky Mountain Oysters"
+  },
+  {
+    "teamID": "LAX",
+    "teamName": "St Louis Sportsball Club"
+  },
+  {
+    "teamID": "LOB",
+    "teamName": "Cape Cod Lobsters"
+  },
+  {
+    "teamID": "SHH",
+    "teamName": "Victoria Secrets"
+  },
+  {
+    "teamID": "WRM",
+    "teamName": "Arrakis Sandworms"
+  }
+]
