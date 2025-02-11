@@ -17,7 +17,7 @@ import Grid from '@mui/material/Grid2';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import HistogramChart from '../components/HistogramChart';
-import HeatmapChart from '../components/HeatmapChart';
+// import HeatmapChart from '../components/HeatmapChart';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid2 from '@mui/material/Grid2';
 import Stack from '@mui/material/Stack';
@@ -26,23 +26,20 @@ import Stack from '@mui/material/Stack';
 export default function MILRPitchers() {
   const [players, setPlayers] = React.useState<FormSchemaPlayers>([])
   const [pitchers, setPitchers] = React.useState<FormSchemaPlayers>([])
-  const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState('');
   const [pitcherOption, setPitcherOption] = React.useState<number>(0)
 
   const [teams, setTeams] = React.useState<FormSchemaTeams>([])
   const [teamOption, setTeamOption] = React.useState('')
-  const [originalPitches, setOriginalPitches] = React.useState<FormSchemaPitches>([])
-  const [filteredPitches, setFilteredPitches] = React.useState<FormSchemaPitches>([]);
+  const [mlrSeasons, setMlrSeasons] = React.useState<number[]>([]);
+  const [mlrSeasonOption, setMlrSeasonOption] = React.useState<number>(0)
+  const [milrSeasons, setMilrSeasons] = React.useState<number[]>([]);
+  const [milrSeasonOption, setMilrSeasonOption] = React.useState<number>(0)
+  const [combinedPitches, setCombinedPitches] = React.useState<FormSchemaPitches>([])
+  const [mlrpitches, setMlrPitches] = React.useState<FormSchemaPitches>([])
+  const [milrpitches, setMilrPitches] = React.useState<FormSchemaPitches>([])
   const [careerOption, setCareerOption] = React.useState(false);
-    const [mlrSeasons, setMlrSeasons] = React.useState<number[]>([]);
-    const [mlrSeasonOption, setMlrSeasonOption] = React.useState<number>(0)
-    const [milrSeasons, setMilrSeasons] = React.useState<number[]>([]);
-    const [milrSeasonOption, setMilrSeasonOption] = React.useState<number>(0)
-      const [combinedPitches, setCombinedPitches] = React.useState<FormSchemaPitches>([])
-      const [mlrpitches, setMlrPitches] = React.useState<FormSchemaPitches>([])
-      const [milrpitches, setMilrPitches] = React.useState<FormSchemaPitches>([])
 
   let theme = createTheme({
     palette: {
@@ -104,6 +101,9 @@ export default function MILRPitchers() {
           }
         });
       }
+      else if (careerOption) {
+        filteredPitches = mlrpitches.concat(milrpitches);
+      }
 
       setCombinedPitches(filteredPitches);
     }
@@ -119,8 +119,8 @@ export default function MILRPitchers() {
       setMlrSeasonOption(0);
       setMilrSeasons([]);
       setMilrSeasonOption(0);
+    }
   }
-}
 
   async function handleMlrChangeSeason(event: SelectChangeEvent) {
     const season = Number(event.target.value);
@@ -135,7 +135,6 @@ export default function MILRPitchers() {
   }
 
   async function handleChangePitcher(event: SelectChangeEvent) {
-    setPitches([])
     const player = players.find(player => player.playerID === Number(event.target.value))
     if (player) {
       setPitcherOption(player.playerID)
@@ -178,9 +177,9 @@ export default function MILRPitchers() {
     }
   }
 
-  async function handleCareerStatsChange(event: ChangeEvent<HTMLInputElement>, checked: boolean) {
+  async function handleCareerStatsChange(_event: React.ChangeEvent<HTMLInputElement>, checked: boolean) {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    checked ? setCareerOption(true) : setCareerOption(false);    
+    checked ? setCareerOption(true) : setCareerOption(false);
   }
 
   return (
@@ -277,14 +276,14 @@ export default function MILRPitchers() {
                 <FormHelperText>{milrSeasonOption ? '' : 'Select MiLR Season'}</FormHelperText>
               </FormControl>
               <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
-                
+
                 <FormControlLabel control={<Checkbox size="small" onChange={handleCareerStatsChange} />} label="Career Stats" />
               </FormControl>
             </Grid>
 
             <Grid container spacing={2} justifyContent="center" style={{ padding: 30 }}>
               <Grid2 container direction="column" size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
-                { /* histogram */ }
+                { /* histogram */}
                 <HistogramChart pitches={combinedPitches} />
               </Grid2>
               <Grid2 container direction="column" size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
@@ -297,7 +296,7 @@ export default function MILRPitchers() {
                     height: '100%',
 
                   }}>
-                  <HeatmapChart pitches={combinedPitches} />
+                  {/* <HeatmapChart pitches={combinedPitches} /> */}
                 </Stack>
               </Grid2>
             </Grid>

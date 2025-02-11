@@ -1,10 +1,5 @@
 import * as React from 'react'
-import TableContainer from '@mui/material/TableContainer';
-import Paper from '@mui/material/Paper';
-
-import { FormSchemaPitches } from '../types/schemas/pitches-schema';
-import { FormSchemaPlayers } from '../types/schemas/player-schema';
-import { FormSchemaTeams } from '../types/schemas/team-schema';
+import axios from 'axios'
 
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -12,14 +7,12 @@ import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import axios from 'axios'
-import Table from '@mui/material/Table';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
-import TableBody from '@mui/material/TableBody';
 import Grid from '@mui/material/Grid2';
-import { LineChart } from '@mui/x-charts/LineChart';
+
+import { FormSchemaPitches } from '../types/schemas/pitches-schema';
+import { FormSchemaPlayers } from '../types/schemas/player-schema';
+import { FormSchemaTeams } from '../types/schemas/team-schema';
+
 import teamsJson from '../utils/milrteams.json';
 import PitchSwingChart from '../components/PitchSwingChart';
 import SessionDataTable from '../components/SessionDataTable';
@@ -34,17 +27,12 @@ export default function MILRBatters() {
   const [error, setError] = React.useState('');
   const [batterOption, setBatterOption] = React.useState<number>(0)
 
-  const [pitchNumbers, setPitchNumbers] = React.useState<number[]>([])
-  const [swingNumbers, setSwingNumbers] = React.useState<number[]>([])
-  const [pitchCount, setPitchCount] = React.useState<number[]>([])
   const [teams, setTeams] = React.useState<FormSchemaTeams>([])
   const [teamOption, setTeamOption] = React.useState('')
   const [mlrSeasons, setMlrSeasons] = React.useState<number[]>([]);
   const [mlrSeasonOption, setMlrSeasonOption] = React.useState<number>(0)
   const [milrSeasons, setMilrSeasons] = React.useState<number[]>([]);
   const [milrSeasonOption, setMilrSeasonOption] = React.useState<number>(0)
-  const [originalPitches, setOriginalPitches] = React.useState<FormSchemaPitches>([])
-  // const [gameOption, setGameOption] = React.useState(null);
 
   const theme = createTheme({
     colorSchemes: {
@@ -59,7 +47,7 @@ export default function MILRBatters() {
         const response = await axios.get('https://api.mlr.gg/legacy/api/players')
         setPlayers(response.data);
       } catch (err) {
-        setError('Error Fetching Data');
+        setError('Error Fetching Data ' + err);
       } finally {
         setIsLoading(false);
       }

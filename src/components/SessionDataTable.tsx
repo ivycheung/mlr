@@ -5,7 +5,7 @@ import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from "@mui/material/TableContainer";
 import Paper from "@mui/material/Paper";
-import { calculateCircleDelta, getDelta, getNextPitch } from "../utils/utils";
+import { calculateCircleDelta, getNextPitch } from "../utils/utils";
 import { FormSchemaPitches } from "../types/schemas/pitches-schema";
 
 interface SessionDataTableProps { pitches: FormSchemaPitches }
