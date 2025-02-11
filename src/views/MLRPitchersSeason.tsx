@@ -11,14 +11,16 @@ import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/styles';
 import Grid from '@mui/material/Grid2';
 
-import PitchSwingChart from '../components/PitchSwingChart';
-import SessionDataTable from '../components/SessionDataTable';
-import PitchByPlacementInInning from '../components/PitchByPlacementInInning';
-import PitchByPitchDelta from '../components/PitchByPitchDelta';
-import PitchesByInning from '../components/PitchesByInning';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import HistogramChart from '../components/HistogramChart';
+// import HeatmapChart from '../components/HeatmapChart';
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid2 from '@mui/material/Grid2';
+import Stack from '@mui/material/Stack';
 // import Slider from '@mui/material/Slider';
 
 export default function MLRPitchers() {
@@ -34,14 +36,15 @@ export default function MLRPitchers() {
   const [seasons, setSeasons] = React.useState<number[]>([]);
   const [seasonOption, setSeasonOption] = React.useState<number>(0)
   const [originalPitches, setOriginalPitches] = React.useState<FormSchemaPitches>([])
-  const [sessions, setSessions] = React.useState<number[]>([]);
-  const [sessionOption, setSessionOption] = React.useState<number>(0)
+  // const [filteredPitches, setFilteredPitches] = React.useState<FormSchemaPitches>([]);
+  const [careerOption, setCareerOption] = React.useState(false);
 
-  const theme = createTheme({
-    colorSchemes: {
-      dark: true,
+  let theme = createTheme({
+    palette: {
+      mode: 'light',
     },
   });
+  theme = responsiveFontSizes(theme);
 
   React.useEffect(() => {
     const fetchPlayerData = async () => {
@@ -81,30 +84,11 @@ export default function MLRPitchers() {
   // Seasons
   React.useEffect(() => {
     if (players != null) {
-      // Loop through to get the sessions per season
-      const numberOfSessions = new Set<number>();
-      originalPitches.map((e) => {
-        if (e.season == seasonOption) {
-          numberOfSessions.add(e.session);
-        }
-      })
-
-      // Set default session to first of the game of the season
-      if (sessionOption == 0 || sessionOption == undefined) {
-        const latestSession: number = [...numberOfSessions][0];
-        setSessionOption(latestSession);
-      }
-
-      setSessions([...numberOfSessions].sort((a, b) => { return a - b }))
-
-      // filter the pitches based on season + session
+      // filter the pitches based on season
       let filteredPitches: FormSchemaPitches = []
-      if (sessionOption != -1) {
+      if (!careerOption) {
         filteredPitches = originalPitches.filter(e => {
           if (e.season == seasonOption) {
-            if (e.session != sessionOption) {
-              return false;
-            }
             return true;
           }
         });
@@ -114,32 +98,25 @@ export default function MLRPitchers() {
       }
 
       setPitches(filteredPitches);
+      // setFilteredPitches(filteredPitches);
     }
-  }, [originalPitches, players, seasonOption, sessionOption])
+  }, [careerOption, originalPitches, players, seasonOption])
 
   async function handleChangeTeam(event: SelectChangeEvent) {
     const team = teams.find(team => team.teamID === event.target.value)
     if (team) {
+      // reset dashboard
       setTeamOption(team.teamID);
       setPitcherOption(0);
       setSeasons([]);
       setSeasonOption(0);
-      setSessionOption(0);
-      // reset dashboard
     }
   }
 
   async function handleChangeSeason(event: SelectChangeEvent) {
     const season = Number(event.target.value);
     setSeasonOption(season)
-    setSessionOption(0);
   }
-
-  async function handleChangeSession(event: SelectChangeEvent) {
-    const session = Number(event.target.value);
-    setSessionOption(session);
-  }
-
 
   async function handleChangePitcher(event: SelectChangeEvent) {
     setPitches([])
@@ -164,7 +141,6 @@ export default function MLRPitchers() {
       setSeasonOption(latestSeason) // latest season first
 
       setOriginalPitches(response.data)
-      setSessionOption(0);
 
     } catch (err) {
       setError('Error Fetching Pitches' + err);
@@ -173,12 +149,18 @@ export default function MLRPitchers() {
     }
   }
 
+  async function handleCareerStatsChange(_event: React.ChangeEvent<HTMLInputElement>, checked: boolean) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    checked ? setCareerOption(true) : setCareerOption(false);    
+  }
+
   return (
     <>
       {isLoading && <p>Loading...</p>}
       {error && <p>{error}</p>}
       {!isLoading && !error &&
         <ThemeProvider theme={theme}>
+          <CssBaseline />
           <Grid container justifyContent="center" style={{ padding: 30 }}>
             <Grid size={12}>
               <FormControl sx={{ m: 1, minWidth: 240, color: "red" }}>
@@ -244,43 +226,36 @@ export default function MLRPitchers() {
                 <FormHelperText>{seasonOption ? '' : 'Select Season'}</FormHelperText>
               </FormControl>
               <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
-                <InputLabel id="season-input-select-label">Session</InputLabel>
-                <Select
-                  labelId="season-input-select-label"
-                  id="season-input-select"
-                  label={sessionOption}
-                  onChange={handleChangeSession}
-                  value={sessionOption ? sessionOption.toString() : ''}
-                >
-                  {
-                    sessions.map((session) => {
-                      return (
-                        <MenuItem key={session} value={(session === undefined || session === null || sessions.length === 0) ? '' : session}>
-                          <em>{session}</em>
-                        </MenuItem>
-                      )
-                    })
-                  }
-                </Select>
-                {/* <FormHelperText>{sessionOption ? '' : 'Select Session'}</FormHelperText> */}
+                
+                <FormControlLabel control={<Checkbox size="small" onChange={handleCareerStatsChange} />} label="Career Stats" />
               </FormControl>
-              <SessionDataTable pitches={pitches} />
             </Grid>
 
-            <Grid container justifyContent="center" style={{ padding: 30 }}>
-              <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
-                <PitchSwingChart pitches={pitches} />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
-                <PitchByPlacementInInning pitches={pitches} />
-              </Grid>
+            <Grid container spacing={2} justifyContent="center" style={{ padding: 30 }}>
+              <Grid2 container direction="column" size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+                { /* histogram */ }
+                <HistogramChart pitches={pitches} />
+              </Grid2>
+              <Grid2 container direction="column" size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
+                { /* heatmap */}
+                <Stack
+                  direction={'column'}
+                  sx={{
+                    alignItems: 'center',
+                    justifyContent: 'space-evenly',
+                    height: '100%',
+
+                  }}>
+                {/* <HeatmapChart pitches={pitches} /> */}
+                </Stack>
+              </Grid2>
             </Grid>
-            <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+            {/* <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
               <PitchByPitchDelta pitches={pitches} />
             </Grid>
             <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
                 <PitchesByInning pitches={pitches} />
-            </Grid>
+            </Grid> */}
           </Grid>
         </ThemeProvider>
       }

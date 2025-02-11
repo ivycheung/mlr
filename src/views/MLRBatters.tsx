@@ -20,7 +20,7 @@ import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import Grid from '@mui/material/Grid2';
 import { LineChart } from '@mui/x-charts/LineChart';
-import teamsJson  from '../utils/teams.json';
+import teamsJson  from '../utils/mlrteams.json';
 
 export default function MLRBatters() {
     const [players, setPlayers] = React.useState<FormSchemaPlayers>([])

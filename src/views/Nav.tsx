@@ -8,16 +8,32 @@ export default function Nav() {
     const navigate = useNavigate();
 
     const handleLogoClick = () => {
-        navigate('/mlr'); // Navigate to the  route
+        navigate('/mlr'); // Navigate to the route
+    };
+
+    const handleMlrPitchersSeasonClick = () => {
+        navigate('/mlr/mlrpitchersseason');
     };
 
     const handleMlrPitchersClick = () => {
-        navigate('/mlr/pitchers');
+        navigate('/mlr/mlrpitchers');
     };
 
     const handleMlrBattersClick = () => {
-        navigate('/mlr/batters');
+        navigate('/mlr/mlrbatters');
     };
+
+    // const handleMilrPitchersSeasonClick = () => {
+    //     navigate('/mlr/milrpitchersseason');
+    // };
+
+    // const handleMilrBattersClick = () => {
+    //     navigate('/mlr/milrbatters');
+    // };
+
+    // const handleMilrPitchersClick = () => {
+    //     navigate('/mlr/milrpitchers');
+    // };
     
     return (
         <AppBar position="fixed">
@@ -25,8 +41,13 @@ export default function Nav() {
             <Typography variant="h6" component="div" sx={{flexGrow: 1}} onClick={handleLogoClick}>
                 Fake Baseball
             </Typography>
-            <Button onClick={handleMlrPitchersClick} color="inherit">MLR Pitchers</Button>
             <Button onClick={handleMlrBattersClick} color="inherit">MLR Batters</Button>
+            <Button onClick={handleMlrPitchersClick} color="inherit">MLR Pitchers</Button>
+            <Button onClick={handleMlrPitchersSeasonClick} color="inherit">MLR Pitchers Season</Button>
+             {/* ||
+            <Button onClick={handleMilrBattersClick} color="inherit">MILR Batters</Button>
+            <Button onClick={handleMilrPitchersClick} color="inherit">MILR Pitchers</Button>
+            <Button onClick={handleMilrPitchersSeasonClick} color="inherit">MILR Pitchers Season</Button> */}
             </Toolbar>
         </AppBar>
     );
