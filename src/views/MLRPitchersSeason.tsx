@@ -21,7 +21,14 @@ import HistogramChart from '../components/HistogramChart';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid2 from '@mui/material/Grid2';
 import Stack from '@mui/material/Stack';
+import FormGroup from '@mui/material/FormGroup';
 // import Slider from '@mui/material/Slider';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import SessionDataTable from '../components/SessionDataTable';
+import Typography from '@mui/material/Typography';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 export default function MLRPitchers() {
   const [players, setPlayers] = React.useState<FormSchemaPlayers>([])
@@ -161,8 +168,13 @@ export default function MLRPitchers() {
       {!isLoading && !error &&
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Grid container justifyContent="center" style={{ padding: 30 }}>
-            <Grid size={12}>
+          <Grid container style={{ padding: 30 }} size={12} direction="row"
+          sx={{
+            justifyContent: "flex-start",
+            alignItems: "center"
+          }}
+          >
+            <Grid>
               <FormControl sx={{ m: 1, minWidth: 240, color: "red" }}>
                 <InputLabel id="team-input-select-label">Team</InputLabel>
                 <Select
@@ -204,7 +216,7 @@ export default function MLRPitchers() {
                 </Select>
                 <FormHelperText>{pitcherOption ? '' : 'Select Pitcher'}</FormHelperText>
               </FormControl>
-              <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
+              <FormControl sx={{ m: 1, minWidth: 240 }}>
                 <InputLabel id="season-input-select-label">Season</InputLabel>
                 <Select
                   labelId="season-input-select-label"
@@ -225,18 +237,41 @@ export default function MLRPitchers() {
                 </Select>
                 <FormHelperText>{seasonOption ? '' : 'Select Season'}</FormHelperText>
               </FormControl>
-              <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
-                
-                <FormControlLabel control={<Checkbox size="small" onChange={handleCareerStatsChange} />} label="Career Stats" />
+              <FormControl sx={{ m: 1, minWidth: 240 }}>
+                <FormGroup aria-label="position" row>
+                  <FormControlLabel
+                control={<Checkbox size="small" onChange={handleCareerStatsChange} />} label="Career Stats" labelPlacement="end" />
+                </FormGroup>
               </FormControl>
-            </Grid>
+            
+            </Grid>{
+              ((!pitches || pitches.length != 0) ?
+                <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }}>
+                  <Accordion style={{ maxHeight: '500px' }}>
+                  <AccordionSummary
+                      expandIcon={<ArrowDropDownIcon />}
+                      aria-controls="panel2-content"
+                      id="panel2-header">
+                      <Typography component="span">Data Table</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <SessionDataTable pitches={pitches} />
+                  </AccordionDetails>
+                </Accordion>
+              </Grid>
+              : '')
+            }
 
-            <Grid container spacing={2} justifyContent="center" style={{ padding: 30 }}>
-              <Grid2 container direction="column" size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+            <Grid spacing={2} style={{ padding: 30 }}
+              sx={{
+                justifyContent: "flex-start",
+                alignItems: "center"
+              }}>
+              <Grid2 direction="column" size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
                 { /* histogram */ }
                 <HistogramChart pitches={pitches} />
               </Grid2>
-              <Grid2 container direction="column" size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
+              <Grid2 container direction="column" size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
                 { /* heatmap */}
                 <Stack
                   direction={'column'}
