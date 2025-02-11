@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
 import Box from '@mui/material/Box';
 import Grid2 from '@mui/material/Grid2';
+import Stack from '@mui/material/Stack';
 
 const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
   const [bucketSizeOption, setBucketSizeOption] = React.useState<number>(100);
@@ -34,17 +35,19 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
     }));
 
     return (
-      <Grid2 className="histogram">
-        {/* <Stack
+      <Grid2 className="histogramChart" >
+        <Stack
           direction={'column'}
           sx={{
-            alignItems: 'center',
-            justifyContent: 'space-evenly',
+            // alignItems: 'center',
+            // justifyContent: 'space-evenly',
             height: '100%',
-          }}> */}
+          }}>
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="h6">Histogram of Pitches</Typography>
           </Box>
+        {/* </Stack>
+        <Stack> */}
           <BarChart
             dataset={chartData}
             series={[{ dataKey: 'count' }]}
@@ -54,7 +57,8 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
             barLabel="value"
 
           />
-          <Box sx={{ textAlign: 'center', width: '50%' }}>
+
+          <Box sx={{ textAlign: 'center' }}>
             <Typography id="input-slider" gutterBottom>
               Bucket Size
             </Typography>
@@ -70,7 +74,7 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
               aria-labelledby="input-slider"
             />
           </Box>
-        {/* </Stack> */}
+        </Stack>
       </Grid2>
     );
   }
