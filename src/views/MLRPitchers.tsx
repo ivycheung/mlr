@@ -4,7 +4,7 @@ import axios from 'axios'
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 import { FormSchemaPlayers } from '../types/schemas/player-schema';
 import { FormSchemaTeams } from '../types/schemas/team-schema';
-import teamsJson from '../utils/teams.json';
+import teamsJson from '../utils/mlrteams.json';
 
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -94,7 +94,7 @@ export default function MLRPitchers() {
         const latestSession: number = [...numberOfSessions][0];
         setSessionOption(latestSession);
       }
-      // numberOfSessions.add(-1);
+
       setSessions([...numberOfSessions].sort((a, b) => { return a - b }))
 
       // filter the pitches based on season + session

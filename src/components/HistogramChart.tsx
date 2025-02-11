@@ -4,11 +4,12 @@ import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
 import Box from '@mui/material/Box';
+import Grid2 from '@mui/material/Grid2';
 
 const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
   const [bucketSizeOption, setBucketSizeOption] = React.useState<number>(100);
 
-  const handleBucketSizeChange = (event: Event, newValue: number | number[]) => {
+  const handleBucketSizeChange = (_event: Event, newValue: number | number[]) => {
     setBucketSizeOption(newValue as number);
   };
 
@@ -33,34 +34,44 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
     }));
 
     return (
-      <div className="histogram">
-        <Box sx={{ width: 300 }}>
-        <BarChart
-          dataset={chartData}
-          series={[{ dataKey: 'count' }]}
-          xAxis={[{ dataKey: 'bucket', scaleType: 'band', tickPlacement: 'middle' }]}
-          height={document.documentElement.clientHeight * 0.50}
-          width={document.documentElement.clientWidth * 0.40}
-          barLabel="value"
-          
-        />
-        
-          <Typography id="input-slider" gutterBottom>
-            Bucket Size
-          </Typography>
-          <Slider
-            value={bucketSizeOption}
-            onChange={handleBucketSizeChange}
-            valueLabelDisplay="auto"
-            marks={bucketSizeLabel}
-            step={50}
-            min={50}
-            max={200}
-            defaultValue={100}
-            aria-labelledby="input-slider"
+      <Grid2 className="histogram">
+        {/* <Stack
+          direction={'column'}
+          sx={{
+            alignItems: 'center',
+            justifyContent: 'space-evenly',
+            height: '100%',
+          }}> */}
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h6">Histogram of Pitches</Typography>
+          </Box>
+          <BarChart
+            dataset={chartData}
+            series={[{ dataKey: 'count' }]}
+            xAxis={[{ dataKey: 'bucket', scaleType: 'band', tickPlacement: 'middle' }]}
+            height={document.documentElement.clientHeight * 0.50}
+            width={document.documentElement.clientWidth * 0.40}
+            barLabel="value"
+
           />
-        </Box>
-      </div>
+          <Box sx={{ textAlign: 'center', width: '50%' }}>
+            <Typography id="input-slider" gutterBottom>
+              Bucket Size
+            </Typography>
+            <Slider
+              value={bucketSizeOption}
+              onChange={handleBucketSizeChange}
+              valueLabelDisplay="auto"
+              marks={bucketSizeLabel}
+              step={50}
+              min={50}
+              max={200}
+              defaultValue={100}
+              aria-labelledby="input-slider"
+            />
+          </Box>
+        {/* </Stack> */}
+      </Grid2>
     );
   }
   else {

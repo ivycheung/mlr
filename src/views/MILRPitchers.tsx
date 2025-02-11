@@ -24,25 +24,19 @@ import PitchesByInning from '../components/PitchesByInning';
 export default function MILRPitchers() {
   const [players, setPlayers] = React.useState<FormSchemaPlayers>([])
   const [pitchers, setPitchers] = React.useState<FormSchemaPlayers>([])
-  const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState('');
   const [pitcherOption, setPitcherOption] = React.useState<number>(0)
 
   const [teams, setTeams] = React.useState<FormSchemaTeams>([])
   const [teamOption, setTeamOption] = React.useState('')
-  const [seasons, setSeasons] = React.useState<number[]>([]);
-  const [seasonOption, setSeasonOption] = React.useState<number>(0)
-  const [originalPitches, setOriginalPitches] = React.useState<FormSchemaPitches>([])
-  const [sessions, setSessions] = React.useState<number[]>([]);
-  const [sessionOption, setSessionOption] = React.useState<number>(0)
-      const [mlrSeasons, setMlrSeasons] = React.useState<number[]>([]);
-      const [mlrSeasonOption, setMlrSeasonOption] = React.useState<number>(0)
-      const [milrSeasons, setMilrSeasons] = React.useState<number[]>([]);
-      const [milrSeasonOption, setMilrSeasonOption] = React.useState<number>(0)
-        const [combinedPitches, setCombinedPitches] = React.useState<FormSchemaPitches>([])
-        const [mlrpitches, setMlrPitches] = React.useState<FormSchemaPitches>([])
-        const [milrpitches, setMilrPitches] = React.useState<FormSchemaPitches>([])
+  const [mlrSeasons, setMlrSeasons] = React.useState<number[]>([]);
+  const [mlrSeasonOption, setMlrSeasonOption] = React.useState<number>(0)
+  const [milrSeasons, setMilrSeasons] = React.useState<number[]>([]);
+  const [milrSeasonOption, setMilrSeasonOption] = React.useState<number>(0)
+  const [combinedPitches, setCombinedPitches] = React.useState<FormSchemaPitches>([])
+  const [mlrpitches, setMlrPitches] = React.useState<FormSchemaPitches>([])
+  const [milrpitches, setMilrPitches] = React.useState<FormSchemaPitches>([])
 
   const theme = createTheme({
     colorSchemes: {
@@ -57,7 +51,7 @@ export default function MILRPitchers() {
         const response = await axios.get('https://api.mlr.gg/legacy/api/players')
         setPlayers(response.data);
       } catch (err) {
-        setError('Error Fetching Data');
+        setError('Error Fetching Data ' + err);
       } finally {
         setIsLoading(false);
       }
@@ -69,7 +63,7 @@ export default function MILRPitchers() {
   // Teams
   React.useEffect(() => {
     const teamsList = teamsJson;
-    
+
     setTeams(teamsList);
   }, [teams])
 
@@ -114,10 +108,10 @@ export default function MILRPitchers() {
     if (team) {
       setTeamOption(team.teamID);
       setPitcherOption(0);
-      setSeasons([]);
-      setSeasonOption(0);
-      setSessionOption(0);
-      // reset dashboard
+      setMlrSeasons([]);
+      setMlrSeasonOption(0);
+      setMilrSeasons([]);
+      setMilrSeasonOption(0);
     }
   }
 
@@ -132,9 +126,8 @@ export default function MILRPitchers() {
     setMilrSeasonOption(season)
     setMlrSeasonOption(0)
   }
-  
+
   async function handleChangePitcher(event: SelectChangeEvent) {
-    setPitches([])
     const player = players.find(player => player.playerID === Number(event.target.value))
     if (player) {
       setPitcherOption(player.playerID)
@@ -304,7 +297,7 @@ export default function MILRPitchers() {
               <PitchByPitchDelta pitches={combinedPitches} />
             </Grid>
             <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
-                <PitchesByInning pitches={combinedPitches} />
+              <PitchesByInning pitches={combinedPitches} />
             </Grid>
           </Grid>
         </ThemeProvider>
