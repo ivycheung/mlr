@@ -2,7 +2,7 @@ import { ChartsReferenceLine } from '@mui/x-charts/ChartsReferenceLine';
 import { LineChart } from '@mui/x-charts/LineChart';
 import React from 'react';
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
-import { calculateCircleDelta } from '../utils/utils';
+import { calculatePitchCircleDelta } from '../utils/utils';
 import { isNumber } from 'chart.js/helpers';
 
 interface PitchByPitchDeltaProps {
@@ -11,12 +11,13 @@ interface PitchByPitchDeltaProps {
 
 const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches }) => {
   if (pitches.length != 0) {
-      const pitchCount: number[] = [];
+    const pitchCount: number[] = [];
     const deltaNumbers: number[] = [];
+    let delta : number = 0;
 
     for (let i = 0; i < pitches.length; i++) {
       pitchCount.push(i);
-      const delta = i > 0 ? calculateCircleDelta(pitches[i], pitches[i - 1]) : 0;
+      delta = Number((i > 0 ? calculatePitchCircleDelta(pitches, i, false) : 0));
       if (isNumber(delta)) {
         deltaNumbers.push(delta);
       }

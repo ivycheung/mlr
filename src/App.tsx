@@ -1,7 +1,7 @@
 import {
   Route,
   Routes,
-  BrowserRouter,
+  HashRouter,
 } from 'react-router-dom';
 import MLRPitchers from './views/MLRPitchers';
 import MLRBatters from './views/MLRBatters';
@@ -15,17 +15,17 @@ import Home from './views/Home';
 export default function App() {
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Nav />
       <Routes>
-        <Route path="/mlr" element={<Home />} />
-        <Route path="/mlr/mlrbatters" element={<MLRBatters />} />
-        <Route path="/mlr/mlrpitchers" element={<MLRPitchers />} />
-        <Route path="/mlr/mlrpitchersseason" element={<MLRPitchersSeason />} />
-        <Route path="/mlr/milrbatters" element={<MILRBatters />} />
-        <Route path="/mlr/milrpitchers" element={<MILRPitchers />} />
-        <Route path="/mlr/milrpitchersseason" element={<MILRPitchersSeason />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/mlrbatters" element={<MLRBatters />} />
+        <Route path="/mlrpitchers" element={<MLRPitchers />} />
+        <Route path="/mlrpitchersseason" element={<MLRPitchersSeason />} />
+        <Route path="/milrbatters" element={<MILRBatters />} />
+        <Route path="/milrpitchers" element={<MILRPitchers />} />
+        <Route path="/milrpitchersseason" element={<MILRPitchersSeason />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }

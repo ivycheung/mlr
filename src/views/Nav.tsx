@@ -5,50 +5,59 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 
 export default function Nav() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleLogoClick = () => {
-        navigate('/mlr'); // Navigate to the route
-    };
+  const handleLogoClick = () => {
+    navigate('/'); // Navigate to the route
+  };
 
-    const handleMlrPitchersSeasonClick = () => {
-        navigate('/mlr/mlrpitchersseason');
-    };
 
-    const handleMlrPitchersClick = () => {
-        navigate('/mlr/mlrpitchers');
-    };
 
-    const handleMlrBattersClick = () => {
-        navigate('/mlr/mlrbatters');
-    };
+  const handleMlrPitchersClick = () => {
+    navigate('/mlrpitchers');
+  };
 
-    // const handleMilrPitchersSeasonClick = () => {
-    //     navigate('/mlr/milrpitchersseason');
-    // };
+  const handleMlrBattersClick = () => {
+    navigate('/mlrbatters');
+  };
 
-    // const handleMilrBattersClick = () => {
-    //     navigate('/mlr/milrbatters');
-    // };
+  const handleMlrPitchersSeasonClick = () => {
+    navigate('/mlrpitchersseason');
+  };
 
-    // const handleMilrPitchersClick = () => {
-    //     navigate('/mlr/milrpitchers');
-    // };
-    
-    return (
-        <AppBar position="fixed">
-            <Toolbar>
-            <Typography variant="h6" component="div" sx={{flexGrow: 1}} onClick={handleLogoClick}>
-                Fake Baseball
-            </Typography>
-            <Button onClick={handleMlrBattersClick} color="inherit">MLR Batters</Button>
-            <Button onClick={handleMlrPitchersClick} color="inherit">MLR Pitchers</Button>
-            <Button onClick={handleMlrPitchersSeasonClick} color="inherit">MLR Pitchers Season</Button>
-             {/* ||
-            <Button onClick={handleMilrBattersClick} color="inherit">MILR Batters</Button>
-            <Button onClick={handleMilrPitchersClick} color="inherit">MILR Pitchers</Button>
-            <Button onClick={handleMilrPitchersSeasonClick} color="inherit">MILR Pitchers Season</Button> */}
-            </Toolbar>
-        </AppBar>
-    );
+  const handleMilrPitchersSeasonClick = () => {
+    navigate('/milrpitchersseason');
+  };
+
+  const handleMilrBattersClick = () => {
+    navigate('/milrbatters');
+  };
+
+  const handleMilrPitchersClick = () => {
+    navigate('/milrpitchers');
+  };
+
+  return (
+    <AppBar position="fixed">
+      <Toolbar>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={handleLogoClick}>
+          Fake Baseball
+        </Typography>
+        <Button onClick={handleMlrBattersClick} color="inherit">MLR Batters</Button>
+        <Button onClick={handleMlrPitchersClick} color="inherit">MLR Pitchers</Button>
+        <Button onClick={handleMlrPitchersSeasonClick} color="inherit">MLR Pitchers Season</Button>
+        {
+          ((window.location.href.includes('milr')) ?
+            <>
+            || 
+              <Button onClick={handleMilrBattersClick} color="inherit">MILR Batters</Button>
+              <Button onClick={handleMilrPitchersClick} color="inherit">MILR Pitchers</Button>
+              <Button onClick={handleMilrPitchersSeasonClick} color="inherit">MILR Pitchers Season</Button>
+            </>
+            : '')
+        }
+
+      </Toolbar>
+    </AppBar>
+  );
 }

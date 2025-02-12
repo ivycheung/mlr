@@ -211,7 +211,7 @@ export default function MLRPitchers() {
                   value={pitcherOption ? pitcherOption.toString() : ''}
                 >
                   {
-                    pitchers.map((pitcher) => {
+                    teamOption && pitchers.map((pitcher) => {
                       return (
                         <MenuItem key={pitcher.playerID} value={(pitcher === undefined || pitcher === null || pitchers.length === 0) ? '' : pitcher.playerID}>
                           <em>{pitcher.playerName}</em>
