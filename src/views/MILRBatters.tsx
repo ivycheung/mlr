@@ -65,7 +65,7 @@ export default function MILRBatters() {
     if (players != null) {
       const battersList = []
       for (let i = 0; i < players.length; i++) {
-        if (players[i].priPos != 'P' && players[i].milr_team === teamOption) {
+        if (players[i].milr_team === teamOption) {
           battersList.push(players[i]);
         }
       }
@@ -174,7 +174,7 @@ export default function MILRBatters() {
       {error && <p>{error}</p>}
       {!isLoading && !error &&
         <ThemeProvider theme={theme}>
-          <Grid container justifyContent="center" >
+          <Grid container justifyContent="center" style={{ padding: 30 }}>
             <Grid size={12}>
               <FormControl sx={{ m: 1, minWidth: 240, color: "red" }}>
                 <InputLabel id="team-input-select-label">Team</InputLabel>

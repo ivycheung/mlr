@@ -205,7 +205,7 @@ export default function MLRPitchers() {
                   value={pitcherOption ? pitcherOption.toString() : ''}
                 >
                   {
-                    pitchers.map((pitcher) => {
+                    teamOption && pitchers.map((pitcher) => {
                       return (
                         <MenuItem key={pitcher.playerID} value={(pitcher === undefined || pitcher === null || pitchers.length === 0) ? '' : pitcher.playerID}>
                           <em>{pitcher.playerName}</em>
@@ -244,7 +244,8 @@ export default function MLRPitchers() {
                 </FormGroup>
               </FormControl>
             
-            </Grid>{
+            </Grid>
+            {
               ((!pitches || pitches.length != 0) ?
                 <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }}>
                   <Accordion style={{ maxHeight: '500px' }}>

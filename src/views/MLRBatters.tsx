@@ -1,10 +1,12 @@
 import * as React from 'react'
-import TableContainer from '@mui/material/TableContainer';
-import Paper from '@mui/material/Paper';
+import axios from 'axios'
 
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 import { FormSchemaPlayers } from '../types/schemas/player-schema';
 import { FormSchemaTeams } from '../types/schemas/team-schema';
+
+import teamsJson from '../utils/mlrteams.json';
+import SessionDataTable from '../components/SessionDataTable';
 
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -12,15 +14,8 @@ import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import axios from 'axios'
-import Table from '@mui/material/Table';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
-import TableBody from '@mui/material/TableBody';
 import Grid from '@mui/material/Grid2';
 import { LineChart } from '@mui/x-charts/LineChart';
-import teamsJson  from '../utils/mlrteams.json';
 
 export default function MLRBatters() {
     const [players, setPlayers] = React.useState<FormSchemaPlayers>([])
@@ -38,7 +33,6 @@ export default function MLRBatters() {
   const [seasons, setSeasons] = React.useState<number[]>([]);
   const [seasonOption, setSeasonOption] = React.useState<number>(0)
   const [originalPitches, setOriginalPitches] = React.useState<FormSchemaPitches>([])
-    // const [gameOption, setGameOption] = React.useState(null);
   
     const theme = createTheme({
       colorSchemes: {
@@ -147,7 +141,6 @@ export default function MLRBatters() {
         setBatterOption(player.playerID)
       }
 
-
       const seasons = new Set<number>();
 
       try {
@@ -161,7 +154,7 @@ export default function MLRBatters() {
         setPitches(response.data);
         setOriginalPitches(response.data);
 
-        setSeasons([...seasons].sort((a,b) => a-b))
+      setSeasons([...seasons].sort((a, b) => a - b))
         setSeasonOption(Number([...seasons].slice(-1))) // last season
       } catch (err) {
         setError('Error Fetching Swings');
@@ -173,10 +166,7 @@ export default function MLRBatters() {
   async function handleChangeSeason(event: SelectChangeEvent) {
     const season = Number(event.target.value);
     setSeasonOption(season)
-
   }
-
-
   
     return (
       <>
@@ -184,7 +174,7 @@ export default function MLRBatters() {
         {error && <p>{error}</p>}
         {!isLoading && !error &&
           <ThemeProvider theme={theme}>
-            <Grid container justifyContent="center" >
+          <Grid container justifyContent="center" style={{ padding: 30 }}>
               <Grid size={12}>
                 <FormControl sx={{ m: 1, minWidth: 240, color: "red" }}>
                   <InputLabel id="team-input-select-label">Team</InputLabel>
@@ -207,7 +197,7 @@ export default function MLRBatters() {
                   </Select>
                   <FormHelperText>{teamOption ? '' : 'Select Team'}</FormHelperText>
                 </FormControl>
-                <FormControl sx={{ m: 1, minWidth: 240, color: "blue"}}>
+              <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
                   <InputLabel id="batter-input-select-label">Batter</InputLabel>
                   <Select
                     labelId="batter-input-select-label"
@@ -216,7 +206,7 @@ export default function MLRBatters() {
                     value={batterOption ? batterOption.toString() : ''}
                   >
                     {
-                      batters.map((batter) => {
+                    teamOption && batters.map((batter) => {
                         return (
                           <MenuItem key={batter.playerID} value={(batter === undefined || batter === null || batters.length === 0) ? '' : batter.playerID}>
                             <em>{batter.playerName}</em>
@@ -248,47 +238,7 @@ export default function MLRBatters() {
                   </Select>
                   <FormHelperText>{seasonOption ? '' : 'Select Season'}</FormHelperText>
                 </FormControl>
-                <TableContainer component={Paper} style={{ maxHeight: document.documentElement.clientHeight * 0.3 }}>
-                  <Table stickyHeader sx={{ minWidth: document.documentElement.clientWidth * 0.80 }} size="small" aria-label="a dense table" >
-                    <TableHead>
-                      <TableRow>
-                          <TableCell width={50} align="center">Pitch</TableCell>
-                          <TableCell width={50} align="center">Swing</TableCell>
-                          <TableCell width={50} align="center">Result</TableCell>
-                          <TableCell width={50} align="center">Inning</TableCell>
-                          <TableCell width={50} align="center">Outs</TableCell>
-                          <TableCell width={50} align="center">OBC</TableCell>
-                        <TableCell width={50} align="center" style={{ borderRightWidth: 1, borderRightColor: 'lightgrey', borderRightStyle: 'solid' }}>Session</TableCell>
-                        <TableCell width={50} align="center">Diff</TableCell>
-                        <TableCell width={50} align="center">Result</TableCell>
-                        <TableCell width={50} align="center">Next</TableCell>
-                        <TableCell width={50} align="center">Delta</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {pitches.map((pitch) => {
-                          return <TableRow
-                          key={pitch.paID}
-                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                          >
-                            <TableCell colSpan= {1} component="th" scope="row" align="center">
-                                {pitch.pitch}
-                            </TableCell>
-                            <TableCell align="center">{pitch.swing}</TableCell>
-                            <TableCell align="center">{pitch.exactResult}</TableCell>
-                            <TableCell align="center">{pitch.inning}</TableCell>
-                            <TableCell align="center">{pitch.outs}</TableCell>
-                            <TableCell align="center">{pitch.obc}</TableCell>
-                            <TableCell align="center" style={{ borderRightWidth: 1, borderRightColor: 'lightgrey', borderRightStyle: 'solid' }}>{pitch.session}</TableCell>
-                            <TableCell align="center">{pitch.diff}</TableCell>
-                            <TableCell align="center"></TableCell>
-                            <TableCell align="center"></TableCell>
-                            <TableCell align="center"></TableCell>
-                          </TableRow>
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+              <SessionDataTable pitches={pitches} />
               </Grid>
               <Grid container justifyContent="center">
                 <Grid size={9} alignItems="center" justifyContent="center">
@@ -298,7 +248,7 @@ export default function MLRBatters() {
                       xAxis={[{ data: pitchCount }]}
                       series={[
                         {
-                          label: "Pitch", data: pitchNumbers, color:"red"
+                        label: "Pitch", data: pitchNumbers, color: "red"
                         },
                         {
                           label: "Swing", data: swingNumbers
