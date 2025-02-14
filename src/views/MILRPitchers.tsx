@@ -191,7 +191,7 @@ export default function MILRPitchers() {
                     teams.map((team) => {
                       return (
                         <MenuItem key={team.teamID} value={team.teamID}>
-                          <em>{team.teamName}</em>
+                          {team.teamName}
                         </MenuItem>
                       )
                     })
@@ -211,7 +211,7 @@ export default function MILRPitchers() {
                     pitchers.map((pitcher) => {
                       return (
                         <MenuItem key={pitcher.playerID} value={(pitcher === undefined || pitcher === null || pitchers.length === 0) ? '' : pitcher.playerID}>
-                          <em>{pitcher.playerName}</em>
+                          {pitcher.playerName}
                         </MenuItem>
                       )
                     })
@@ -233,7 +233,7 @@ export default function MILRPitchers() {
                     mlrSeasons.map((season) => {
                       return (
                         <MenuItem key={season} value={(season === undefined || season === null || mlrSeasons.length === 0) ? '' : season}>
-                          <em>{season}</em>
+                          {season}
                         </MenuItem>
                       )
                     })
@@ -254,7 +254,7 @@ export default function MILRPitchers() {
                     milrSeasons.map((season) => {
                       return (
                         <MenuItem key={season} value={(season === undefined || season === null || milrSeasons.length === 0) ? '' : season}>
-                          <em>{season}</em>
+                          {season}
                         </MenuItem>
                       )
                     })
@@ -275,7 +275,7 @@ export default function MILRPitchers() {
                     sessions.map((session) => {
                       return (
                         <MenuItem key={session} value={(session === undefined || session === null || sessions.length === 0) ? '' : session}>
-                          <em>{session}</em>
+                          {session}
                         </MenuItem>
                       )
                     })

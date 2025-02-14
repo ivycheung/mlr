@@ -194,7 +194,7 @@ export default function MLRPitchers() {
                     teams.map((team) => {
                       return (
                         <MenuItem key={team.teamID} value={team.teamID}>
-                          <em>{team.teamName}</em>
+                          {team.teamName}
                         </MenuItem>
                       )
                     })
@@ -214,7 +214,7 @@ export default function MLRPitchers() {
                     teamOption && pitchers.map((pitcher) => {
                       return (
                         <MenuItem key={pitcher.playerID} value={(pitcher === undefined || pitcher === null || pitchers.length === 0) ? '' : pitcher.playerID}>
-                          <em>{pitcher.playerName}</em>
+                          {pitcher.playerName}
                         </MenuItem>
                       )
                     })
@@ -235,7 +235,7 @@ export default function MLRPitchers() {
                     seasons.map((season) => {
                       return (
                         <MenuItem key={season} value={(season === undefined || season === null || seasons.length === 0) ? '' : season}>
-                          <em>{season}</em>
+                          {season}
                         </MenuItem>
                       )
                     })
@@ -256,13 +256,12 @@ export default function MLRPitchers() {
                     sessions.map((session) => {
                       return (
                         <MenuItem key={session} value={(session === undefined || session === null || sessions.length === 0) ? '' : session}>
-                          <em>{session}</em>
+                          {session}
                         </MenuItem>
                       )
                     })
                   }
                 </Select>
-                {/* <FormHelperText>{sessionOption ? '' : 'Select Session'}</FormHelperText> */}
               </FormControl>
               <SessionDataTable pitches={pitches} />
             </Grid>

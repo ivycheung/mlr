@@ -1,11 +1,18 @@
 import React from 'react';
-import { BarChart } from '@mui/x-charts/BarChart';
+import { BarChart, BarPlot } from '@mui/x-charts/BarChart';
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
 import Box from '@mui/material/Box';
 import Grid2 from '@mui/material/Grid2';
 import Stack from '@mui/material/Stack';
+import { ChartContainer } from '@mui/x-charts/ChartContainer';
+import { ChartsXAxis } from '@mui/x-charts/ChartsXAxis';
+import { ResponsiveChartContainer } from '@mui/x-charts/ResponsiveChartContainer';
+// import { ResponsiveContainer } from '@mui/x-charts/ResponsiveContainer';
+import { ChartsTooltip } from '@mui/x-charts/ChartsTooltip';
+import { ChartsYAxis } from '@mui/x-charts/ChartsYAxis';
+import { LinePlot } from '@mui/x-charts/LineChart';
 
 const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
   const [bucketSizeOption, setBucketSizeOption] = React.useState<number>(100);
@@ -34,6 +41,16 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
       count
     }));
 
+    const xArray : string[] = []
+    const yArray : number[] = []
+    chartData.forEach((y) => {
+      xArray.push(y.bucket)
+      yArray.push(y.count);
+    });
+
+    console.log(chartData)
+    console.log(yArray)
+
     return (
       <Grid2 className="histogramChart" >
         <Stack
@@ -48,17 +65,41 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
           </Box>
         {/* </Stack>
         <Stack> */}
-          <BarChart
+          <Grid2 size={{ xs: 12, sm: 12, md: 12, lg:12 }}>
+            <div>
+              <ResponsiveChartContainer height={300} 
+              series={[{ type: 'bar', data: yArray}]}
+                xAxis={[
+                  {
+                    data: xArray,
+                    scaleType: 'band',
+                    id: 'x-axis-id',
+                  }
+                ]}
+                >
+                <ChartsXAxis position="bottom" axisId="x-axis-id" />
+                <ChartsYAxis />
+                <BarPlot />
+                <ChartsTooltip />
+              
+          {/* <BarChart
             dataset={chartData}
             series={[{ dataKey: 'count' }]}
             xAxis={[{ dataKey: 'bucket', scaleType: 'band', tickPlacement: 'middle' }]}
             height={document.documentElement.clientHeight * 0.50}
-            width={document.documentElement.clientWidth * 0.40}
+            width={document.documentElement.clientWidth}
             barLabel="value"
 
-          />
-
-          <Box sx={{ textAlign: 'center' }}>
+          /> */}
+              </ResponsiveChartContainer>
+            </div>
+          </Grid2>
+          <Box sx={{ textAlign: 'center', alignItems: 'center',
+        // display: 'flex',       // Set the display to flex
+          justifyContent: 'center', // Horizontally center the item
+          // height: '100vh',          // Full viewport height
+          padding: '0 20% 0 20%'
+      }}>
             <Typography id="input-slider" gutterBottom>
               Bucket Size
             </Typography>

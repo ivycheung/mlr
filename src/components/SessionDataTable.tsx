@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 interface SessionDataTableProps { pitches: FormSchemaPitches }
 
 const SessionDataTable: React.FC<SessionDataTableProps> = ( {pitches} ) => {
-  if (pitches == undefined) {
+  if (!pitches || pitches.length == 0 || pitches == undefined) {
     return null
   }
   return (

@@ -16,6 +16,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid2';
 import { LineChart } from '@mui/x-charts/LineChart';
+import PitchSwingChart from '../components/PitchSwingChart';
 
 export default function MLRBatters() {
     const [players, setPlayers] = React.useState<FormSchemaPlayers>([])
@@ -25,9 +26,6 @@ export default function MLRBatters() {
     const [error, setError] = React.useState('');
     const [batterOption, setBatterOption] = React.useState<number>(0)
 
-    const [pitchNumbers, setPitchNumbers] = React.useState<number[]>([])
-    const [swingNumbers, setSwingNumbers] = React.useState<number[]>([])
-    const [pitchCount, setPitchCount] = React.useState<number[]>([])
     const [teams, setTeams] = React.useState<FormSchemaTeams>([])
     const [teamOption, setTeamOption] = React.useState('')
   const [seasons, setSeasons] = React.useState<number[]>([]);
@@ -189,7 +187,7 @@ export default function MLRBatters() {
                       teams.map((team) => {
                         return (
                           <MenuItem key={team.teamID} value={team.teamID}>
-                            <em>{team.teamName}</em>
+                            {team.teamName}
                           </MenuItem>
                         )
                       })
@@ -209,7 +207,7 @@ export default function MLRBatters() {
                     teamOption && batters.map((batter) => {
                         return (
                           <MenuItem key={batter.playerID} value={(batter === undefined || batter === null || batters.length === 0) ? '' : batter.playerID}>
-                            <em>{batter.playerName}</em>
+                            {batter.playerName}
                           </MenuItem>
                         )
                       })
@@ -230,7 +228,7 @@ export default function MLRBatters() {
                       seasons.map((season) => {
                         return (
                           <MenuItem key={season} value={(season === undefined || season === null || seasons.length === 0) ? '' : season}>
-                            <em>{season}</em>
+                            {season}
                           </MenuItem>
                         )
                       })
@@ -240,25 +238,8 @@ export default function MLRBatters() {
                 </FormControl>
               <SessionDataTable pitches={pitches} />
               </Grid>
-              <Grid container justifyContent="center">
-                <Grid size={9} alignItems="center" justifyContent="center">
-                  {pitchCount.length != 0 && pitchNumbers.length != 0 && swingNumbers.length != 0 &&
-                    <LineChart
-                      title="All Pitches"
-                      xAxis={[{ data: pitchCount }]}
-                      series={[
-                        {
-                        label: "Pitch", data: pitchNumbers, color: "red"
-                        },
-                        {
-                          label: "Swing", data: swingNumbers
-                        },
-                      ]}
-                      width={document.documentElement.clientWidth * 0.50}
-                      height={300}
-                    />
-                  }
-                </Grid>
+              <Grid container justifyContent="center" size={12}>
+                {/* <PitchSwingChart pitches={combinedPitches} /> */}
               </Grid>
             </Grid>
           </ThemeProvider>
