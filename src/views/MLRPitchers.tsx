@@ -103,12 +103,10 @@ export default function MLRPitchers() {
       let filteredPitches: FormSchemaPitches = []
 
       filteredPitches = originalPitches.filter(e => {
-        if (e.season == seasonOption) {
-          if (e.session != sessionOption) {
-            return false;
-          }
+        if (e.season == seasonOption && e.session != sessionOption) {
           return true;
         }
+        return false;
       });
 
       setPitches(filteredPitches);

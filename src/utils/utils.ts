@@ -78,6 +78,10 @@ export function getResultCategory(pitch: FormSchemaPitch) {
   let result: string = '';
   const outcome = pitch.exactResult;
 
+  if (!outcome) {
+    return null;
+  }
+
   switch (outcome) {
     case 'BB':
       result = 'BB/1B'
@@ -113,6 +117,12 @@ export function getResultCategory(pitch: FormSchemaPitch) {
 }
 
 export function populatePlayersList(players: FormSchemaPlayers, league: string, getPositionType: string, teamOption: string) {
+  const validLeagues = ['milr', 'mlr'];
+  const validPositionTypes = ['pitching', 'batting'];
+  if (!validLeagues.includes(league) || !validPositionTypes.includes(getPositionType)) {
+    throw new Error('Invalid league or position type');
+  }
+  
   const playerList = [];
 
   for (let i = 0; i < players.length; i++) {
@@ -126,7 +136,7 @@ export function populatePlayersList(players: FormSchemaPlayers, league: string, 
         if (players[i].priPos == 'P' && players[i].Team === teamOption)
           playerList.push(players[i])
       }
-      
+
       else if (getPositionType == 'batting') {
         if (players[i].priPos != 'P' && players[i].Team === teamOption) {
           playerList.push(players[i]);
@@ -134,7 +144,7 @@ export function populatePlayersList(players: FormSchemaPlayers, league: string, 
       }
     }
   }
-  
+
   playerList.sort((a, b) => a.playerName.localeCompare(b.playerName));
   return playerList;
 }

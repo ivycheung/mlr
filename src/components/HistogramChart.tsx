@@ -20,7 +20,7 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
   };
 
   if (pitches.length !== 0) {
-    const bucketSizeLabel = [{ value: 50, label: 50 }, { value: 100, label: 100 }, { value: 150, label: 150 }, {value: 200, label: 200}];
+    const bucketSizeLabel = [{ value: 50, label: 50 }, { value: 100, label: 100 }, { value: 150, label: 150 }, { value: 200, label: 200 }];
 
     const createBins = (pitches: FormSchemaPitches, bucketSize: number) => {
       const bins = Array.from({ length: Math.ceil(1000 / bucketSize) }, () => 0); // initialize bins
@@ -39,12 +39,14 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
       count
     }));
 
-    const xArray : string[] = []
-    const yArray : number[] = []
-    chartData.forEach((y) => {
-      xArray.push(y.bucket)
-      yArray.push(y.count);
-    });
+    const xArray: string[] = []
+    const yArray: number[] = []
+    if (chartData && chartData.length > 0) {
+      chartData.forEach((y) => {
+        xArray.push(y.bucket)
+        yArray.push(y.count);
+      });
+    }
 
     return (
       <Grid2 className="histogramChart" >
@@ -58,12 +60,12 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="h6">Histogram of Pitches</Typography>
           </Box>
-        {/* </Stack>
+          {/* </Stack>
         <Stack> */}
-          <Grid2 size={{ xs: 12, sm: 12, md: 12, lg:12 }}>
+          <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 12 }}>
             <div>
-              <ResponsiveChartContainer height={300} 
-              series={[{ type: 'bar', data: yArray}]}
+              <ResponsiveChartContainer height={300}
+                series={[{ type: 'bar', data: yArray }]}
                 xAxis={[
                   {
                     data: xArray,
@@ -71,13 +73,13 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
                     id: 'x-axis-id',
                   }
                 ]}
-                >
+              >
                 <ChartsXAxis position="bottom" axisId="x-axis-id" />
                 <ChartsYAxis />
                 <BarPlot />
                 <ChartsTooltip />
-              
-          {/* <BarChart
+
+                {/* <BarChart
             dataset={chartData}
             series={[{ dataKey: 'count' }]}
             xAxis={[{ dataKey: 'bucket', scaleType: 'band', tickPlacement: 'middle' }]}
@@ -89,12 +91,13 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
               </ResponsiveChartContainer>
             </div>
           </Grid2>
-          <Box sx={{ textAlign: 'center', alignItems: 'center',
-        // display: 'flex',       // Set the display to flex
-          justifyContent: 'center', // Horizontally center the item
-          // height: '100vh',          // Full viewport height
-          padding: '0 20% 0 20%'
-      }}>
+          <Box sx={{
+            textAlign: 'center', alignItems: 'center',
+            // display: 'flex',       // Set the display to flex
+            justifyContent: 'center', // Horizontally center the item
+            // height: '100vh',          // Full viewport height
+            padding: '0 20% 0 20%'
+          }}>
             <Typography id="input-slider" gutterBottom>
               Bucket Size
             </Typography>
