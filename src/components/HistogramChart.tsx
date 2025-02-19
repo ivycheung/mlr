@@ -8,9 +8,14 @@ import Grid2 from '@mui/material/Grid2';
 import Stack from '@mui/material/Stack';
 import { ChartsXAxis } from '@mui/x-charts/ChartsXAxis';
 import { ResponsiveChartContainer } from '@mui/x-charts/ResponsiveChartContainer';
-// import { ResponsiveContainer } from '@mui/x-charts/ResponsiveContainer';
 import { ChartsTooltip } from '@mui/x-charts/ChartsTooltip';
 import { ChartsYAxis } from '@mui/x-charts/ChartsYAxis';
+
+interface HistogramChartProps {
+
+  pitches: FormSchemaPitches
+
+}
 
 const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
   const [bucketSizeOption, setBucketSizeOption] = React.useState<number>(100);
@@ -60,8 +65,6 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="h6">Histogram of Pitches</Typography>
           </Box>
-          {/* </Stack>
-        <Stack> */}
           <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 12 }}>
             <div>
               <ResponsiveChartContainer height={300}
@@ -78,16 +81,6 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
                 <ChartsYAxis />
                 <BarPlot />
                 <ChartsTooltip />
-
-                {/* <BarChart
-            dataset={chartData}
-            series={[{ dataKey: 'count' }]}
-            xAxis={[{ dataKey: 'bucket', scaleType: 'band', tickPlacement: 'middle' }]}
-            height={document.documentElement.clientHeight * 0.50}
-            width={document.documentElement.clientWidth}
-            barLabel="value"
-
-          /> */}
               </ResponsiveChartContainer>
             </div>
           </Grid2>
@@ -122,11 +115,5 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
   }
 
 };
-
-interface HistogramChartProps {
-
-  pitches: FormSchemaPitches
-
-}
 
 export default HistogramChart;

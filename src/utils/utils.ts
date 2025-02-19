@@ -122,7 +122,11 @@ export function populatePlayersList(players: FormSchemaPlayers, league: string, 
   if (!validLeagues.includes(league) || !validPositionTypes.includes(getPositionType)) {
     throw new Error('Invalid league or position type');
   }
-  
+
+  if (teamOption == null) {
+    throw new Error('Invalid team option.');
+  }
+
   const playerList = [];
 
   for (let i = 0; i < players.length; i++) {
