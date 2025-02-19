@@ -106,11 +106,13 @@ export default function MLRBatters() {
       setPlayerOption(0);
       setSeasons([]);
       setSeasonOption(0);
+      setPitches([]);
       // reset dashboard
     }
   }
 
   async function handleChangeBatter(event: SelectChangeEvent) {
+    
     if (players == undefined) {
       setError('No Player Found');
       return;
@@ -121,7 +123,7 @@ export default function MLRBatters() {
       setError('Invalid Player.');
       return;
     }
-
+    setPitches([]);
     setPlayerOption(player.playerID);
   }
 
@@ -151,7 +153,7 @@ export default function MLRBatters() {
                     teams.map((team) => {
                       return (
                         <MenuItem key={team.teamID} value={team.teamID}>
-                          <em>{team.teamName}</em>
+                          {team.teamName}
                         </MenuItem>
                       )
                     })
@@ -171,7 +173,7 @@ export default function MLRBatters() {
                     teamOption && batters.map((batter) => {
                       return (
                         <MenuItem key={batter.playerID} value={(batter === undefined || batter === null || batters.length === 0) ? '' : batter.playerID}>
-                          <em>{batter.playerName}</em>
+                          {batter.playerName}
                         </MenuItem>
                       )
                     })
@@ -192,7 +194,7 @@ export default function MLRBatters() {
                     seasons.map((season) => {
                       return (
                         <MenuItem key={season} value={(season === undefined || season === null || seasons.length === 0) ? '' : season}>
-                          <em>{season}</em>
+                          {season}
                         </MenuItem>
                       )
                     })

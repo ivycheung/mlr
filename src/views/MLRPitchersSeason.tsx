@@ -31,6 +31,7 @@ import Typography from '@mui/material/Typography';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useGetPlayers } from '../api/use-get-players';
 import { populatePlayersList } from '../utils/utils';
+import blueGrey from '@mui/material/colors/blueGrey';
 
 export default function MLRPitchers() {
   const [pitchers, setPitchers] = React.useState<FormSchemaPlayers>([])
@@ -45,6 +46,7 @@ export default function MLRPitchers() {
   // const [filteredPitches, setFilteredPitches] = React.useState<FormSchemaPitches>([]);
   const [careerOption, setCareerOption] = React.useState(false);
   const [error, setError] = React.useState<string>('');
+  const [showSeason, setShowSeason] = React.useState<boolean>(false);
   const league = 'mlr';
   const playerType = 'pitching';
 
@@ -144,8 +146,8 @@ export default function MLRPitchers() {
   }
 
   async function handleCareerStatsChange(_event: React.ChangeEvent<HTMLInputElement>, checked: boolean) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    checked ? setCareerOption(true) : setCareerOption(false);    
+    setCareerOption(checked);
+    setShowSeason(checked);
   }
 
   return (
@@ -162,7 +164,7 @@ export default function MLRPitchers() {
           }}
           >
             <Grid>
-              <FormControl sx={{ m: 1, minWidth: 240, color: "red" }}>
+              <FormControl sx={{ m: 1, minWidth: 240 }}>
                 <InputLabel id="team-input-select-label">Team</InputLabel>
                 <Select
                   labelId="team-input-select-label"
@@ -175,7 +177,7 @@ export default function MLRPitchers() {
                     teams.map((team) => {
                       return (
                         <MenuItem key={team.teamID} value={team.teamID}>
-                          <em>{team.teamName}</em>
+                          {team.teamName}
                         </MenuItem>
                       )
                     })
@@ -195,7 +197,7 @@ export default function MLRPitchers() {
                     teamOption && pitchers.map((pitcher) => {
                       return (
                         <MenuItem key={pitcher.playerID} value={(pitcher === undefined || pitcher === null || pitchers.length === 0) ? '' : pitcher.playerID}>
-                          <em>{pitcher.playerName}</em>
+                          {pitcher.playerName}
                         </MenuItem>
                       )
                     })
@@ -216,7 +218,7 @@ export default function MLRPitchers() {
                     seasons.map((season) => {
                       return (
                         <MenuItem key={season} value={(season === undefined || season === null || seasons.length === 0) ? '' : season}>
-                          <em>{season}</em>
+                          {season}
                         </MenuItem>
                       )
                     })
@@ -234,23 +236,27 @@ export default function MLRPitchers() {
             </Grid>
             {
               ((!pitches || pitches.length != 0) ?
-                <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }}>
+                <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }} sx={{
+                  justifyContent: "flex-start",
+                  alignItems: "center"
+                }}>
                   <Accordion style={{ maxHeight: '500px' }}>
                   <AccordionSummary
                       expandIcon={<ArrowDropDownIcon />}
                       aria-controls="panel2-content"
-                      id="panel2-header">
+                      id="panel2-header"
+                      style={{ backgroundColor: blueGrey[50] }}>
                       <Typography component="span">Data Table</Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <SessionDataTable pitches={pitches} />
+                    <SessionDataTable pitches={pitches} showSeason={showSeason} />
                   </AccordionDetails>
                 </Accordion>
               </Grid>
               : '')
             }
 
-            <Grid container spacing={2} style={{ padding: 30 }}
+            <Grid container spacing={2} style={{ padding: 30 }} size={{ lg: 12 }}
               sx={{
                 justifyContent: "flex-start",
                 alignItems: "center"
