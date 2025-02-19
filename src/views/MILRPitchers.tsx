@@ -19,15 +19,12 @@ import SessionDataTable from '../components/SessionDataTable';
 import PitchByPlacementInInning from '../components/PitchByPlacementInInning';
 import PitchByPitchDelta from '../components/PitchByPitchDelta';
 import PitchesByInning from '../components/PitchesByInning';
+import { useGetPlayers } from '../api/use-get-players';
 // import Slider from '@mui/material/Slider';
 
 export default function MILRPitchers() {
-  const [players, setPlayers] = React.useState<FormSchemaPlayers>([])
   const [pitchers, setPitchers] = React.useState<FormSchemaPlayers>([])
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState('');
   const [pitcherOption, setPitcherOption] = React.useState<number>(0)
-
   const [teams, setTeams] = React.useState<FormSchemaTeams>([])
   const [teamOption, setTeamOption] = React.useState('')
   const [mlrSeasons, setMlrSeasons] = React.useState<number[]>([]);
@@ -37,6 +34,7 @@ export default function MILRPitchers() {
   const [combinedPitches, setCombinedPitches] = React.useState<FormSchemaPitches>([])
   const [mlrpitches, setMlrPitches] = React.useState<FormSchemaPitches>([])
   const [milrpitches, setMilrPitches] = React.useState<FormSchemaPitches>([])
+  const [error, setError] = React.useState<string>('');
 
   const theme = createTheme({
     colorSchemes: {
@@ -44,21 +42,9 @@ export default function MILRPitchers() {
     },
   });
 
-  React.useEffect(() => {
-    const fetchPlayerData = async () => {
-      setIsLoading(true);
-      try {
-        const response = await axios.get('https://api.mlr.gg/legacy/api/players')
-        setPlayers(response.data);
-      } catch (err) {
-        setError('Error Fetching Data ' + err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  // Get a list of players on page load
+  const { data: players, isLoading: isLoading } = useGetPlayers();
 
-    fetchPlayerData();
-  }, []);
 
   // Teams
   React.useEffect(() => {
@@ -115,19 +101,24 @@ export default function MILRPitchers() {
     }
   }
 
-  async function handleMlrChangeSeason(event: SelectChangeEvent) {
-    const season = Number(event.target.value);
-    setMlrSeasonOption(season)
-    setMilrSeasonOption(0)
-  }
-
-  async function handleMilrChangeSeason(event: SelectChangeEvent) {
+  async function handleChangeMilrSeason(event: SelectChangeEvent) {
     const season = Number(event.target.value);
     setMilrSeasonOption(season)
     setMlrSeasonOption(0)
   }
 
+  async function handleChangeMlrSeason(event: SelectChangeEvent) {
+    const season = Number(event.target.value);
+    setMlrSeasonOption(season);
+    setMilrSeasonOption(0);
+  }
+
   async function handleChangePitcher(event: SelectChangeEvent) {
+    if (players == undefined) {
+      setError('No Player Found');
+      return;
+    }
+
     const player = players.find(player => player.playerID === Number(event.target.value))
     if (player) {
       setPitcherOption(player.playerID)
@@ -165,8 +156,6 @@ export default function MILRPitchers() {
 
     } catch (err) {
       setError('Error Fetching Pitches' + err);
-    } finally {
-      setIsLoading(false);
     }
   }
 
@@ -191,7 +180,7 @@ export default function MILRPitchers() {
                     teams.map((team) => {
                       return (
                         <MenuItem key={team.teamID} value={team.teamID}>
-                          <em>{team.teamName}</em>
+                          {team.teamName}
                         </MenuItem>
                       )
                     })
@@ -211,7 +200,7 @@ export default function MILRPitchers() {
                     pitchers.map((pitcher) => {
                       return (
                         <MenuItem key={pitcher.playerID} value={(pitcher === undefined || pitcher === null || pitchers.length === 0) ? '' : pitcher.playerID}>
-                          <em>{pitcher.playerName}</em>
+                          {pitcher.playerName}
                         </MenuItem>
                       )
                     })
@@ -225,7 +214,7 @@ export default function MILRPitchers() {
                   labelId="mlrseason-input-select-label"
                   id="mlrseason-input-select"
                   label={mlrSeasonOption}
-                  onChange={handleMlrChangeSeason}
+                  onChange={handleChangeMlrSeason}
                   value={mlrSeasonOption ? mlrSeasonOption.toString() : ''
                   }
                 >
@@ -233,7 +222,7 @@ export default function MILRPitchers() {
                     mlrSeasons.map((season) => {
                       return (
                         <MenuItem key={season} value={(season === undefined || season === null || mlrSeasons.length === 0) ? '' : season}>
-                          <em>{season}</em>
+                          {season}
                         </MenuItem>
                       )
                     })
@@ -247,14 +236,14 @@ export default function MILRPitchers() {
                   labelId="milrseason-input-select-label"
                   id="milrseason-input-select"
                   label={milrSeasonOption}
-                  onChange={handleMilrChangeSeason}
+                  onChange={handleChangeMilrSeason}
                   value={milrSeasonOption ? milrSeasonOption.toString() : ''}
                 >
                   {
                     milrSeasons.map((season) => {
                       return (
                         <MenuItem key={season} value={(season === undefined || season === null || milrSeasons.length === 0) ? '' : season}>
-                          <em>{season}</em>
+                          {season}
                         </MenuItem>
                       )
                     })
@@ -275,7 +264,7 @@ export default function MILRPitchers() {
                     sessions.map((session) => {
                       return (
                         <MenuItem key={session} value={(session === undefined || session === null || sessions.length === 0) ? '' : session}>
-                          <em>{session}</em>
+                          {session}
                         </MenuItem>
                       )
                     })

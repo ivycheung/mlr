@@ -15,7 +15,7 @@ interface PitchesByInningProps {
     6: 'indigo',
     7: 'violet',
     8: 'gray',
-    9: 'white',
+    9: '#B47ADC',
     10: 'crimson',
     11: 'coral',
     12: 'khaki',

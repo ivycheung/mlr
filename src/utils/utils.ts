@@ -1,4 +1,5 @@
 import { FormSchemaPitch } from "../types/schemas/pitch-schema";
+import { FormSchemaPlayers } from "../types/schemas/player-schema";
 
 export function calculateDiff(pitch: FormSchemaPitch) {
   const difference = pitch.swing - pitch.pitch;
@@ -77,6 +78,10 @@ export function getResultCategory(pitch: FormSchemaPitch) {
   let result: string = '';
   const outcome = pitch.exactResult;
 
+  if (!outcome) {
+    return null;
+  }
+
   switch (outcome) {
     case 'BB':
       result = 'BB/1B'
@@ -109,4 +114,41 @@ export function getResultCategory(pitch: FormSchemaPitch) {
   }
 
   return result;
+}
+
+export function populatePlayersList(players: FormSchemaPlayers, league: string, getPositionType: string, teamOption: string) {
+  const validLeagues = ['milr', 'mlr'];
+  const validPositionTypes = ['pitching', 'batting'];
+  if (!validLeagues.includes(league) || !validPositionTypes.includes(getPositionType)) {
+    throw new Error('Invalid league or position type');
+  }
+
+  if (teamOption == null) {
+    throw new Error('Invalid team option.');
+  }
+
+  const playerList = [];
+
+  for (let i = 0; i < players.length; i++) {
+    if (league == 'milr') {
+      if (players[i].milr_team === teamOption) {
+        playerList.push(players[i]);
+      }
+    }
+    else if (league == 'mlr') {
+      if (getPositionType == 'pitching') {
+        if (players[i].priPos == 'P' && players[i].Team === teamOption)
+          playerList.push(players[i])
+      }
+
+      else if (getPositionType == 'batting') {
+        if (players[i].priPos != 'P' && players[i].Team === teamOption) {
+          playerList.push(players[i]);
+        }
+      }
+    }
+  }
+
+  playerList.sort((a, b) => a.playerName.localeCompare(b.playerName));
+  return playerList;
 }
