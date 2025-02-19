@@ -1,4 +1,5 @@
 import { FormSchemaPitch } from "../types/schemas/pitch-schema";
+import { FormSchemaPlayers } from "../types/schemas/player-schema";
 
 export function calculateDiff(pitch: FormSchemaPitch) {
   const difference = pitch.swing - pitch.pitch;
@@ -109,4 +110,31 @@ export function getResultCategory(pitch: FormSchemaPitch) {
   }
 
   return result;
+}
+
+export function populatePlayersList(players: FormSchemaPlayers, league: string, getPositionType: string, teamOption: string) {
+  const playerList = [];
+
+  for (let i = 0; i < players.length; i++) {
+    if (league == 'milr') {
+      if (players[i].milr_team === teamOption) {
+        playerList.push(players[i]);
+      }
+    }
+    else if (league == 'mlr') {
+      if (getPositionType == 'pitching') {
+        if (players[i].priPos == 'P' && players[i].Team === teamOption)
+          playerList.push(players[i])
+      }
+      
+      else if (getPositionType == 'batting') {
+        if (players[i].priPos != 'P' && players[i].Team === teamOption) {
+          playerList.push(players[i]);
+        }
+      }
+    }
+  }
+  
+  playerList.sort((a, b) => a.playerName.localeCompare(b.playerName));
+  return playerList;
 }

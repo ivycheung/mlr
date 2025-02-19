@@ -29,13 +29,12 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import SessionDataTable from '../components/SessionDataTable';
 import Typography from '@mui/material/Typography';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { useGetPlayers } from '../api/use-get-players';
+import { populatePlayersList } from '../utils/utils';
 
 export default function MLRPitchers() {
-  const [players, setPlayers] = React.useState<FormSchemaPlayers>([])
   const [pitchers, setPitchers] = React.useState<FormSchemaPlayers>([])
   const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState('');
   const [pitcherOption, setPitcherOption] = React.useState<number>(0)
 
   const [teams, setTeams] = React.useState<FormSchemaTeams>([])
@@ -45,6 +44,9 @@ export default function MLRPitchers() {
   const [originalPitches, setOriginalPitches] = React.useState<FormSchemaPitches>([])
   // const [filteredPitches, setFilteredPitches] = React.useState<FormSchemaPitches>([]);
   const [careerOption, setCareerOption] = React.useState(false);
+  const [error, setError] = React.useState<string>('');
+  const league = 'mlr';
+  const playerType = 'pitching';
 
   let theme = createTheme({
     palette: {
@@ -53,21 +55,8 @@ export default function MLRPitchers() {
   });
   theme = responsiveFontSizes(theme);
 
-  React.useEffect(() => {
-    const fetchPlayerData = async () => {
-      setIsLoading(true);
-      try {
-        const response = await axios.get('https://api.mlr.gg/legacy/api/players')
-        setPlayers(response.data);
-      } catch (err) {
-        setError('Error Fetching Data');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPlayerData();
-  }, []);
+  // Get a list of players on page load
+  const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
 
   // Teams
   React.useEffect(() => {
@@ -78,13 +67,8 @@ export default function MLRPitchers() {
   // Players
   React.useEffect(() => {
     if (players != null) {
-      const pitchersList = []
-      for (let i = 0; i < players.length; i++) {
-        if (players[i].priPos == 'P' && players[i].Team === teamOption)
-          pitchersList.push(players[i])
-      }
-      pitchersList.sort((a, b) => a.playerName.localeCompare(b.playerName));
-      setPitchers(pitchersList)
+      const playerList = populatePlayersList(players, league, playerType, teamOption);
+      setPitchers(playerList)
     }
   }, [teamOption]);
 
@@ -126,7 +110,12 @@ export default function MLRPitchers() {
   }
 
   async function handleChangePitcher(event: SelectChangeEvent) {
-    setPitches([])
+    if (players == undefined) {
+      setError('No Player Found');
+      return;
+    }
+
+    setPitches([]);
     const player = players.find(player => player.playerID === Number(event.target.value))
     if (player) {
       setPitcherOption(player.playerID)
@@ -151,8 +140,6 @@ export default function MLRPitchers() {
 
     } catch (err) {
       setError('Error Fetching Pitches' + err);
-    } finally {
-      setIsLoading(false);
     }
   }
 
@@ -164,7 +151,7 @@ export default function MLRPitchers() {
   return (
     <>
       {isLoading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
+      {isError && <p>{apiError?.message}</p> && <p>{error.length > 0}</p>}
       {!isLoading && !error &&
         <ThemeProvider theme={theme}>
           <CssBaseline />

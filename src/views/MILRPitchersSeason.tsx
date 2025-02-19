@@ -21,13 +21,11 @@ import HistogramChart from '../components/HistogramChart';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid2 from '@mui/material/Grid2';
 import Stack from '@mui/material/Stack';
+import { useGetPlayers } from '../api/use-get-players';
 // import Slider from '@mui/material/Slider';
 
 export default function MILRPitchers() {
-  const [players, setPlayers] = React.useState<FormSchemaPlayers>([])
   const [pitchers, setPitchers] = React.useState<FormSchemaPlayers>([])
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState('');
   const [pitcherOption, setPitcherOption] = React.useState<number>(0)
 
   const [teams, setTeams] = React.useState<FormSchemaTeams>([])
@@ -40,6 +38,7 @@ export default function MILRPitchers() {
   const [mlrpitches, setMlrPitches] = React.useState<FormSchemaPitches>([])
   const [milrpitches, setMilrPitches] = React.useState<FormSchemaPitches>([])
   const [careerOption, setCareerOption] = React.useState(false);
+  const [error, setError] = React.useState<string>('');
 
   let theme = createTheme({
     palette: {
@@ -48,21 +47,8 @@ export default function MILRPitchers() {
   });
   theme = responsiveFontSizes(theme);
 
-  React.useEffect(() => {
-    const fetchPlayerData = async () => {
-      setIsLoading(true);
-      try {
-        const response = await axios.get('https://api.mlr.gg/legacy/api/players')
-        setPlayers(response.data);
-      } catch (err) {
-        setError('Error Fetching Data');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPlayerData();
-  }, []);
+  // Get a list of players on page load
+  const { data: players, isLoading: isLoading } = useGetPlayers();
 
   // Teams
   React.useEffect(() => {
@@ -122,19 +108,24 @@ export default function MILRPitchers() {
     }
   }
 
-  async function handleMlrChangeSeason(event: SelectChangeEvent) {
+  async function handleChangeMlrSeason(event: SelectChangeEvent) {
     const season = Number(event.target.value);
     setMlrSeasonOption(season)
     setMilrSeasonOption(0)
   }
 
-  async function handleMilrChangeSeason(event: SelectChangeEvent) {
+  async function handleChangeMilrSeason(event: SelectChangeEvent) {
     const season = Number(event.target.value);
-    setMilrSeasonOption(season)
-    setMlrSeasonOption(0)
+    setMilrSeasonOption(season);
+    setMlrSeasonOption(0);
   }
 
   async function handleChangePitcher(event: SelectChangeEvent) {
+    if (players == undefined) {
+      setError('No Player Found');
+      return;
+    }
+
     const player = players.find(player => player.playerID === Number(event.target.value))
     if (player) {
       setPitcherOption(player.playerID)
@@ -172,8 +163,6 @@ export default function MILRPitchers() {
 
     } catch (err) {
       setError('Error Fetching Pitches' + err);
-    } finally {
-      setIsLoading(false);
     }
   }
 
@@ -238,7 +227,7 @@ export default function MILRPitchers() {
                   labelId="mlrseason-input-select-label"
                   id="mlrseason-input-select"
                   label={mlrSeasonOption}
-                  onChange={handleMlrChangeSeason}
+                  onChange={handleChangeMlrSeason}
                   value={mlrSeasonOption ? mlrSeasonOption.toString() : ''
                   }
                 >
@@ -260,7 +249,7 @@ export default function MILRPitchers() {
                   labelId="milrseason-input-select-label"
                   id="milrseason-input-select"
                   label={milrSeasonOption}
-                  onChange={handleMilrChangeSeason}
+                  onChange={handleChangeMilrSeason}
                   value={milrSeasonOption ? milrSeasonOption.toString() : ''}
                 >
                   {

@@ -16,16 +16,15 @@ import { FormSchemaTeams } from '../types/schemas/team-schema';
 import teamsJson from '../utils/milrteams.json';
 import PitchSwingChart from '../components/PitchSwingChart';
 import SessionDataTable from '../components/SessionDataTable';
+import { useGetPlayers } from '../api/use-get-players';
 
 export default function MILRBatters() {
-  const [players, setPlayers] = React.useState<FormSchemaPlayers>([])
   const [batters, setBatters] = React.useState<FormSchemaPlayers>([])
   const [combinedPitches, setCombinedPitches] = React.useState<FormSchemaPitches>([])
   const [mlrpitches, setMlrPitches] = React.useState<FormSchemaPitches>([])
   const [milrpitches, setMilrPitches] = React.useState<FormSchemaPitches>([])
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState('');
-  const [batterOption, setBatterOption] = React.useState<number>(0)
+  const [batterOption, setBatterOption] = React.useState<number>(0);
+  const [error, setError] = React.useState<string>('');
 
   const [teams, setTeams] = React.useState<FormSchemaTeams>([])
   const [teamOption, setTeamOption] = React.useState('')
@@ -40,21 +39,9 @@ export default function MILRBatters() {
     },
   });
 
-  React.useEffect(() => {
-    const fetchPlayerData = async () => {
-      setIsLoading(true);
-      try {
-        const response = await axios.get('https://api.mlr.gg/legacy/api/players')
-        setPlayers(response.data);
-      } catch (err) {
-        setError('Error Fetching Data ' + err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPlayerData();
-  }, []);
+  // Get a list of players on page load
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { data: players, isLoading: isLoading } = useGetPlayers();
 
   React.useEffect(() => {
     const teamsList = teamsJson;
@@ -111,6 +98,11 @@ export default function MILRBatters() {
   }
 
   async function handleChangeBatter(event: SelectChangeEvent) {
+    if (players == undefined) {
+      setError('No Player Found');
+      return;
+    }
+
     const player = players.find(player => player.playerID === Number(event.target.value))
     if (player) {
       setBatterOption(player.playerID)
@@ -148,22 +140,20 @@ export default function MILRBatters() {
 
 
     } catch (err) {
-      setError('Error Fetching Swings');
-    } finally {
-      setIsLoading(false);
+      setError('Error Fetching Swings ' + err);
     }
   }
 
-  async function handleMlrChangeSeason(event: SelectChangeEvent) {
+  async function handleChangeMlrSeason(event: SelectChangeEvent) {
     const season = Number(event.target.value);
-    setMlrSeasonOption(season)
-    setMilrSeasonOption(0)
+    setMlrSeasonOption(season);
+    setMilrSeasonOption(0);
   }
 
-  async function handleMilrChangeSeason(event: SelectChangeEvent) {
+  async function handleChangeMilrSeason(event: SelectChangeEvent) {
     const season = Number(event.target.value);
-    setMilrSeasonOption(season)
-    setMlrSeasonOption(0)
+    setMilrSeasonOption(season);
+    setMlrSeasonOption(0);
   }
 
 
@@ -223,7 +213,7 @@ export default function MILRBatters() {
                   labelId="mlrseason-input-select-label"
                   id="mlrseason-input-select"
                   label={mlrSeasonOption}
-                  onChange={handleMlrChangeSeason}
+                  onChange={handleChangeMlrSeason}
                   value={mlrSeasonOption ? mlrSeasonOption.toString() : ''
                   }
                 >
@@ -245,7 +235,7 @@ export default function MILRBatters() {
                   labelId="milrseason-input-select-label"
                   id="milrseason-input-select"
                   label={milrSeasonOption}
-                  onChange={handleMilrChangeSeason}
+                  onChange={handleChangeMilrSeason}
                   value={milrSeasonOption ? milrSeasonOption.toString() : ''}
                 >
                   {

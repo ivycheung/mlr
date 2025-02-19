@@ -12,9 +12,10 @@ import Typography from '@mui/material/Typography';
 interface SessionDataTableProps { pitches: FormSchemaPitches }
 
 const SessionDataTable: React.FC<SessionDataTableProps> = ( {pitches} ) => {
-  if (pitches == undefined) {
+  if (pitches == undefined || pitches.length == 0) {
     return null
   }
+
   return (
     <div>
       <TableContainer component={Paper} style={{ maxHeight: document.documentElement.clientHeight * 0.4 }}>
