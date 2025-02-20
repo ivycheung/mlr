@@ -1,10 +1,6 @@
-import * as React from 'react'
-import axios from 'axios'
+import * as React from 'react';
 
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
-import { FormSchemaPlayers } from '../types/schemas/player-schema';
-import { FormSchemaTeams } from '../types/schemas/team-schema';
-import teamsJson from '../utils/mlrteams.json';
 
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -28,20 +24,19 @@ import SessionDataTable from '../components/SessionDataTable';
 import Typography from '@mui/material/Typography';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useGetPlayers } from '../api/use-get-players';
-import { populatePlayersList } from '../utils/utils';
 import blueGrey from '@mui/material/colors/blueGrey';
 import { useGetPlayer } from '../api/use-get-player';
+import TeamsDropdown from '../components/TeamsDropdown';
+import PlayersDropdown from '../components/PlayersDropdown';
 
 export default function MLRPitchers() {
-  const [pitchers, setPitchers] = React.useState<FormSchemaPlayers>([])
   const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
   const [playerOption, setPlayerOption] = React.useState<number>(0);
-  const [teams, setTeams] = React.useState<FormSchemaTeams>([])
   const [teamOption, setTeamOption] = React.useState('')
   const [seasons, setSeasons] = React.useState<number[]>([]);
   const [seasonOption, setSeasonOption] = React.useState<number>(0)
   const [careerOption, setCareerOption] = React.useState(false);
-  const [error, setError] = React.useState<string>('');
+  // const [error, setError] = React.useState<string>('');
   const [showSeason, setShowSeason] = React.useState<boolean>(false);
   const league = 'mlr';
   const playerType = 'pitching';
@@ -56,20 +51,6 @@ export default function MLRPitchers() {
   // Get a list of players on page load
   const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
   const { data: plateAppearances } = useGetPlayer(playerType, league, playerOption);
-
-  // Teams
-  React.useEffect(() => {
-    const teamsList = teamsJson;
-    setTeams(teamsList);
-  }, [teams])
-
-  // Get Players based on Teams
-  React.useEffect(() => {
-    if (players != null) {
-      const playerList = populatePlayersList(players, league, playerType, teamOption);
-      setPitchers(playerList)
-    }
-  }, [teamOption]);
 
   // Update Player Data based on fetched data
   React.useEffect(() => {
@@ -106,35 +87,9 @@ export default function MLRPitchers() {
     }
   }, [careerOption, plateAppearances, players, seasonOption])
 
-  async function handleChangeTeam(event: SelectChangeEvent) {
-    const team = teams.find(team => team.teamID === event.target.value)
-    if (team) {
-      // reset dashboard
-      setTeamOption(team.teamID);
-      setPlayerOption(0);
-      setSeasons([]);
-      setSeasonOption(0);
-    }
-  }
-
   async function handleChangeSeason(event: SelectChangeEvent) {
     const season = Number(event.target.value);
     setSeasonOption(season)
-  }
-
-  async function handleChangePitcher(event: SelectChangeEvent) {
-    if (players == undefined && !Array.isArray(players)) {
-      setError('No Player Found');
-      return;
-    }
-
-    const player = players.find(player => player.playerID === Number(event.target.value))
-    if (!player) {
-      setError('Invalid Player.');
-      return;
-    }
-    setPitches([]);
-    setPlayerOption(Number(event.target.value));
   }
 
   async function handleCareerStatsChange(_event: React.ChangeEvent<HTMLInputElement>, checked: boolean) {
@@ -142,11 +97,23 @@ export default function MLRPitchers() {
     setShowSeason(checked);
   }
 
+    const handleChangeTeam = React.useCallback((newTeamOption: string) => {
+      setTeamOption(newTeamOption);
+      setPlayerOption(0);
+      setSeasons([]);
+      setSeasonOption(0);  
+    }, [teamOption]);
+  
+    const handleChangePlayer = React.useCallback((newPlayerOption: string) => {
+      setPlayerOption(Number(newPlayerOption));
+      setPitches([]);
+    }, [playerOption]);
+
   return (
     <>
       {isLoading && <p>Loading...</p>}
-      {isError && <p>{apiError?.message}</p> && <p>{error.length > 0}</p>}
-      {!isLoading && !error &&
+      {isError && <p>{apiError?.message}</p>}
+      {!isLoading && !isError &&
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Grid container style={{ padding: 30 }} size={12} direction="row"
@@ -156,47 +123,8 @@ export default function MLRPitchers() {
             }}
           >
             <Grid>
-              <FormControl sx={{ m: 1, minWidth: 240 }}>
-                <InputLabel id="team-input-select-label">Team</InputLabel>
-                <Select
-                  labelId="team-input-select-label"
-                  id="team-input-select"
-                  label={teamOption}
-                  onChange={handleChangeTeam}
-                  value={teamOption}
-                >
-                  {
-                    teams.map((team) => {
-                      return (
-                        <MenuItem key={team.teamID} value={team.teamID}>
-                          {team.teamName}
-                        </MenuItem>
-                      )
-                    })
-                  }
-                </Select>
-                <FormHelperText>{teamOption ? '' : 'Select Team'}</FormHelperText>
-              </FormControl>
-              <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
-                <InputLabel id="pitcher-input-select-label">Pitcher</InputLabel>
-                <Select
-                  labelId="pitcher-input-select-label"
-                  id="pitcher-input-select"
-                  onChange={handleChangePitcher}
-                  value={playerOption ? playerOption.toString() : ''}
-                >
-                  {
-                    teamOption && pitchers.map((pitcher) => {
-                      return (
-                        <MenuItem key={pitcher.playerID} value={(pitcher === undefined || pitcher === null || pitchers.length === 0) ? '' : pitcher.playerID}>
-                          {pitcher.playerName}
-                        </MenuItem>
-                      )
-                    })
-                  }
-                </Select>
-                <FormHelperText>{playerOption ? '' : 'Select Pitcher'}</FormHelperText>
-              </FormControl>
+              <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} />
+              <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} />
               <FormControl sx={{ m: 1, minWidth: 240 }}>
                 <InputLabel id="season-input-select-label">Season</InputLabel>
                 <Select
