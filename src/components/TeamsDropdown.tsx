@@ -29,6 +29,8 @@ const TeamsDropdown: React.FC<TeamsDropdownProps> = ({ league, teamOption, handl
     teams = milrTeamsJson;
   }
 
+  teams.sort((a, b) => a.teamName.localeCompare(b.teamName));
+
   const handleDropdownChange = (e: { target: { value: string; }; }) => {
     const teamOption = e.target.value;
     handleChangeTeam(teamOption);

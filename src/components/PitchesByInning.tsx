@@ -73,7 +73,7 @@ const PitchesByInning: React.FC<PitchesByInningProps> = ({ pitches }) => {
           xAxis={[{ data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], label: "Pitch Number", tickNumber: 15, tickInterval: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], scaleType: 'point', min: 1, max: 10 }
           ]}
           series={seriesArray}
-          height={document.documentElement.clientHeight * 0.50}
+          height={document.documentElement.clientHeight * 0.75}
           width={document.documentElement.clientWidth * 0.40}
           margin={{ top: 100 }}
         />

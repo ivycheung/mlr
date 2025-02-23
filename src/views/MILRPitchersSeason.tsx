@@ -1,10 +1,10 @@
 import * as React from 'react'
-import axios from 'axios'
 
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
-import { FormSchemaPlayers } from '../types/schemas/player-schema';
-import { FormSchemaTeams } from '../types/schemas/team-schema';
-import teamsJson from '../utils/milrteams.json';
+import { useGetPlayer } from '../api/use-get-player';
+import { useGetPlayers } from '../api/use-get-players';
+import TeamsDropdown from '../components/TeamsDropdown';
+import PlayersDropdown from '../components/PlayersDropdown';
 
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -14,15 +14,11 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/styles';
 import Grid from '@mui/material/Grid2';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import HistogramChart from '../components/HistogramChart';
-// import HeatmapChart from '../components/HeatmapChart';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid2 from '@mui/material/Grid2';
 import Stack from '@mui/material/Stack';
-import { useGetPlayers } from '../api/use-get-players';
 import FormGroup from '@mui/material/FormGroup';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -30,26 +26,22 @@ import Typography from '@mui/material/Typography';
 import blueGrey from '@mui/material/colors/blueGrey';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import SessionDataTable from '../components/SessionDataTable';
-import { populatePlayersList } from '../utils/utils';
-import { useGetPlayer } from '../api/use-get-player';
-
+import HistogramChart from '../components/HistogramChart';
 // import Slider from '@mui/material/Slider';
 
 export default function MILRPitchers() {
-  const [pitchers, setPitchers] = React.useState<FormSchemaPlayers>([])
   const [playerOption, setPlayerOption] = React.useState<number>(0)
-
-  const [teams, setTeams] = React.useState<FormSchemaTeams>([])
   const [teamOption, setTeamOption] = React.useState('')
+
   const [mlrSeasons, setMlrSeasons] = React.useState<number[]>([]);
   const [mlrSeasonOption, setMlrSeasonOption] = React.useState<number>(0)
   const [milrSeasons, setMilrSeasons] = React.useState<number[]>([]);
   const [milrSeasonOption, setMilrSeasonOption] = React.useState<number>(0)
+  
   const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
   const [mlrpitches, setMlrPitches] = React.useState<FormSchemaPitches>([])
   const [milrpitches, setMilrPitches] = React.useState<FormSchemaPitches>([])
   const [careerOption, setCareerOption] = React.useState(false);
-  const [error, setError] = React.useState<string>('');
   const [showSeason, setShowSeason] = React.useState<boolean>(false);
   const prevMlrSeasonOption = React.useRef<number>(0);
   const prevMilrSeasonOption = React.useRef<number>(0);
@@ -65,30 +57,13 @@ export default function MILRPitchers() {
   theme = responsiveFontSizes(theme);
 
   // Get a list of players on page load
-  const { data: players, isLoading: isLoading } = useGetPlayers();
+  const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
   const { data: plateAppearancesMLR } = useGetPlayer(playerType, leagueMLR, playerOption);
   const { data: plateAppearancesMiLR } = useGetPlayer(playerType, league, playerOption);
-
-
-  // Teams
-  React.useEffect(() => {
-    const teamsList = teamsJson;
-    setTeams(teamsList);
-  }, [teams])
-
-  // Players
-  React.useEffect(() => {
-    if (players != null) {
-      const playerList = populatePlayersList(players, league, playerType, teamOption);
-      setPitchers(playerList);
-    }
-  }, [teamOption]);
 
   // Update Player Data based on fetched data
   React.useEffect(() => {
     if (players != null) {
-      
-      
       // Determine how many seasons per league for dropdowns
       const leagues = ['mlr', 'milr'];
       leagues.map(async (l) => {
@@ -99,8 +74,6 @@ export default function MILRPitchers() {
               seasons.add(plateAppearancesMLR[i].season);
             }
             setMlrPitches(plateAppearancesMLR);
-
-            console.log(mlrpitches)
             setMlrSeasons([...seasons].sort((a, b) => a - b))
             setMlrSeasonOption(0)
           }
@@ -118,7 +91,7 @@ export default function MILRPitchers() {
         }
       })
 
-      if (milrSeasons.length == 0) {
+      if (milrSeasons.length == 0 && mlrSeasons.length != 0) {
         setMlrSeasonOption(Number([...mlrSeasons].slice(-1))) // last season
         setMilrSeasonOption(0) // last season
       }
@@ -151,20 +124,7 @@ export default function MILRPitchers() {
   React.useEffect(() => {
     const filteredPitches = mlrpitches.concat(milrpitches)
     setPitches(filteredPitches);
-  }, [careerOption])
-
-  async function handleChangeTeam(event: SelectChangeEvent) {
-    const team = teams.find(team => team.teamID === event.target.value)
-    if (team) {
-      // reset dashboard
-      setTeamOption(team.teamID);
-      setPlayerOption(0);
-      setMlrSeasons([]);
-      setMlrSeasonOption(0);
-      setMilrSeasons([]);
-      setMilrSeasonOption(0);
-    }
-  }
+  }, [careerOption]); // should be able to change this to a function
 
   async function handleChangeMlrSeason(event: SelectChangeEvent) {
     const season = Number(event.target.value);
@@ -180,20 +140,6 @@ export default function MILRPitchers() {
     setMlrSeasonOption(0);
     setCareerOption(false);
     setShowSeason(false);
-  }
-
-  async function handleChangePitcher(event: SelectChangeEvent) {
-    if (players == undefined) {
-      setError('No Players Found');
-      return;
-    }
-
-    const player = players.find(player => player.playerID === Number(event.target.value))
-    if (!player) {
-      setError('No Player Found');
-      return;
-    }
-    setPlayerOption(player.playerID);
   }
 
   React.useEffect(() => {
@@ -219,56 +165,32 @@ export default function MILRPitchers() {
     setMlrSeasonOption(0);
   }
 
+  const handleChangeTeam = React.useCallback((newTeamOption: string) => {
+    setTeamOption(newTeamOption);
+    setPlayerOption(0);
+    setMlrSeasons([]);
+    setMlrSeasonOption(0);
+    setMilrSeasons([]);
+    setMilrSeasonOption(0);
+
+  }, []);
+
+  const handleChangePlayer = React.useCallback((newPlayerOption: string) => {
+    setPlayerOption(Number(newPlayerOption));
+    setPitches([]);
+  }, []);
+
   return (
     <>
       {isLoading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
-      {!isLoading && !error &&
+      {isError && <p>{apiError?.message}</p>}
+      {!isLoading && !isError &&
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Grid container justifyContent="center" style={{ padding: 30 }}>
             <Grid size={12}>
-              <FormControl sx={{ m: 1, minWidth: 240, color: "red" }}>
-                <InputLabel id="team-input-select-label">Team</InputLabel>
-                <Select
-                  labelId="team-input-select-label"
-                  id="team-input-select"
-                  label={teamOption}
-                  onChange={handleChangeTeam}
-                  value={teamOption}
-                >
-                  {
-                    teams.map((team) => {
-                      return (
-                        <MenuItem key={team.teamID} value={team.teamID}>
-                          {team.teamName}
-                        </MenuItem>
-                      )
-                    })
-                  }
-                </Select>
-                <FormHelperText>{teamOption ? '' : 'Select Team'}</FormHelperText>
-              </FormControl>
-              <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
-                <InputLabel id="pitcher-input-select-label">Pitcher</InputLabel>
-                <Select
-                  labelId="pitcher-input-select-label"
-                  id="pitcher-input-select"
-                  onChange={handleChangePitcher}
-                  value={playerOption ? playerOption.toString() : ''}
-                >
-                  {
-                    pitchers.map((pitcher) => {
-                      return (
-                        <MenuItem key={pitcher.playerID} value={(pitcher === undefined || pitcher === null || pitchers.length === 0) ? '' : pitcher.playerID}>
-                          {pitcher.playerName}
-                        </MenuItem>
-                      )
-                    })
-                  }
-                </Select>
-                <FormHelperText>{playerOption ? '' : 'Select Pitcher'}</FormHelperText>
-              </FormControl>
+              <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} />
+              <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} />
               <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
                 <InputLabel id="mlrseason-input-select-label" sx={{ color: "grey.400", }}>MLR Season</InputLabel>
                 <Select

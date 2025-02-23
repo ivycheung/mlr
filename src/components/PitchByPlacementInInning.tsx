@@ -52,7 +52,7 @@ const PitchByPlacementInInning: React.FC<PitchByPlacementInInningProps> = ({ pit
         },
       ]}
       width={document.documentElement.clientWidth * 0.40}
-      height={document.documentElement.clientHeight * 0.50}
+      height={document.documentElement.clientHeight * 0.75}
     />)
   }
   else {

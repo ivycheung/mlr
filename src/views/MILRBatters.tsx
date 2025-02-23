@@ -1,5 +1,4 @@
 import * as React from 'react'
-import axios from 'axios'
 
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -10,28 +9,29 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid2';
 
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
-import { FormSchemaPlayers } from '../types/schemas/player-schema';
-import { FormSchemaTeams } from '../types/schemas/team-schema';
 
-import teamsJson from '../utils/milrteams.json';
 import PitchSwingChart from '../components/PitchSwingChart';
 import SessionDataTable from '../components/SessionDataTable';
 import { useGetPlayers } from '../api/use-get-players';
+import { useGetPlayer } from '../api/use-get-player';
+import TeamsDropdown from '../components/TeamsDropdown';
+import PlayersDropdown from '../components/PlayersDropdown';
 
 export default function MILRBatters() {
-  const [batters, setBatters] = React.useState<FormSchemaPlayers>([])
   const [combinedPitches, setCombinedPitches] = React.useState<FormSchemaPitches>([])
   const [mlrpitches, setMlrPitches] = React.useState<FormSchemaPitches>([])
   const [milrpitches, setMilrPitches] = React.useState<FormSchemaPitches>([])
-  const [batterOption, setBatterOption] = React.useState<number>(0);
-  const [error, setError] = React.useState<string>('');
+  const [playerOption, setPlayerOption] = React.useState<number>(0);
 
-  const [teams, setTeams] = React.useState<FormSchemaTeams>([])
   const [teamOption, setTeamOption] = React.useState('')
   const [mlrSeasons, setMlrSeasons] = React.useState<number[]>([]);
   const [mlrSeasonOption, setMlrSeasonOption] = React.useState<number>(0)
   const [milrSeasons, setMilrSeasons] = React.useState<number[]>([]);
-  const [milrSeasonOption, setMilrSeasonOption] = React.useState<number>(0)
+  const [milrSeasonOption, setMilrSeasonOption] = React.useState<number>(0);
+
+  const league = 'milr';
+  const leagueMLR = 'mlr';
+  const playerType = 'batting';
 
   const theme = createTheme({
     colorSchemes: {
@@ -40,25 +40,38 @@ export default function MILRBatters() {
   });
 
   // Get a list of players on page load
-  const { data: players, isLoading: isLoading } = useGetPlayers();
+  const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
+  const { data: plateAppearancesMLR } = useGetPlayer(playerType, leagueMLR, playerOption);
+  const { data: plateAppearancesMiLR } = useGetPlayer(playerType, league, playerOption);  
 
-  React.useEffect(() => {
-    const teamsList = teamsJson;
-    setTeams(teamsList);
-  }, [teams])
-
+  // Update Player Data based on fetched data
   React.useEffect(() => {
     if (players != null) {
-      const battersList = []
-      for (let i = 0; i < players.length; i++) {
-        if (players[i].milr_team === teamOption) {
-          battersList.push(players[i]);
+      const league = ['mlr', 'milr'];
+      const seasons = new Set<number>();
+      league.map(async (league) => {
+
+        if (league == 'mlr' && plateAppearancesMLR !== undefined) {
+          for (let i = 0; i < plateAppearancesMLR.length; i++) {
+            seasons.add(plateAppearancesMLR[i].season);
+          }
+          setMlrPitches(plateAppearancesMLR);
+
+          setMlrSeasons([...seasons].sort((a, b) => a - b))
+          setMlrSeasonOption(0)
         }
-      }
-      battersList.sort((a, b) => a.playerName.localeCompare(b.playerName));
-      setBatters(battersList);
+        else if (league == 'milr' && plateAppearancesMiLR !== undefined) {
+          for (let i = 0; i < plateAppearancesMiLR.length; i++) {
+            seasons.add(plateAppearancesMiLR[i].season);
+          }
+          setMilrPitches(plateAppearancesMiLR);
+
+          setMilrSeasons([...seasons].sort((a, b) => a - b))
+          setMilrSeasonOption(Number([...seasons].slice(-1))) // last season
+        }
+      });
     }
-  }, [teamOption])
+  }, [playerOption, plateAppearancesMLR, plateAppearancesMiLR]);
 
   // Season
   React.useEffect(() => {
@@ -81,67 +94,7 @@ export default function MILRBatters() {
 
       setCombinedPitches(filteredPitches);
     }
-  }, [players, batterOption, mlrSeasonOption, milrSeasonOption])
-
-  async function handleChangeTeam(event: SelectChangeEvent) {
-    const team = teams.find(team => team.teamID === event.target.value)
-    if (team) {
-      setTeamOption(team.teamID)
-      setBatterOption(0);
-      setMlrSeasons([]);
-      setMlrSeasonOption(0);
-      setMilrSeasons([]);
-      setMilrSeasonOption(0);
-      // reset dashboard
-    }
-  }
-
-  async function handleChangeBatter(event: SelectChangeEvent) {
-    if (players == undefined) {
-      setError('No Player Found');
-      return;
-    }
-
-    const player = players.find(player => player.playerID === Number(event.target.value))
-    if (player) {
-      setBatterOption(player.playerID)
-    }
-
-    const league = ['mlr', 'milr'];
-    const seasons = new Set<number>();
-
-    try {
-      league.map(async (league) => {
-        const response = await axios.get(
-          `https://api.mlr.gg/legacy/api/plateappearances/batting/${league}/${event.target.value}`,
-        )
-        if (league == 'mlr') {
-          for (let i = 0; i < response.data.length; i++) {
-            seasons.add(response.data[i].season);
-          }
-          setMlrPitches(response.data);
-          // setOriginalPitches(response.data);
-
-          setMlrSeasons([...seasons].sort((a, b) => a - b))
-          setMlrSeasonOption(0)
-        }
-        else if (league == 'milr') {
-          for (let i = 0; i < response.data.length; i++) {
-            seasons.add(response.data[i].season);
-          }
-          setMilrPitches(response.data);
-          // setOriginalPitches(response.data);
-
-          setMilrSeasons([...seasons].sort((a, b) => a - b))
-          setMilrSeasonOption(Number([...seasons].slice(-1))) // last season
-        }
-      })
-
-
-    } catch (err) {
-      setError('Error Fetching Swings ' + err);
-    }
-  }
+  }, [players, playerOption, mlrSeasonOption, milrSeasonOption, mlrpitches, milrpitches])
 
   async function handleChangeMlrSeason(event: SelectChangeEvent) {
     const season = Number(event.target.value);
@@ -155,57 +108,31 @@ export default function MILRBatters() {
     setMlrSeasonOption(0);
   }
 
+  const handleChangeTeam = React.useCallback((newTeamOption: string) => {
+    setTeamOption(newTeamOption);
+    setPlayerOption(0);
+    setMlrSeasons([]);
+    setMlrSeasonOption(0);
+    setMilrSeasons([]);
+    setMilrSeasonOption(0);
+  }, []);
 
+  const handleChangePlayer = React.useCallback((newPlayerOption: string) => {
+    setPlayerOption(Number(newPlayerOption));
+    setMlrPitches([]);
+    setMilrPitches([]);
+  }, []);
 
   return (
     <>
       {isLoading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
-      {!isLoading && !error &&
+      {isError && <p>{apiError?.message}</p>}
+      {!isLoading && !isError &&
         <ThemeProvider theme={theme}>
           <Grid container justifyContent="center" style={{ padding: 30 }}>
             <Grid size={12}>
-              <FormControl sx={{ m: 1, minWidth: 240, color: "red" }}>
-                <InputLabel id="team-input-select-label">Team</InputLabel>
-                <Select
-                  labelId="team-input-select-label"
-                  id="team-input-select"
-                  label={teamOption}
-                  onChange={handleChangeTeam}
-                  value={teamOption}
-                >
-                  {
-                    teams.map((team) => {
-                      return (
-                        <MenuItem key={team.teamID} value={team.teamID}>
-                          {team.teamName}
-                        </MenuItem>
-                      )
-                    })
-                  }
-                </Select>
-                <FormHelperText>{teamOption ? '' : 'Select Team'}</FormHelperText>
-              </FormControl>
-              <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
-                <InputLabel id="batter-input-select-label">Batter</InputLabel>
-                <Select
-                  labelId="batter-input-select-label"
-                  id="batter-input-select"
-                  onChange={handleChangeBatter}
-                  value={batterOption ? batterOption.toString() : ''}
-                >
-                  {
-                    batters.map((batter) => {
-                      return (
-                        <MenuItem key={batter.playerID} value={(batter === undefined || batter === null || batters.length === 0) ? '' : batter.playerID}>
-                          {batter.playerName}
-                        </MenuItem>
-                      )
-                    })
-                  }
-                </Select>
-                <FormHelperText>{batterOption ? '' : 'Select Batter'}</FormHelperText>
-              </FormControl>
+              <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} />
+              <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} />
               <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
                 <InputLabel id="mlrseason-input-select-label" sx={{ color: "grey.400", }}>MLR Season</InputLabel>
                 <Select

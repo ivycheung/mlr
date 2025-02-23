@@ -2,6 +2,14 @@ import * as React from 'react'
 
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 
+import { useGetPlayers } from '../api/use-get-players';
+import { useGetPlayer } from '../api/use-get-player';
+
+import PitchSwingChart from '../components/PitchSwingChart';
+import SessionDataTable from '../components/SessionDataTable';
+import TeamsDropdown from '../components/TeamsDropdown';
+import PlayersDropdown from '../components/PlayersDropdown';
+
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
@@ -9,13 +17,6 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid2';
-
-import { useGetPlayers } from '../api/use-get-players';
-import { useGetPlayer } from '../api/use-get-player';
-import SessionDataTable from '../components/SessionDataTable';
-import PitchSwingChart from '../components/PitchSwingChart';
-import TeamsDropdown from '../components/TeamsDropdown';
-import PlayersDropdown from '../components/PlayersDropdown';
 
 export default function MLRBatters() {
   const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
@@ -57,7 +58,6 @@ export default function MLRBatters() {
 
   // Seasons
   React.useEffect(() => {
-    console.log(plateAppearances)
     if (players != undefined && players.length != 0 && plateAppearances !== undefined && plateAppearances.length != 0) {
       // Loop through to get the sessions per season
       const numberOfSessions = new Set<number>();
@@ -68,8 +68,7 @@ export default function MLRBatters() {
       })
 
       // filter the pitches based on season + session
-      let filteredPitches: FormSchemaPitches = []
-
+      let filteredPitches: FormSchemaPitches = [];
       filteredPitches = originalPitches.filter(e => {
         if (e.season == seasonOption) {
           return true;
@@ -78,9 +77,9 @@ export default function MLRBatters() {
 
       setPitches(filteredPitches);
     }
-    else {
-      console.log('sad no players yet')
-    }
+    // else {
+    //   console.log('sad no players yet')
+    // }
   }, [seasonOption, originalPitches])
 
   async function handleChangeSeason(event: SelectChangeEvent) {
@@ -93,12 +92,12 @@ export default function MLRBatters() {
     setPlayerOption(0);
     setSeasons([]);
     setSeasonOption(0);
-  }, [teamOption]);
+  }, []);
 
   const handleChangePlayer = React.useCallback((newPlayerOption: string) => {
     setPlayerOption(Number(newPlayerOption));
     setPitches([]);
-  }, [playerOption]);
+  }, []);
 
   return (
     <>

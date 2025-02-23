@@ -97,17 +97,17 @@ export default function MLRPitchers() {
     setShowSeason(checked);
   }
 
-    const handleChangeTeam = React.useCallback((newTeamOption: string) => {
-      setTeamOption(newTeamOption);
-      setPlayerOption(0);
-      setSeasons([]);
-      setSeasonOption(0);  
-    }, [teamOption]);
-  
-    const handleChangePlayer = React.useCallback((newPlayerOption: string) => {
-      setPlayerOption(Number(newPlayerOption));
-      setPitches([]);
-    }, [playerOption]);
+  const handleChangeTeam = React.useCallback((newTeamOption: string) => {
+    setTeamOption(newTeamOption);
+    setPlayerOption(0);
+    setSeasons([]);
+    setSeasonOption(0);
+  }, []);
+
+  const handleChangePlayer = React.useCallback((newPlayerOption: string) => {
+    setPlayerOption(Number(newPlayerOption));
+    setPitches([]);
+  }, []);
 
   return (
     <>

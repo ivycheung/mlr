@@ -2,6 +2,17 @@ import * as React from 'react'
 
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 
+import { useGetPlayers } from '../api/use-get-players';
+import { useGetPlayer } from '../api/use-get-player';
+
+import PitchSwingChart from '../components/PitchSwingChart';
+import SessionDataTable from '../components/SessionDataTable';
+import PitchByPlacementInInning from '../components/PitchByPlacementInInning';
+import PitchByPitchDelta from '../components/PitchByPitchDelta';
+import PitchesByInning from '../components/PitchesByInning';
+import TeamsDropdown from '../components/TeamsDropdown';
+import PlayersDropdown from '../components/PlayersDropdown';
+
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
@@ -10,15 +21,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid2';
 
-import PitchSwingChart from '../components/PitchSwingChart';
-import SessionDataTable from '../components/SessionDataTable';
-import PitchByPlacementInInning from '../components/PitchByPlacementInInning';
-import PitchByPitchDelta from '../components/PitchByPitchDelta';
-import PitchesByInning from '../components/PitchesByInning';
-import { useGetPlayers } from '../api/use-get-players';
-import { useGetPlayer } from '../api/use-get-player';
-import TeamsDropdown from '../components/TeamsDropdown';
-import PlayersDropdown from '../components/PlayersDropdown';
+
 // import Slider from '@mui/material/Slider';
 
 export default function MLRPitchers() {
@@ -30,7 +33,6 @@ export default function MLRPitchers() {
   const [originalPitches, setOriginalPitches] = React.useState<FormSchemaPitches>([])
   const [sessions, setSessions] = React.useState<number[]>([]);
   const [sessionOption, setSessionOption] = React.useState<number>(0)
-  // const [error, setError] = React.useState<string>('');
   const league = 'mlr';
   const playerType = 'pitching';
 
@@ -91,9 +93,9 @@ export default function MLRPitchers() {
 
       setPitches(filteredPitches);
     }
-    else {
-      console.log('sad no players yet')
-    }
+    // else {
+    //   console.log('sad no players yet')
+    // }
   }, [seasonOption, sessionOption]);
 
   async function handleChangeSeason(event: SelectChangeEvent) {
@@ -114,12 +116,12 @@ export default function MLRPitchers() {
     setSeasonOption(0);
     setSessionOption(0);
 
-  }, [teamOption]);
+  }, []);
 
   const handleChangePlayer = React.useCallback((newPlayerOption: string) => {
     setPlayerOption(Number(newPlayerOption));
     setPitches([]);
-  }, [playerOption]);
+  }, []);
 
 
 

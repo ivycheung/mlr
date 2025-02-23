@@ -37,7 +37,7 @@ const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches }) => {
               label: "Delta", data: deltaNumbers, color: "teal"
             },
           ]}
-          height={document.documentElement.clientHeight * 0.50}
+          height={document.documentElement.clientHeight * 0.75}
           tooltip={{ trigger: 'item' }}
         >
           <ChartsReferenceLine y={0} label="0" labelAlign="end" />
