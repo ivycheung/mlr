@@ -63,13 +63,12 @@ export default function MILRPitchers() {
 
   // Update Player Data based on fetched data
   React.useEffect(() => {
-    if (players != null) {
+    if (Array.isArray(players)) {
       // Determine how many seasons per league for dropdowns
-      const leagues = ['mlr', 'milr'];
-      leagues.map(async (l) => {
+      for (const l of ['mlr', 'milr']) {
         if (l == 'mlr') {
           const seasons = new Set<number>();
-          if (plateAppearancesMLR !== undefined) {
+          if (plateAppearancesMLR !== undefined && Array.isArray(plateAppearancesMLR)) {
             for (let i = 0; i < plateAppearancesMLR.length; i++) {
               seasons.add(plateAppearancesMLR[i].season);
             }
@@ -80,7 +79,7 @@ export default function MILRPitchers() {
         }
         else if (l == 'milr') {
           const seasons = new Set<number>();
-          if (plateAppearancesMiLR !== undefined) {
+          if (plateAppearancesMiLR !== undefined && Array.isArray(plateAppearancesMiLR)) {
             for (let i = 0; i < plateAppearancesMiLR.length; i++) {
               seasons.add(plateAppearancesMiLR[i].season);
             }
@@ -89,7 +88,7 @@ export default function MILRPitchers() {
             setMilrSeasonOption(Number([...seasons].slice(-1))) // last season
           }
         }
-      })
+      }
 
       if (milrSeasons.length == 0 && mlrSeasons.length != 0) {
         setMlrSeasonOption(Number([...mlrSeasons].slice(-1))) // last season
@@ -100,7 +99,7 @@ export default function MILRPitchers() {
 
   // Seasons
   React.useEffect(() => {
-    if (players != null) {
+    if (Array.isArray(players)) {
       let filteredPitches: FormSchemaPitches = []
       if (mlrSeasonOption != 0 && milrSeasonOption == 0) {
         filteredPitches = mlrpitches.filter(e => {

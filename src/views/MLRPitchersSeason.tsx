@@ -54,7 +54,7 @@ export default function MLRPitchers() {
 
   // Update Player Data based on fetched data
   React.useEffect(() => {
-    if (players != null && plateAppearances !== undefined) {
+    if (Array.isArray(players) && plateAppearances !== undefined && Array.isArray(plateAppearances)) {
       const seasons = new Set<number>();
       for (let i = 0; i < plateAppearances.length; i++) {
         seasons.add(plateAppearances[i].season)
@@ -69,7 +69,7 @@ export default function MLRPitchers() {
 
   // Seasons
   React.useEffect(() => {
-    if (players != undefined && players.length != 0 && plateAppearances !== undefined && plateAppearances.length != 0) {
+    if (Array.isArray(players) && players.length != 0 && plateAppearances !== undefined && plateAppearances.length != 0) {
       // filter the pitches based on season
       let filteredPitches: FormSchemaPitches = []
       if (!careerOption) {

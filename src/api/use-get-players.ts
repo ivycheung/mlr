@@ -14,7 +14,7 @@ const fetchPlayers = async (): Promise<FormSchemaPlayers> => {
       staleTime: Infinity});
 
     return {
-      data: result.data,
+      data: result.data || [],
       isLoading: result.isLoading,
       isError: result.isError,
       error: result.error

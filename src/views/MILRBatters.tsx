@@ -46,12 +46,11 @@ export default function MILRBatters() {
 
   // Update Player Data based on fetched data
   React.useEffect(() => {
-    if (players != null) {
-      const league = ['mlr', 'milr'];
-      const seasons = new Set<number>();
-      league.map(async (league) => {
-
-        if (league == 'mlr' && plateAppearancesMLR !== undefined) {
+    if (Array.isArray(players)) {
+      // const league = ['mlr', 'milr'];
+      for (const league of ['mlr', 'milr']) {
+        const seasons = new Set<number>();
+        if (league == 'mlr' && plateAppearancesMLR !== undefined && Array.isArray(plateAppearancesMLR)) {
           for (let i = 0; i < plateAppearancesMLR.length; i++) {
             seasons.add(plateAppearancesMLR[i].season);
           }
@@ -60,7 +59,7 @@ export default function MILRBatters() {
           setMlrSeasons([...seasons].sort((a, b) => a - b))
           setMlrSeasonOption(0)
         }
-        else if (league == 'milr' && plateAppearancesMiLR !== undefined) {
+        else if (league == 'milr' && plateAppearancesMiLR !== undefined && Array.isArray(plateAppearancesMiLR)) {
           for (let i = 0; i < plateAppearancesMiLR.length; i++) {
             seasons.add(plateAppearancesMiLR[i].season);
           }
@@ -69,13 +68,13 @@ export default function MILRBatters() {
           setMilrSeasons([...seasons].sort((a, b) => a - b))
           setMilrSeasonOption(Number([...seasons].slice(-1))) // last season
         }
-      });
+      }
     }
   }, [playerOption, plateAppearancesMLR, plateAppearancesMiLR]);
 
   // Season
   React.useEffect(() => {
-    if (players != null) {
+    if (Array.isArray(players)) {
       let filteredPitches: FormSchemaPitches = []
       if (mlrSeasonOption != 0 && milrSeasonOption == 0) {
         filteredPitches = mlrpitches.filter(e => {

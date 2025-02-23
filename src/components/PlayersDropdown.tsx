@@ -26,6 +26,11 @@ const PlayersDropdown: React.FC<PlayersDropdownProps> = ({ league, players, play
 
   const handleDropdownChange = (e: { target: { value: string; }; }) => {
     const newPlayerOption = e.target.value;
+
+    if (Number.isNaN(newPlayerOption)) {
+      throw new Error('Invalid player.');
+    }
+    
     handleChangePlayer(newPlayerOption);
   }
     
@@ -39,7 +44,7 @@ const PlayersDropdown: React.FC<PlayersDropdownProps> = ({ league, players, play
         value={playerOption ? playerOption.toString() : ''}
       >
         {
-          teamOption && playerList.map((player) => {
+          teamOption && playerList?.map((player) => {
             return (
               <MenuItem key={player.playerID} value={(player === undefined || player === null ) ? '' : player.playerID}>
                 {player.playerName}

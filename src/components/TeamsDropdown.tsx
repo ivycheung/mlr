@@ -28,8 +28,10 @@ const TeamsDropdown: React.FC<TeamsDropdownProps> = ({ league, teamOption, handl
   else if (league == 'milr') {
     teams = milrTeamsJson;
   }
-
-  teams.sort((a, b) => a.teamName.localeCompare(b.teamName));
+  
+  if (teams && teams.length > 0) {
+    teams.sort((a, b) => a.teamName.localeCompare(b.teamName));
+  }
 
   const handleDropdownChange = (e: { target: { value: string; }; }) => {
     const teamOption = e.target.value;

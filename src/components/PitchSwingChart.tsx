@@ -13,7 +13,7 @@ const PitchSwingChart: React.FC<PitchSwingChartProps> = ( {pitches} ) => {
   const pitchCount: number[] = []
 
   if (pitches.length != 0) {
-    pitches.map((pitch, i) => {
+    pitches.forEach((pitch, i) => {
       pitchNumbers.push(pitch.pitch)
       swingNumbers.push(pitch.swing)
       pitchCount.push(i)

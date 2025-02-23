@@ -43,7 +43,7 @@ export default function MLRBatters() {
 
   // Update Player Data based on fetched data
   React.useEffect(() => {
-    if (players != null && plateAppearances !== undefined) {
+    if (Array.isArray(players) && plateAppearances !== undefined && Array.isArray(plateAppearances)) {
       const seasons = new Set<number>();
       for (let i = 0; i < plateAppearances.length; i++) {
         seasons.add(plateAppearances[i].season)
@@ -58,10 +58,10 @@ export default function MLRBatters() {
 
   // Seasons
   React.useEffect(() => {
-    if (players != undefined && players.length != 0 && plateAppearances !== undefined && plateAppearances.length != 0) {
+    if (Array.isArray(players) && players.length != 0 && plateAppearances !== undefined && plateAppearances.length != 0) {
       // Loop through to get the sessions per season
       const numberOfSessions = new Set<number>();
-      originalPitches.map((e) => {
+      originalPitches?.map((e) => {
         if (e.season == seasonOption) {
           numberOfSessions.add(e.session);
         }
@@ -69,7 +69,7 @@ export default function MLRBatters() {
 
       // filter the pitches based on season + session
       let filteredPitches: FormSchemaPitches = [];
-      filteredPitches = originalPitches.filter(e => {
+      filteredPitches = originalPitches?.filter(e => {
         if (e.season == seasonOption) {
           return true;
         }
