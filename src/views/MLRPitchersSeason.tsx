@@ -7,12 +7,10 @@ import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/styles';
 import Grid from '@mui/material/Grid2';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import HistogramChart from '../components/HistogramChart';
-import CssBaseline from '@mui/material/CssBaseline';
 import Grid2 from '@mui/material/Grid2';
 import Stack from '@mui/material/Stack';
 import FormGroup from '@mui/material/FormGroup';
@@ -40,13 +38,6 @@ export default function MLRPitchers() {
   const [showSeason, setShowSeason] = React.useState<boolean>(false);
   const league = 'mlr';
   const playerType = 'pitching';
-
-  let theme = createTheme({
-    palette: {
-      mode: 'light',
-    },
-  });
-  theme = responsiveFontSizes(theme);
 
   // Get a list of players on page load
   const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
@@ -114,99 +105,95 @@ export default function MLRPitchers() {
       {isLoading && <p>Loading...</p>}
       {isError && <p>{apiError?.message}</p>}
       {!isLoading && !isError &&
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Grid container style={{ padding: 30 }} size={12} direction="row"
-            sx={{
-              justifyContent: "flex-start",
-              alignItems: "center"
-            }}
-          >
-            <Grid>
-              <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} />
-              <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} />
-              <FormControl sx={{ m: 1, minWidth: 240 }}>
-                <InputLabel id="season-input-select-label">Season</InputLabel>
-                <Select
-                  labelId="season-input-select-label"
-                  id="season-input-select"
-                  label={seasonOption}
-                  onChange={handleChangeSeason}
-                  value={seasonOption ? seasonOption.toString() : ''}
-                >
-                  {
-                    seasons.map((season) => {
-                      return (
-                        <MenuItem key={season} value={(season === undefined || season === null || seasons.length === 0) ? '' : season}>
-                          {season}
-                        </MenuItem>
-                      )
-                    })
-                  }
-                </Select>
-                <FormHelperText>{seasonOption ? '' : 'Select Season'}</FormHelperText>
-              </FormControl>
-              <FormControl sx={{ m: 1, minWidth: 240 }}>
-                <FormGroup aria-label="position" row>
-                  <FormControlLabel
-                    control={<Checkbox size="small" onChange={handleCareerStatsChange} />} label="Career Stats" labelPlacement="end" />
-                </FormGroup>
-              </FormControl>
+        <Grid container style={{ padding: 30 }} size={12} direction="row"
+          sx={{
+            justifyContent: "flex-start",
+            alignItems: "center"
+          }}
+        >
+          <Grid>
+            <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} />
+            <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} />
+            <FormControl sx={{ m: 1, minWidth: 150 }}>
+              <InputLabel id="season-input-select-label">Season</InputLabel>
+              <Select
+                labelId="season-input-select-label"
+                id="season-input-select"
+                label={seasonOption}
+                onChange={handleChangeSeason}
+                value={seasonOption ? seasonOption.toString() : ''}
+              >
+                {
+                  seasons.map((season) => {
+                    return (
+                      <MenuItem key={season} value={(season === undefined || season === null || seasons.length === 0) ? '' : season}>
+                        {season}
+                      </MenuItem>
+                    )
+                  })
+                }
+              </Select>
+              <FormHelperText>{seasonOption ? '' : 'Select Season'}</FormHelperText>
+            </FormControl>
+            <FormControl sx={{ m: 1, minWidth: 150 }}>
+              <FormGroup aria-label="position" row>
+                <FormControlLabel
+                  control={<Checkbox size="small" onChange={handleCareerStatsChange} />} label="Career Stats" labelPlacement="end" />
+              </FormGroup>
+            </FormControl>
 
-            </Grid>
-            {
-              ((!pitches || pitches.length != 0) ?
-                <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }} sx={{
-                  justifyContent: "flex-start",
-                  alignItems: "center"
-                }}>
-                  <Accordion style={{ maxHeight: '500px' }}>
-                    <AccordionSummary
-                      expandIcon={<ArrowDropDownIcon />}
-                      aria-controls="panel2-content"
-                      id="panel2-header"
-                      style={{ backgroundColor: blueGrey[50] }}>
-                      <Typography component="span">Data Table</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <SessionDataTable pitches={pitches} showSeason={showSeason} />
-                    </AccordionDetails>
-                  </Accordion>
-                </Grid>
-                : '')
-            }
-
-            <Grid container spacing={2} style={{ padding: 30 }} size={{ lg: 12 }}
-              sx={{
+          </Grid>
+          {
+            ((!pitches || pitches.length != 0) ?
+              <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }} sx={{
                 justifyContent: "flex-start",
                 alignItems: "center"
               }}>
-              <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
-                { /* histogram */}
-                <HistogramChart pitches={pitches} />
-              </Grid2>
-              <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
-                { /* heatmap */}
-                <Stack
-                  direction={'column'}
-                  sx={{
-                    alignItems: 'center',
-                    justifyContent: 'space-evenly',
-                    height: '100%',
+                <Accordion style={{ maxHeight: '500px' }}>
+                  <AccordionSummary
+                    expandIcon={<ArrowDropDownIcon />}
+                    aria-controls="panel2-content"
+                    id="panel2-header"
+                    style={{ backgroundColor: blueGrey[50] }}>
+                    <Typography component="span">Data Table</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <SessionDataTable pitches={pitches} showSeason={showSeason} />
+                  </AccordionDetails>
+                </Accordion>
+              </Grid>
+              : '')
+          }
 
-                  }}>
-                  {/* <HeatmapChart pitches={pitches} /> */}
-                </Stack>
-              </Grid2>
-            </Grid>
-            {/* <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+          <Grid container spacing={2} style={{ padding: 30 }} size={{ lg: 12 }}
+            sx={{
+              justifyContent: "flex-start",
+              alignItems: "center"
+            }}>
+            <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
+              <HistogramChart pitches={pitches} />
+            </Grid2>
+            <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
+              { /* heatmap */}
+              <Stack
+                direction={'column'}
+                sx={{
+                  alignItems: 'center',
+                  justifyContent: 'space-evenly',
+                  height: '100%',
+
+                }}>
+                {/* <HeatmapChart pitches={pitches} /> */}
+              </Stack>
+            </Grid2>
+          </Grid>
+          {/* <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
               <PitchByPitchDelta pitches={pitches} />
             </Grid>
             <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
                 <PitchesByInning pitches={pitches} />
             </Grid> */}
-          </Grid>
-        </ThemeProvider>
+        </Grid>
       }
     </>
   );

@@ -39,7 +39,7 @@ const TeamsDropdown: React.FC<TeamsDropdownProps> = ({ league, teamOption, handl
   }
     
   return (
-    <FormControl sx={{ m: 1, minWidth: 240, color: "red" }}>
+    <FormControl sx={{ m: 1, minWidth: { xs: 150, sm: 200, lg: 240 }, ml: {lg: 0} }}>
       <InputLabel id="team-input-select-label">Team</InputLabel>
       <Select
         labelId="team-input-select-label"

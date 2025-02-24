@@ -30,12 +30,12 @@ const PlayersDropdown: React.FC<PlayersDropdownProps> = ({ league, players, play
     if (Number.isNaN(newPlayerOption)) {
       throw new Error('Invalid player.');
     }
-    
+
     handleChangePlayer(newPlayerOption);
   }
-    
+
   return (
-    <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
+    <FormControl sx={{ m: 1, minWidth: { xs: 150, sm: 200, lg: 240 } }}>
       <InputLabel id="player-input-select-label">Player</InputLabel>
       <Select
         labelId="player-input-select-label"
@@ -46,7 +46,7 @@ const PlayersDropdown: React.FC<PlayersDropdownProps> = ({ league, players, play
         {
           teamOption && playerList?.map((player) => {
             return (
-              <MenuItem key={player.playerID} value={(player === undefined || player === null ) ? '' : player.playerID}>
+              <MenuItem key={player.playerID} value={(player === undefined || player === null) ? '' : player.playerID}>
                 {player.playerName}
               </MenuItem>
             )
