@@ -4,7 +4,7 @@ import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
 import Box from '@mui/material/Box';
-import Grid2 from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid2';
 import Stack from '@mui/material/Stack';
 import { ChartsXAxis } from '@mui/x-charts/ChartsXAxis';
 import { ResponsiveChartContainer } from '@mui/x-charts/ResponsiveChartContainer';
@@ -54,7 +54,7 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
     }
 
     return (
-      <Grid2 className="histogramChart" >
+      <Grid className="histogramChart" >
         <Stack
           direction={'column'}
           sx={{
@@ -65,7 +65,7 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="h6">Histogram of Pitches</Typography>
           </Box>
-          <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 12 }}>
+          <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }}>
             <div>
               <ResponsiveChartContainer height={300}
                 series={[{ type: 'bar', data: yArray }]}
@@ -74,16 +74,17 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
                     data: xArray,
                     scaleType: 'band',
                     id: 'x-axis-id',
+                    
                   }
                 ]}
               >
                 <ChartsXAxis position="bottom" axisId="x-axis-id" />
                 <ChartsYAxis />
-                <BarPlot />
+                <BarPlot barLabel={'value'} />
                 <ChartsTooltip />
               </ResponsiveChartContainer>
             </div>
-          </Grid2>
+          </Grid>
           <Box sx={{
             textAlign: 'center', alignItems: 'center',
             // display: 'flex',       // Set the display to flex
@@ -107,7 +108,7 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ pitches }) => {
             />
           </Box>
         </Stack>
-      </Grid2>
+      </Grid>
     );
   }
   else {

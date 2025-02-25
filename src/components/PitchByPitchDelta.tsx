@@ -17,7 +17,7 @@ const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches }) => {
     let delta: number = 0;
 
     for (let i = 0; i < pitches.length; i++) {
-      pitchCount.push(i);
+      pitchCount.push(i+1);
       delta = Number((i > 0 ? calculatePitchCircleDelta(pitches, i, false) : 0));
       if (isNumber(delta)) {
         deltaNumbers.push(delta);
@@ -43,6 +43,7 @@ const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches }) => {
             },
           ]}
           tooltip={{ trigger: 'item' }}
+          grid={{ horizontal: true }}
         >
           <ChartsReferenceLine y={0} label="0" labelAlign="end" />
         </LineChart>

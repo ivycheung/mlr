@@ -15,7 +15,7 @@ const PitchSwingChart: React.FC<PitchSwingChartProps> = ({ pitches }) => {
     pitches.forEach((pitch, i) => {
       pitchNumbers.push(pitch.pitch)
       swingNumbers.push(pitch.swing)
-      pitchCount.push(i)
+      pitchCount.push(i+1)
     })
 
     return (
@@ -25,6 +25,7 @@ const PitchSwingChart: React.FC<PitchSwingChartProps> = ({ pitches }) => {
       }}>
         <LineChart
           xAxis={[{ data: pitchCount, scaleType: 'band', tickPlacement: 'middle' },]}
+          grid={{ horizontal: true }}
           series={[
             {
               data: pitchNumbers,
