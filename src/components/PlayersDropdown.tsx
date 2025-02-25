@@ -6,6 +6,8 @@ import Select from "@mui/material/Select";
 import React from "react";
 import { populatePlayersList } from "../utils/utils";
 import { FormSchemaPlayers } from "../types/schemas/player-schema";
+import { SxProps, Theme, useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 type PlayersDropdownProps = {
   league: string,
@@ -13,10 +15,11 @@ type PlayersDropdownProps = {
   playerType: string,
   teamOption: string;
   playerOption: number, // for callback
-  handleChangePlayer: (newPlayerOption: string) => void;
+  handleChangePlayer: (newPlayerOption: number) => void;
+  sx?: SxProps<Theme>;
 };
 
-const PlayersDropdown: React.FC<PlayersDropdownProps> = ({ league, players, playerType, teamOption, playerOption, handleChangePlayer }) => {
+const PlayersDropdown: React.FC<PlayersDropdownProps> = ({ league, players, playerType, teamOption, playerOption, handleChangePlayer, sx }) => {
   const validLeagues = ['milr', 'mlr'];
   if (!validLeagues.includes(league)) {
     throw new Error('Invalid league or position type');
@@ -30,13 +33,19 @@ const PlayersDropdown: React.FC<PlayersDropdownProps> = ({ league, players, play
     if (Number.isNaN(newPlayerOption)) {
       throw new Error('Invalid player.');
     }
-    
-    handleChangePlayer(newPlayerOption);
+
+    handleChangePlayer(Number(newPlayerOption));
   }
-    
+  
+  const theme = useTheme();
+  const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
+
   return (
-    <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
-      <InputLabel id="player-input-select-label">Player</InputLabel>
+    <FormControl sx={{ m: 1, minWidth: { xs: 150, sm: 200, lg: 240 }, ...sx }}>
+      {notDesktop ?
+        <InputLabel id="player-input-select-label" shrink>Player</InputLabel> :
+        <InputLabel id="player-input-select-label">Player</InputLabel>
+      }
       <Select
         labelId="player-input-select-label"
         id="player-input-select"
@@ -44,16 +53,16 @@ const PlayersDropdown: React.FC<PlayersDropdownProps> = ({ league, players, play
         value={playerOption ? playerOption.toString() : ''}
       >
         {
-          teamOption && playerList?.map((player) => {
+          teamOption && playerList && playerList.map((player) => {
             return (
-              <MenuItem key={player.playerID} value={(player === undefined || player === null ) ? '' : player.playerID}>
+              <MenuItem key={player.playerID} value={(player === undefined || player === null) ? '' : player.playerID}>
                 {player.playerName}
               </MenuItem>
             )
           })
         }
       </Select>
-      <FormHelperText>{playerOption ? '' : `Select ${playerType}`}</FormHelperText>
+      {notDesktop ? '' : <FormHelperText>{playerOption ? '' : `Select ${playerType}`}</FormHelperText>}
     </FormControl>
   )
 }

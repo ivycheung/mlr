@@ -11,12 +11,10 @@ import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/styles';
 import Grid from '@mui/material/Grid2';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import CssBaseline from '@mui/material/CssBaseline';
 import Grid2 from '@mui/material/Grid2';
 import Stack from '@mui/material/Stack';
 import FormGroup from '@mui/material/FormGroup';
@@ -37,7 +35,7 @@ export default function MILRPitchers() {
   const [mlrSeasonOption, setMlrSeasonOption] = React.useState<number>(0)
   const [milrSeasons, setMilrSeasons] = React.useState<number[]>([]);
   const [milrSeasonOption, setMilrSeasonOption] = React.useState<number>(0)
-  
+
   const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
   const [mlrpitches, setMlrPitches] = React.useState<FormSchemaPitches>([])
   const [milrpitches, setMilrPitches] = React.useState<FormSchemaPitches>([])
@@ -48,13 +46,6 @@ export default function MILRPitchers() {
   const league = 'milr';
   const leagueMLR = 'mlr';
   const playerType = 'pitching';
-
-  let theme = createTheme({
-    palette: {
-      mode: 'light',
-    },
-  });
-  theme = responsiveFontSizes(theme);
 
   // Get a list of players on page load
   const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
@@ -174,8 +165,8 @@ export default function MILRPitchers() {
 
   }, []);
 
-  const handleChangePlayer = React.useCallback((newPlayerOption: string) => {
-    setPlayerOption(Number(newPlayerOption));
+  const handleChangePlayer = React.useCallback((newPlayerOption: number) => {
+    setPlayerOption(newPlayerOption);
     setPitches([]);
   }, []);
 
@@ -184,115 +175,112 @@ export default function MILRPitchers() {
       {isLoading && <p>Loading...</p>}
       {isError && <p>{apiError?.message}</p>}
       {!isLoading && !isError &&
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Grid container justifyContent="center" style={{ padding: 30 }}>
-            <Grid size={12}>
-              <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} />
-              <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} />
-              <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
-                <InputLabel id="mlrseason-input-select-label" sx={{ color: "grey.400", }}>MLR Season</InputLabel>
-                <Select
-                  labelId="mlrseason-input-select-label"
-                  id="mlrseason-input-select"
-                  label={mlrSeasonOption}
-                  onChange={handleChangeMlrSeason}
-                  value={mlrSeasonOption ? mlrSeasonOption.toString() : ''
-                  }
-                >
-                  {
-                    mlrSeasons.map((season) => {
-                      return (
-                        <MenuItem key={season} value={(season === undefined || season === null || mlrSeasons.length === 0) ? '' : season}>
-                          {season}
-                        </MenuItem>
-                      )
-                    })
-                  }
-                </Select>
-                <FormHelperText>{mlrSeasonOption ? '' : 'Select MLR Season'}</FormHelperText>
-              </FormControl>
-              <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
-                <InputLabel id="milrseason-input-select-label" sx={{ color: "red[500]", }}>MiLR Season</InputLabel>
-                <Select
-                  labelId="milrseason-input-select-label"
-                  id="milrseason-input-select"
-                  label={milrSeasonOption}
-                  onChange={handleChangeMilrSeason}
-                  value={milrSeasonOption ? milrSeasonOption.toString() : ''}
-                >
-                  {
-                    milrSeasons.map((season) => {
-                      return (
-                        <MenuItem key={season} value={(season === undefined || season === null || milrSeasons.length === 0) ? '' : season}>
-                          {season}
-                        </MenuItem>
-                      )
-                    })
-                  }
-                </Select>
-                <FormHelperText>{milrSeasonOption ? '' : 'Select MiLR Season'}</FormHelperText>
-              </FormControl>
-              <FormControl sx={{ m: 1, minWidth: 240 }}>
-                <FormGroup aria-label="position" row>
-                  <FormControlLabel
-                    control={<Checkbox size="small" onChange={handleCareerStatsChange} />} label="Career Stats" labelPlacement="end" />
-                </FormGroup>
-              </FormControl>
-            </Grid>
-            {
-              ((!pitches || pitches.length != 0) ?
-                <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }} sx={{
-                  justifyContent: "flex-start",
-                  alignItems: "center"
-                }}>
-                  <Accordion style={{ maxHeight: '500px' }}>
-                    <AccordionSummary
-                      expandIcon={<ArrowDropDownIcon />}
-                      aria-controls="panel2-content"
-                      id="panel2-header"
-                      style={{ backgroundColor: blueGrey[50] }}>
-                      <Typography component="span">Data Table</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <SessionDataTable pitches={pitches} showSeason={showSeason} />
-                    </AccordionDetails>
-                  </Accordion>
-                </Grid>
-                : '')
-            }
-
-            <Grid container spacing={2} style={{ padding: 30 }} size={{ lg: 12 }}
-              sx={{
+        <Grid container justifyContent="center" style={{ padding: 30 }}>
+          <Grid size={12}>
+            <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} />
+            <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} />
+            <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
+              <InputLabel id="mlrseason-input-select-label" sx={{ color: "grey.400", }}>MLR Season</InputLabel>
+              <Select
+                labelId="mlrseason-input-select-label"
+                id="mlrseason-input-select"
+                label={mlrSeasonOption}
+                onChange={handleChangeMlrSeason}
+                value={mlrSeasonOption !== undefined && mlrSeasonOption !== null ? mlrSeasonOption.toString() : ''
+                }
+              >
+                {
+                  mlrSeasons.map((season) => {
+                    return (
+                      <MenuItem key={season} value={(season === undefined || season === null || mlrSeasons.length === 0) ? '' : season}>
+                        {season}
+                      </MenuItem>
+                    )
+                  })
+                }
+              </Select>
+              <FormHelperText>{mlrSeasonOption ? '' : 'Select MLR Season'}</FormHelperText>
+            </FormControl>
+            <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
+              <InputLabel id="milrseason-input-select-label" sx={{ color: "red[500]", }}>MiLR Season</InputLabel>
+              <Select
+                labelId="milrseason-input-select-label"
+                id="milrseason-input-select"
+                label={milrSeasonOption}
+                onChange={handleChangeMilrSeason}
+                value={milrSeasonOption ? milrSeasonOption.toString() : ''}
+              >
+                {
+                  milrSeasons.map((season) => {
+                    return (
+                      <MenuItem key={season} value={(season === undefined || season === null || milrSeasons.length === 0) ? '' : season}>
+                        {season}
+                      </MenuItem>
+                    )
+                  })
+                }
+              </Select>
+              <FormHelperText>{milrSeasonOption ? '' : 'Select MiLR Season'}</FormHelperText>
+            </FormControl>
+            <FormControl sx={{ m: 1, minWidth: 240 }}>
+              <FormGroup aria-label="position" row>
+                <FormControlLabel
+                  control={<Checkbox size="small" onChange={handleCareerStatsChange} />} label="Career Stats" labelPlacement="end" />
+              </FormGroup>
+            </FormControl>
+          </Grid>
+          {
+            ((!pitches || pitches.length != 0) ?
+              <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }} sx={{
                 justifyContent: "flex-start",
                 alignItems: "center"
               }}>
-              <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
-                { /* histogram */}
-                <HistogramChart pitches={pitches} />
-              </Grid2>
-              <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
-                { /* heatmap */}
-                <Stack
-                  direction={'column'}
-                  sx={{
-                    alignItems: 'center',
-                    justifyContent: 'space-evenly',
-                    height: '100%',
+                <Accordion style={{ maxHeight: '500px' }}>
+                  <AccordionSummary
+                    expandIcon={<ArrowDropDownIcon />}
+                    aria-controls="panel2-content"
+                    id="panel2-header"
+                    style={{ backgroundColor: blueGrey[50] }}>
+                    <Typography component="span">Data Table</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <SessionDataTable pitches={pitches} showSeason={showSeason} />
+                  </AccordionDetails>
+                </Accordion>
+              </Grid>
+              : '')
+          }
 
-                  }}>
-                  {/* <HeatmapChart pitches={pitches} /> */}
-                </Stack>
-              </Grid2>
-            </Grid>
-            {/* <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+          <Grid container spacing={2} style={{ padding: 30 }} size={{ lg: 12 }}
+            sx={{
+              justifyContent: "flex-start",
+              alignItems: "center"
+            }}>
+            <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
+              { /* histogram */}
+              <HistogramChart pitches={pitches} />
+            </Grid2>
+            <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
+              { /* heatmap */}
+              <Stack
+                direction={'column'}
+                sx={{
+                  alignItems: 'center',
+                  justifyContent: 'space-evenly',
+                  height: '100%',
+
+                }}>
+                {/* <HeatmapChart pitches={pitches} /> */}
+              </Stack>
+            </Grid2>
+          </Grid>
+          {/* <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
               <PitchByPitchDelta pitches={pitches} />
             </Grid>
             <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
                 <PitchesByInning pitches={pitches} />
             </Grid> */}
-          </Grid>
-        </ThemeProvider>
+        </Grid>
       }
     </>
   );

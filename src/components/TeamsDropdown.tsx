@@ -6,15 +6,17 @@ import Select from "@mui/material/Select";
 import React from "react";
 import mlrTeamsJson from '../utils/mlrteams.json';
 import milrTeamsJson from '../utils/milrteams.json';
+import { SxProps, Theme, useTheme } from "@mui/material/styles";
+import { useMediaQuery } from "@mui/material";
 
-interface TeamsDropdownProps { 
-  league: string,
-  teamOption: string,
+interface TeamsDropdownProps {
+  league: string;
+  teamOption: string;
   handleChangeTeam: (newTeamOption: string) => void
- }
+  sx?: SxProps<Theme>;
+}
 
-const TeamsDropdown: React.FC<TeamsDropdownProps> = ({ league, teamOption, handleChangeTeam }) => {
-
+const TeamsDropdown: React.FC<TeamsDropdownProps> = ({ league, teamOption, handleChangeTeam, sx }) => {
   const validLeagues = ['milr', 'mlr'];
   if (!validLeagues.includes(league)) {
     throw new Error('Invalid league or position type');
@@ -28,7 +30,7 @@ const TeamsDropdown: React.FC<TeamsDropdownProps> = ({ league, teamOption, handl
   else if (league == 'milr') {
     teams = milrTeamsJson;
   }
-  
+
   if (teams && teams.length > 0) {
     teams.sort((a, b) => a.teamName.localeCompare(b.teamName));
   }
@@ -37,10 +39,16 @@ const TeamsDropdown: React.FC<TeamsDropdownProps> = ({ league, teamOption, handl
     const teamOption = e.target.value;
     handleChangeTeam(teamOption);
   }
-    
+
+  const theme = useTheme();
+  const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
+
   return (
-    <FormControl sx={{ m: 1, minWidth: 240, color: "red" }}>
-      <InputLabel id="team-input-select-label">Team</InputLabel>
+    <FormControl sx={{ m: 1, minWidth: { xs: 150, sm: 200, lg: 240 }, ml: { lg: 0 }, ...sx }}>
+      {notDesktop ?
+        <InputLabel id="team-input-select-label" shrink>Team</InputLabel> :
+        <InputLabel id="team-input-select-label">Team</InputLabel>
+      }
       <Select
         labelId="team-input-select-label"
         id="team-input-select"
@@ -58,7 +66,7 @@ const TeamsDropdown: React.FC<TeamsDropdownProps> = ({ league, teamOption, handl
           })
         }
       </Select>
-      <FormHelperText>{teamOption ? '' : 'Select Team'}</FormHelperText>
+      {notDesktop ? '' : <FormHelperText>{teamOption ? '' : 'Select Team'}</FormHelperText>}
     </FormControl>
   )
 }

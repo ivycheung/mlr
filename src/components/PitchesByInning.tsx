@@ -1,28 +1,29 @@
 import { LineChart } from '@mui/x-charts/LineChart';
 import React from 'react';
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
+import Container from '@mui/material/Container';
 
 interface PitchesByInningProps {
   pitches: FormSchemaPitches;
 }
 
-  const colors: { [key: number]: string } = {
-    1: 'red',
-    2: 'orange',
-    3: '#8B8000',
-    4: 'green',
-    5: 'blue',
-    6: 'indigo',
-    7: 'violet',
-    8: 'gray',
-    9: '#B47ADC',
-    10: 'crimson',
-    11: 'coral',
-    12: 'khaki',
-    13: 'mediumseagreen',
-    14: 'aqua',
-    15: 'mediumslateblue',
-  };
+const colors: { [key: number]: string } = {
+  1: 'red',
+  2: 'orange',
+  3: '#8B8000',
+  4: 'green',
+  5: 'blue',
+  6: 'indigo',
+  7: 'violet',
+  8: 'gray',
+  9: '#B47ADC',
+  10: 'crimson',
+  11: 'coral',
+  12: 'khaki',
+  13: 'mediumseagreen',
+  14: 'aqua',
+  15: 'mediumslateblue',
+};
 
 const PitchesByInning: React.FC<PitchesByInningProps> = ({ pitches }) => {
   if (pitches.length != 0) {
@@ -36,7 +37,7 @@ const PitchesByInning: React.FC<PitchesByInningProps> = ({ pitches }) => {
     const innings = []
     const inningObject: { inning: number, pitches: number[] }[] = [];
 
-    for(let i = 0; i < pitches.length; i++) {
+    for (let i = 0; i < pitches.length; i++) {
       pitchCount.push(i);
       pitchNumbers.push(pitches[i].pitch);
       swingNumbers.push(pitches[i].swing);
@@ -49,12 +50,9 @@ const PitchesByInning: React.FC<PitchesByInningProps> = ({ pitches }) => {
       }
     }
 
-    
-  
-
-  if (currentChunk.length > 0) {
-    inningPitches.push(currentChunk);
-  }
+    if (currentChunk.length > 0) {
+      inningPitches.push(currentChunk);
+    }
 
     for (let i = 0; i < inningPitches.length; i++) {
       inningObject.push({ inning: i + 1, pitches: inningPitches[i] })
@@ -67,21 +65,24 @@ const PitchesByInning: React.FC<PitchesByInningProps> = ({ pitches }) => {
       color: colors[series.inning]
     }));
 
-      return (
+    return (
+      <Container sx={{
+        height: { xs: document.documentElement.clientHeight, md: document.documentElement.clientHeight * 0.5, lg: document.documentElement.clientHeight * 0.45 },
+        width: { xs: '100%', lg: document.documentElement.clientWidth * 0.40 }
+      }}>
         <LineChart
           title="Pitches by Inning"
           xAxis={[{ data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], label: "Pitch Number", tickNumber: 15, tickInterval: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], scaleType: 'point', min: 1, max: 10 }
           ]}
           series={seriesArray}
-          height={document.documentElement.clientHeight * 0.75}
-          width={document.documentElement.clientWidth * 0.40}
           margin={{ top: 100 }}
         />
-      )
-    }
-    else {
-      return null;
-    }
+      </Container>
+    )
+  }
+  else {
+    return null;
+  }
 };
 
 export default PitchesByInning;

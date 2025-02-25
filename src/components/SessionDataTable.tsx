@@ -8,35 +8,50 @@ import Paper from "@mui/material/Paper";
 import { calculatePitchCircleDelta, calculateSwingCircleDelta, getNextPitch, getResultCategory } from "../utils/utils";
 import { FormSchemaPitches } from "../types/schemas/pitches-schema";
 import Typography from '@mui/material/Typography';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import useTheme from '@mui/material/styles/useTheme';
 
 interface SessionDataTableProps {
   pitches: FormSchemaPitches,
   showSeason?: boolean
 }
 
-const SessionDataTable: React.FC<SessionDataTableProps> = ({ pitches , showSeason = false}) => {
+const SessionDataTable: React.FC<SessionDataTableProps> = ({ pitches, showSeason = false }) => {
+  const theme = useTheme();
+  const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
+
   if (!pitches || pitches.length == 0 || pitches == undefined) {
     return null
   }
 
   return (
     <div>
-      <TableContainer component={Paper} style={{ maxHeight: document.documentElement.clientHeight * 0.4 }}>
+      <TableContainer component={Paper} sx={{ maxHeight: { xs: typeof document !== 'undefined' ? document.documentElement.clientHeight * 0.6 : 600, md: typeof document !== 'undefined' ? document.documentElement.clientHeight * 0.3 : 300, lg: typeof document !== 'undefined' ? document.documentElement.clientHeight * 0.35 : 350 } }} >
         <Table stickyHeader sx={{ minWidth: document.documentElement.clientWidth * 0.80 }} size="small" aria-label="a dense table" >
           <TableHead>
             <TableRow>
-              <TableCell width={50} >Pitch</TableCell>
-              <TableCell width={50} >Swing</TableCell>
-              <TableCell width={50} align="center" >Result</TableCell>
-              <TableCell width={50} align="center" >Inning</TableCell>
-              <TableCell width={50} align="center" >Outs</TableCell>
+              <TableCell width={75}>Pitch</TableCell>
+              <TableCell width={75}>Swing</TableCell>
+              <TableCell width={50} align="center">
+                {notDesktop ? 'Res' : 'Result'}
+              </TableCell>
+              <TableCell width={50} align="center">
+                {notDesktop ? 'Inn' : 'Inning'}
+              </TableCell>
+              <TableCell width={50} align="center">Outs</TableCell>
               <TableCell width={50} align="center">OBC</TableCell>
               {showSeason ? <TableCell width={50} align="center">Season</TableCell> : null}
-              <TableCell width={50} align="center" style={{ borderRightWidth: 1, borderRightColor: 'lightgrey', borderRightStyle: 'solid' }}>Session</TableCell>
+              <TableCell width={50} align="center" style={{ borderRightWidth: 1, borderRightColor: 'lightgrey', borderRightStyle: 'solid' }}>
+                {notDesktop ? 'Ses' : 'Session'}
+              </TableCell>
               <TableCell width={50} align="center">Diff</TableCell>
-              <TableCell width={50} align="center">Result</TableCell>
-              <TableCell width={50} align="center">Next</TableCell>
-              <TableCell width={50} align="center">Delta</TableCell>
+              {notDesktop ? '' :
+                <>
+                  <TableCell width={50} align="center">Result</TableCell>
+                  <TableCell width={50} align="center">Next</TableCell>
+                  <TableCell width={50} align="center">Delta</TableCell>
+                </>
+              }
             </TableRow>
           </TableHead>
           <TableBody>
@@ -44,10 +59,15 @@ const SessionDataTable: React.FC<SessionDataTableProps> = ({ pitches , showSeaso
               return <TableRow
                 key={pitch.paID}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              // style={{ backgroundColor: colors[(pitch.inning).toString().slice(-1)]}}
               >
-                <TableCell colSpan={1} component="th" scope="row" >{pitch.pitch} <Typography variant="caption" gutterBottom>{calculatePitchCircleDelta(array, i, true)}</Typography></TableCell>
-                <TableCell >{pitch.swing} <Typography variant="caption" gutterBottom>{calculateSwingCircleDelta(array, i, true)}</Typography></TableCell>
+                <TableCell colSpan={1} component="th" scope="row" >
+                  {pitch.pitch}
+                  <Typography component={'span'} sx={{ fontSize: { xs: 'x-small', sm: 'small', lg: 'smaller' } }}> {calculatePitchCircleDelta(array, i, true)}</Typography>
+                </TableCell>
+                <TableCell >
+                  {pitch.swing}
+                  <Typography component={'span'} sx={{ fontSize: { xs: 'x-small', sm: 'small', lg: 'smaller' } }}> {calculateSwingCircleDelta(array, i, true)}</Typography>
+                </TableCell>
                 <TableCell align="center" >{pitch.exactResult}</TableCell>
                 <TableCell align="center">{pitch.inning}</TableCell>
                 <TableCell align="center">{pitch.outs}</TableCell>
@@ -55,9 +75,13 @@ const SessionDataTable: React.FC<SessionDataTableProps> = ({ pitches , showSeaso
                 {showSeason ? <TableCell align="center">{pitch.season}</TableCell> : null}
                 <TableCell align="center" style={{ borderRightWidth: 1, borderRightColor: 'lightgrey', borderRightStyle: 'solid' }}>{pitch.session}</TableCell>
                 <TableCell align="center">{pitch.diff}</TableCell>
-                <TableCell align="center">{getResultCategory(pitch)}</TableCell>
-                <TableCell align="center">{getNextPitch(array, i)}</TableCell>
-                <TableCell align="center">{calculatePitchCircleDelta(array, i)}</TableCell>
+                {notDesktop ? '' :
+                  <>
+                    <TableCell align="center">{getResultCategory(pitch)}</TableCell>
+                    <TableCell align="center">{getNextPitch(array, i)}</TableCell>
+                    <TableCell align="center">{calculatePitchCircleDelta(array, i)}</TableCell>
+                  </>
+                }
               </TableRow>
             })}
           </TableBody>

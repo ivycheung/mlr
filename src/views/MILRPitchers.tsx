@@ -7,7 +7,6 @@ import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid2';
 
 import PitchSwingChart from '../components/PitchSwingChart';
@@ -35,12 +34,6 @@ export default function MILRPitchers() {
   const league = 'milr';
   const leagueMLR = 'mlr';
   const playerType = 'pitching';
-
-  const theme = createTheme({
-    colorSchemes: {
-      dark: true,
-    },
-  });
 
   // Get a list of players on page load
   const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
@@ -82,7 +75,7 @@ export default function MILRPitchers() {
 
   // Seasons
   React.useEffect(() => {
-    if (Array.isArray(players)) {
+    if (Array.isArray(players) && (mlrpitches.length > 0 || milrpitches.length > 0)) {
       let filteredPitches: FormSchemaPitches = []
       if (mlrSeasonOption != 0 && milrSeasonOption == 0) {
         filteredPitches = mlrpitches.filter(e => {
@@ -124,8 +117,8 @@ export default function MILRPitchers() {
     setMilrSeasonOption(0);
   }, []);
 
-  const handleChangePlayer = React.useCallback((newPlayerOption: string) => {
-    setPlayerOption(Number(newPlayerOption));
+  const handleChangePlayer = React.useCallback((newPlayerOption: number) => {
+    setPlayerOption(newPlayerOption);
     setMlrPitches([]);
     setMilrPitches([]);
   }, []);
@@ -135,7 +128,6 @@ export default function MILRPitchers() {
       {isLoading && <p>Loading...</p>}
       {isError && <p>{apiError?.message}</p>}
       {!isLoading && !isError &&
-        <ThemeProvider theme={theme}>
           <Grid container justifyContent="center" style={{ padding: 30 }}>
             <Grid size={12}>
               <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} />
@@ -221,7 +213,6 @@ export default function MILRPitchers() {
               <PitchesByInning pitches={combinedPitches} />
             </Grid> */}
           </Grid>
-        </ThemeProvider>
       }
     </>
   );

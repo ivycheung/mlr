@@ -5,7 +5,6 @@ import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid2';
 
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
@@ -33,16 +32,10 @@ export default function MILRBatters() {
   const leagueMLR = 'mlr';
   const playerType = 'batting';
 
-  const theme = createTheme({
-    colorSchemes: {
-      dark: true,
-    },
-  });
-
   // Get a list of players on page load
   const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
   const { data: plateAppearancesMLR } = useGetPlayer(playerType, leagueMLR, playerOption);
-  const { data: plateAppearancesMiLR } = useGetPlayer(playerType, league, playerOption);  
+  const { data: plateAppearancesMiLR } = useGetPlayer(playerType, league, playerOption);
 
   // Update Player Data based on fetched data
   React.useEffect(() => {
@@ -116,8 +109,8 @@ export default function MILRBatters() {
     setMilrSeasonOption(0);
   }, []);
 
-  const handleChangePlayer = React.useCallback((newPlayerOption: string) => {
-    setPlayerOption(Number(newPlayerOption));
+  const handleChangePlayer = React.useCallback((newPlayerOption: number) => {
+    setPlayerOption(newPlayerOption);
     setMlrPitches([]);
     setMilrPitches([]);
   }, []);
@@ -127,63 +120,61 @@ export default function MILRBatters() {
       {isLoading && <p>Loading...</p>}
       {isError && <p>{apiError?.message}</p>}
       {!isLoading && !isError &&
-        <ThemeProvider theme={theme}>
-          <Grid container justifyContent="center" style={{ padding: 30 }}>
-            <Grid size={12}>
-              <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} />
-              <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} />
-              <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
-                <InputLabel id="mlrseason-input-select-label" sx={{ color: "grey.400", }}>MLR Season</InputLabel>
-                <Select
-                  labelId="mlrseason-input-select-label"
-                  id="mlrseason-input-select"
-                  label={mlrSeasonOption}
-                  onChange={handleChangeMlrSeason}
-                  value={mlrSeasonOption ? mlrSeasonOption.toString() : ''
-                  }
-                >
-                  {
-                    mlrSeasons.map((season) => {
-                      return (
-                        <MenuItem key={season} value={(season === undefined || season === null || mlrSeasons.length === 0) ? '' : season}>
-                          {season}
-                        </MenuItem>
-                      )
-                    })
-                  }
-                </Select>
-                <FormHelperText>{mlrSeasonOption ? '' : 'Select MLR Season'}</FormHelperText>
-              </FormControl>
-              <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
-                <InputLabel id="milrseason-input-select-label" sx={{ color: "red[500]", }}>MiLR Season</InputLabel>
-                <Select
-                  labelId="milrseason-input-select-label"
-                  id="milrseason-input-select"
-                  label={milrSeasonOption}
-                  onChange={handleChangeMilrSeason}
-                  value={milrSeasonOption ? milrSeasonOption.toString() : ''}
-                >
-                  {
-                    milrSeasons.map((season) => {
-                      return (
-                        <MenuItem key={season} value={(season === undefined || season === null || milrSeasons.length === 0) ? '' : season}>
-                          {season}
-                        </MenuItem>
-                      )
-                    })
-                  }
-                </Select>
-                <FormHelperText>{milrSeasonOption ? '' : 'Select MiLR Season'}</FormHelperText>
-              </FormControl>
-              <SessionDataTable pitches={combinedPitches} />
-            </Grid>
-            <Grid container justifyContent="center">
-              <Grid size={9} alignItems="center" justifyContent="center">
-                <PitchSwingChart pitches={combinedPitches} />
-              </Grid>
+        <Grid container justifyContent="center" style={{ padding: 30 }}>
+          <Grid size={12}>
+            <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} />
+            <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} />
+            <FormControl sx={{ m: 1, minWidth: 150 }}>
+              <InputLabel id="mlrseason-input-select-label" sx={{ color: "grey.400", }}>MLR Season</InputLabel>
+              <Select
+                labelId="mlrseason-input-select-label"
+                id="mlrseason-input-select"
+                label={mlrSeasonOption}
+                onChange={handleChangeMlrSeason}
+                value={mlrSeasonOption ? mlrSeasonOption.toString() : ''
+                }
+              >
+                {
+                  mlrSeasons.map((season) => {
+                    return (
+                      <MenuItem key={season} value={(season === undefined || season === null || mlrSeasons.length === 0) ? '' : season}>
+                        {season}
+                      </MenuItem>
+                    )
+                  })
+                }
+              </Select>
+              <FormHelperText>{mlrSeasonOption ? '' : 'Select MLR Season'}</FormHelperText>
+            </FormControl>
+            <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
+              <InputLabel id="milrseason-input-select-label" sx={{ color: "red[500]", }}>MiLR Season</InputLabel>
+              <Select
+                labelId="milrseason-input-select-label"
+                id="milrseason-input-select"
+                label={milrSeasonOption}
+                onChange={handleChangeMilrSeason}
+                value={milrSeasonOption ? milrSeasonOption.toString() : ''}
+              >
+                {
+                  milrSeasons.map((season) => {
+                    return (
+                      <MenuItem key={season} value={(season === undefined || season === null || milrSeasons.length === 0) ? '' : season}>
+                        {season}
+                      </MenuItem>
+                    )
+                  })
+                }
+              </Select>
+              <FormHelperText>{milrSeasonOption ? '' : 'Select MiLR Season'}</FormHelperText>
+            </FormControl>
+            <SessionDataTable pitches={combinedPitches} />
+          </Grid>
+          <Grid container justifyContent="center">
+            <Grid size={12} alignItems="center" justifyContent="center">
+              <PitchSwingChart pitches={combinedPitches} />
             </Grid>
           </Grid>
-        </ThemeProvider>
+        </Grid>
       }
     </>
   );
