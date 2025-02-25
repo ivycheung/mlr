@@ -67,16 +67,14 @@ export default function MLRBatters() {
           padding: 30
         }}>
           <Grid size={12} sx={{ justifyContent: 'space-evenly', }}>
-            <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam}/>
+            <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} />
             <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} />
             <SeasonsDropdown seasonOption={seasonOption} plateAppearances={plateAppearances || []} handleChangeSeason={handleChangeSeason} />
           </Grid>
           <Grid size={12}>
             <SessionDataTable pitches={pitches} />
           </Grid>
-          <Grid container justifyContent="center" sx={{
-            width: '100%', height: '500px'
-          }}>
+          <Grid container justifyContent="center" style={{ padding: 30 }} >
             <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
               <PitchSwingChart pitches={pitches} />
             </Grid>

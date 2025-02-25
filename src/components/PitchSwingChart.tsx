@@ -24,11 +24,12 @@ const PitchSwingChart: React.FC<PitchSwingChartProps> = ({ pitches }) => {
         width: { xs: '100%', lg: document.documentElement.clientWidth * 0.40 }
       }}>
         <LineChart
-          xAxis={[{ data: pitchCount }]}
+          xAxis={[{ data: pitchCount, scaleType: 'band', tickPlacement: 'middle' },]}
           series={[
             {
               data: pitchNumbers,
               label: "Pitch",
+              
             },
             {
               data: swingNumbers,
@@ -37,6 +38,7 @@ const PitchSwingChart: React.FC<PitchSwingChartProps> = ({ pitches }) => {
           ]}
         />
       </Container>
+      
     );
   }
 }
