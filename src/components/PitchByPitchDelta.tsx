@@ -5,6 +5,7 @@ import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 import { calculatePitchCircleDelta } from '../utils/utils';
 import { isNumber } from 'chart.js/helpers';
 import Container from '@mui/material/Container';
+import { CircleMarkElement } from '../utils/rUtils';
 
 interface PitchByPitchDeltaProps {
   pitches: FormSchemaPitches;
@@ -27,7 +28,7 @@ const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches }) => {
     return (
       <Container sx={{
         height: { xs: document.documentElement.clientHeight, md: document.documentElement.clientHeight * 0.5, lg: document.documentElement.clientHeight * 0.45 },
-        width: { xs: '100%', lg: document.documentElement.clientWidth * 0.40 }
+        width: { xs: '100%', lg: document.documentElement.clientWidth * 0.45 }
       }}>
         <LineChart
           title="Delta from Pitch to Pitch"
@@ -43,8 +44,10 @@ const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches }) => {
             },
           ]}
           tooltip={{ trigger: 'item' }}
+          slots={{ mark: CircleMarkElement }}
+          
         >
-          <ChartsReferenceLine y={0} label="0" labelAlign="end" />
+          <ChartsReferenceLine y={0} />
         </LineChart>
       </Container>
     )
