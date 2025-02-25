@@ -33,6 +33,7 @@ const PitchSwingChart: React.FC<PitchSwingChartProps> = ({ pitches }) => {
       }}>
         <LineChart
           xAxis={[{ data: pitchCount, scaleType: 'band', tickPlacement: 'middle' },]}
+          grid={{ horizontal: true }}
           series={[
             {
               data: pitchNumbers,
