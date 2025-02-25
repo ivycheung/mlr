@@ -34,7 +34,14 @@ let theme = createTheme({
         },
       },
     },
-  },    
+  },
+  components: {
+    MuiUseMediaQuery: {
+      defaultProps: {
+        noSsr: true,
+      },
+    },
+  }
 });
 
 theme = responsiveFontSizes(theme);
@@ -42,7 +49,7 @@ theme = responsiveFontSizes(theme);
 export default function App() {
 
   return (
-    <ThemeProvider theme={theme} noSsr >
+    <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <HashRouter>
           <Nav />

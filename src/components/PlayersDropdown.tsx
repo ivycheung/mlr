@@ -53,7 +53,7 @@ const PlayersDropdown: React.FC<PlayersDropdownProps> = ({ league, players, play
         value={playerOption ? playerOption.toString() : ''}
       >
         {
-          teamOption && playerList?.map((player) => {
+          teamOption && playerList && playerList.map((player) => {
             return (
               <MenuItem key={player.playerID} value={(player === undefined || player === null) ? '' : player.playerID}>
                 {player.playerName}

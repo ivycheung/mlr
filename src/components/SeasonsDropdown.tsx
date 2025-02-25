@@ -27,10 +27,11 @@ const SeasonsDropdown: React.FC<SeasonsDropdownProps> = ({ seasonOption, plateAp
   }
 
   const seasons = new Set<number>();
-  for (let i = 0; i < plateAppearances.length; i++) {
-    seasons.add(plateAppearances[i].season)
+  if (plateAppearances) {
+    for (let i = 0; i < plateAppearances.length; i++) {
+      seasons.add(plateAppearances[i].season)
+    }
   }
-
 
   const seasonList = [...seasons].reverse()
   const latestSeason = Number([...seasons].slice(-1));

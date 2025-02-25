@@ -38,7 +38,7 @@ export default function MLRPitchers() {
       // filter the pitches based on season + session
       let filteredPitches: FormSchemaPitches = []
 
-      filteredPitches = plateAppearances?.filter(e => {
+      filteredPitches = (plateAppearances || []).filter(e => {
         if (e.season == seasonOption && e.session == sessionOption) {
           return true;
         }

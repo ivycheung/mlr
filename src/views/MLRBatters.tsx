@@ -31,7 +31,7 @@ export default function MLRBatters() {
     if (plateAppearances !== undefined && plateAppearances.length != 0) {
       // filter the pitches based on season
       let filteredPitches: FormSchemaPitches = [];
-      filteredPitches = plateAppearances?.filter(e => {
+      filteredPitches = (plateAppearances || []).filter(e => {
         if (e.season == seasonOption) {
           return true;
         }

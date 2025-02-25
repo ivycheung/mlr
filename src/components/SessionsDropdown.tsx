@@ -27,8 +27,10 @@ const SessionsDropdown: React.FC<SessionsDropdownProps> = ({ seasonOption, sessi
   }
 
   const seasons = new Set<number>();
-  for (let i = 0; i < plateAppearances.length; i++) {
-    seasons.add(plateAppearances[i].season)
+  if (plateAppearances) {
+    for (let i = 0; i < plateAppearances.length; i++) {
+      seasons.add(plateAppearances[i].season)
+    }
   }
 
   const numberOfSessions = new Set<number>();

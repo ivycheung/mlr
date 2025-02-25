@@ -186,7 +186,7 @@ export default function MILRPitchers() {
                 id="mlrseason-input-select"
                 label={mlrSeasonOption}
                 onChange={handleChangeMlrSeason}
-                value={mlrSeasonOption ? mlrSeasonOption.toString() : ''
+                value={mlrSeasonOption !== undefined && mlrSeasonOption !== null ? mlrSeasonOption.toString() : ''
                 }
               >
                 {
