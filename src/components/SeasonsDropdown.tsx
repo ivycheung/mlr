@@ -5,14 +5,17 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import React from "react";
 import { FormSchemaPitches } from "../types/schemas/pitches-schema";
+import { SxProps, Theme, useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 type SeasonsDropdownProps = {
-  seasonOption: number, 
+  seasonOption: number,
   plateAppearances: FormSchemaPitches
   handleChangeSeason: (seasonOption: number) => void;
+  sx?: SxProps<Theme>;
 };
 
-const SeasonsDropdown: React.FC<SeasonsDropdownProps> = ({ seasonOption, plateAppearances, handleChangeSeason }) => {
+const SeasonsDropdown: React.FC<SeasonsDropdownProps> = ({ seasonOption, plateAppearances, handleChangeSeason, sx }) => {
   const handleDropdownChange = (e: { target: { value: string; }; }) => {
     const seasonOption = e.target.value;
 
@@ -28,6 +31,7 @@ const SeasonsDropdown: React.FC<SeasonsDropdownProps> = ({ seasonOption, plateAp
     seasons.add(plateAppearances[i].season)
   }
 
+
   const seasonList = [...seasons].reverse()
   const latestSeason = Number([...seasons].slice(-1));
 
@@ -37,16 +41,21 @@ const SeasonsDropdown: React.FC<SeasonsDropdownProps> = ({ seasonOption, plateAp
     }
   }, [handleChangeSeason, latestSeason, seasonOption]);
 
+  const theme = useTheme();
+  const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
+
   return (
-    <FormControl sx={{ m: 1, minWidth: { xs: 150, lg: 200 } }}>
-      <InputLabel id="season-input-select-label">Season</InputLabel>
+    <FormControl sx={{ m: 1, minWidth: { xs: 90, lg: 175 }, ...sx }}>
+      {notDesktop ?
+        <InputLabel id="season-input-select-label" shrink>Season</InputLabel> :
+        <InputLabel id="season-input-select-label">Season</InputLabel>
+      }
       <Select
         labelId="season-input-select-label"
         id="season-input-select"
-        // label={seasonOption}
         onChange={handleDropdownChange}
         value={seasonOption ? seasonOption.toString() : ''
-          
+
         }
       >
         {
@@ -59,7 +68,7 @@ const SeasonsDropdown: React.FC<SeasonsDropdownProps> = ({ seasonOption, plateAp
           })
         }
       </Select>
-      <FormHelperText>{seasonOption ? '' : 'Select Season'}</FormHelperText>
+      <FormHelperText>{notDesktop ? '' : (seasonOption ? '' : 'Select Season')}</FormHelperText>
     </FormControl>
   )
 }

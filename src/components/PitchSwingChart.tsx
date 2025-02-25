@@ -20,8 +20,8 @@ const PitchSwingChart: React.FC<PitchSwingChartProps> = ({ pitches }) => {
 
     return (
       <Container sx={{
-        height: { sm: document.documentElement.clientHeight, md: document.documentElement.clientHeight * 0.5, lg: document.documentElement.clientHeight * 0.45 },
-        width: { sm: '100%', lg: document.documentElement.clientWidth * 0.40 }
+        height: { xs: document.documentElement.clientHeight, md: document.documentElement.clientHeight * 0.5, lg: document.documentElement.clientHeight * 0.45 },
+        width: { xs: '100%', lg: document.documentElement.clientWidth * 0.40 }
       }}>
         <LineChart
           xAxis={[{ data: pitchCount }]}

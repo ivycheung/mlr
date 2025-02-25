@@ -13,24 +13,16 @@ import PitchesByInning from '../components/PitchesByInning';
 import TeamsDropdown from '../components/TeamsDropdown';
 import PlayersDropdown from '../components/PlayersDropdown';
 
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Grid from '@mui/material/Grid2';
-
-
+import SeasonsDropdown from '../components/SeasonsDropdown';
+import SessionsDropdown from '../components/SessionsDropdown';
 // import Slider from '@mui/material/Slider';
 
 export default function MLRPitchers() {
   const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
   const [playerOption, setPlayerOption] = React.useState<number>(0)
   const [teamOption, setTeamOption] = React.useState('')
-  const [seasons, setSeasons] = React.useState<number[]>([]);
   const [seasonOption, setSeasonOption] = React.useState<number>(0)
-  const [originalPitches, setOriginalPitches] = React.useState<FormSchemaPitches>([])
-  const [sessions, setSessions] = React.useState<number[]>([]);
   const [sessionOption, setSessionOption] = React.useState<number>(0)
   const league = 'mlr';
   const playerType = 'pitching';
@@ -38,46 +30,15 @@ export default function MLRPitchers() {
   // Get a list of players on page load
   const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
   const { data: plateAppearances } = useGetPlayer(playerType, league, playerOption);
-  // const { data: plateAppearances, isLoading: isPADoneLoading, isError: isPAError, error: apiPAError } = useGetPlayer(playerType, league, playerOption);
-
-  // Update Player Data based on fetched data
-  React.useEffect(() => {
-    if (Array.isArray(players) && plateAppearances !== undefined && Array.isArray(plateAppearances)) {
-      const seasons = new Set<number>();
-      for (let i = 0; i < plateAppearances.length; i++) {
-        seasons.add(plateAppearances[i].season)
-      }
-
-      setSeasons([...seasons].reverse())
-      const latestSeason = Number([...seasons].slice(-1));
-      setSeasonOption(latestSeason) // set latest season first
-      setOriginalPitches(plateAppearances);
-      setSessionOption(0);
-    }
-  }, [plateAppearances, players])
 
   // Seasons
   React.useEffect(() => {
-    if (Array.isArray(players) && players.length != 0 && plateAppearances !== undefined && plateAppearances.length != 0) {
-      // Loop through to get the sessions per season
-      const numberOfSessions = new Set<number>();
-      originalPitches?.map((e) => {
-        if (e.season == seasonOption) {
-          numberOfSessions.add(e.session);
-        }
-      })
-      setSessions([...numberOfSessions].sort((a, b) => { return a - b }))
-
-      // Set default session to first of the game of the season
-      if (sessionOption == 0 || sessionOption == undefined) {
-        const latestSession = [...numberOfSessions][0];
-        setSessionOption(latestSession);
-      }
+    if (plateAppearances !== undefined && plateAppearances.length != 0) {
 
       // filter the pitches based on season + session
       let filteredPitches: FormSchemaPitches = []
 
-      filteredPitches = originalPitches?.filter(e => {
+      filteredPitches = plateAppearances?.filter(e => {
         if (e.season == seasonOption && e.session == sessionOption) {
           return true;
         }
@@ -86,31 +47,30 @@ export default function MLRPitchers() {
 
       setPitches(filteredPitches);
     }
-  }, [seasonOption, sessionOption]);
+  }, [plateAppearances, seasonOption, sessionOption]);
 
-  async function handleChangeSeason(event: SelectChangeEvent) {
-    const season = Number(event.target.value);
-    setSeasonOption(season)
+  const handleChangeSeason = React.useCallback((newSeasonOption: number) => {
+    setSeasonOption(newSeasonOption);
     setSessionOption(0);
-  }
+  }, []);
 
-  async function handleChangeSession(event: SelectChangeEvent) {
-    const session = Number(event.target.value);
-    setSessionOption(session);
-  }
+  const handleChangeSession = React.useCallback((newSessionOption: number) => {
+    setSessionOption(newSessionOption);
+  }, []);
 
   const handleChangeTeam = React.useCallback((newTeamOption: string) => {
     setTeamOption(newTeamOption);
+    setPitches([]);
     setPlayerOption(0);
-    setSeasons([]);
     setSeasonOption(0);
     setSessionOption(0);
-
   }, []);
 
-  const handleChangePlayer = React.useCallback((newPlayerOption: string) => {
-    setPlayerOption(Number(newPlayerOption));
+  const handleChangePlayer = React.useCallback((newPlayerOption: number) => {
+    setPlayerOption(newPlayerOption);
     setPitches([]);
+    setSeasonOption(0);
+    setSessionOption(0);
   }, []);
 
   return (
@@ -120,53 +80,15 @@ export default function MLRPitchers() {
       {!isLoading && !isError &&
         <Grid container justifyContent="center" style={{ padding: 30 }}>
           <Grid size={12}>
-            <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} />
-            <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} />
-            <FormControl sx={{ m: 1, minWidth: 150, color: "blue" }}>
-              <InputLabel id="season-input-select-label">Season</InputLabel>
-              <Select
-                labelId="season-input-select-label"
-                id="season-input-select"
-                label={seasonOption}
-                onChange={handleChangeSeason}
-                value={seasonOption ? seasonOption.toString() : ''}
-              >
-                {
-                  seasons.map((season) => {
-                    return (
-                      <MenuItem key={season} value={(season === undefined || season === null || seasons.length === 0) ? '' : season}>
-                        {season}
-                      </MenuItem>
-                    )
-                  })
-                }
-              </Select>
-              <FormHelperText>{seasonOption ? '' : 'Select Season'}</FormHelperText>
-            </FormControl>
-            <FormControl sx={{ m: 1, minWidth: 150, color: "blue" }}>
-              <InputLabel id="season-input-select-label">Session</InputLabel>
-              <Select
-                labelId="season-input-select-label"
-                id="season-input-select"
-                label={sessionOption}
-                onChange={handleChangeSession}
-                value={sessionOption ? sessionOption.toString() : ''}
-              >
-                {
-                  sessions.map((session) => {
-                    return (
-                      <MenuItem key={session} value={(session === undefined || session === null || sessions.length === 0) ? '' : session}>
-                        {session}
-                      </MenuItem>
-                    )
-                  })
-                }
-              </Select>
-            </FormControl>
+            <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} sx={{ maxWidth: { xs: 150, sm: 175, lg: 240 } }} />
+            <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} sx={{ maxWidth: { xs: 150, sm: 175, lg: 240 } }} />
+            <SeasonsDropdown seasonOption={seasonOption} plateAppearances={plateAppearances || []} handleChangeSeason={handleChangeSeason} sx={{ minWidth: { xs: 70, lg: 175 } }} />
+            <SessionsDropdown seasonOption={seasonOption} sessionOption={sessionOption} plateAppearances={plateAppearances || []} handleChangeSession={handleChangeSession} sx={{ minWidth: { xs: 70, lg: 175 } }} />
+
             <SessionDataTable pitches={pitches} />
           </Grid>
 
-          <Grid container justifyContent="center" style={{ padding: 30 }}>
+          <Grid container justifyContent="center" style={{ padding: 30 }} >
             <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
               <PitchSwingChart pitches={pitches} />
             </Grid>

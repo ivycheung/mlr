@@ -25,11 +25,10 @@ export default function MLRBatters() {
   // Get a list of players on page load
   const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
   const { data: plateAppearances } = useGetPlayer(playerType, league, playerOption);
-  // const { data: plateAppearances, isLoading: isPADoneLoading, isError: isPAError, error: apiPAError } = useGetPlayer(playerType, league, playerOption);
 
   // Get pitches
   React.useEffect(() => {
-    if (Array.isArray(players) && players.length != 0 && plateAppearances !== undefined && plateAppearances.length != 0) {
+    if (plateAppearances !== undefined && plateAppearances.length != 0) {
       // filter the pitches based on season
       let filteredPitches: FormSchemaPitches = [];
       filteredPitches = plateAppearances?.filter(e => {
@@ -40,7 +39,7 @@ export default function MLRBatters() {
 
       setPitches(filteredPitches);
     }
-  }, [seasonOption, plateAppearances, players]);
+  }, [seasonOption, plateAppearances]);
 
   const handleChangeSeason = React.useCallback((newSeasonOption: number) => {
     setSeasonOption(newSeasonOption);
@@ -53,8 +52,8 @@ export default function MLRBatters() {
     setPitches([]);
   }, []);
 
-  const handleChangePlayer = React.useCallback((newPlayerOption: string) => {
-    setPlayerOption(Number(newPlayerOption));
+  const handleChangePlayer = React.useCallback((newPlayerOption: number) => {
+    setPlayerOption(newPlayerOption);
     setSeasonOption(0);
     setPitches([]);
   }, []);
@@ -68,7 +67,7 @@ export default function MLRBatters() {
           padding: 30
         }}>
           <Grid size={12} sx={{ justifyContent: 'space-evenly', }}>
-            <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} />
+            <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam}/>
             <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} />
             <SeasonsDropdown seasonOption={seasonOption} plateAppearances={plateAppearances || []} handleChangeSeason={handleChangeSeason} />
           </Grid>

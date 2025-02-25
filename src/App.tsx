@@ -15,7 +15,6 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
 
-
 const queryClient = new QueryClient();
 
 let theme = createTheme({
@@ -35,7 +34,7 @@ let theme = createTheme({
         },
       },
     },
-  }
+  },    
 });
 
 theme = responsiveFontSizes(theme);
@@ -43,7 +42,7 @@ theme = responsiveFontSizes(theme);
 export default function App() {
 
   return (
-    <ThemeProvider theme={theme} noSsr>
+    <ThemeProvider theme={theme} noSsr >
       <QueryClientProvider client={queryClient}>
         <HashRouter>
           <Nav />

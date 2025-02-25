@@ -42,25 +42,20 @@ export default function Nav() {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
     <React.Fragment>
       <CssBaseline />
       <AppBar position="sticky" enableColorOnDark>
-        <Toolbar sx={{
+        <Toolbar variant={notDesktop ? 'dense' : 'regular'} sx={{
           justifyContent: 'space-between',
         }}>
           <Box>
             {isMobile ?
-              <Typography onClick={handleLogoClick} variant="h5" sx={{
-                ml: 0.5,
-              }}>
-                CIN
-              </Typography>
+              <Typography onClick={handleLogoClick} variant="h5" sx={{ ml: 0.5, }}>CIN</Typography>
               :
-              (<Typography onClick={handleLogoClick} sx={{ flexGrow: 1 }} variant="h5">
-                The Big Reddit Machine
-              </Typography>)
+              <Typography onClick={handleLogoClick} sx={{ flexGrow: 1 }} variant="h5">The Big Reddit Machine</Typography>
             }
           </Box>
           <Box sx={{

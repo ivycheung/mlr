@@ -4,6 +4,7 @@ import React from 'react';
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 import { calculatePitchCircleDelta } from '../utils/utils';
 import { isNumber } from 'chart.js/helpers';
+import Container from '@mui/material/Container';
 
 interface PitchByPitchDeltaProps {
   pitches: FormSchemaPitches;
@@ -13,7 +14,7 @@ const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches }) => {
   if (pitches.length != 0) {
     const pitchCount: number[] = [];
     const deltaNumbers: number[] = [];
-    let delta : number = 0;
+    let delta: number = 0;
 
     for (let i = 0; i < pitches.length; i++) {
       pitchCount.push(i);
@@ -23,10 +24,14 @@ const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches }) => {
       }
     }
 
-      return (
+    return (
+      <Container sx={{
+        height: { xs: document.documentElement.clientHeight, md: document.documentElement.clientHeight * 0.5, lg: document.documentElement.clientHeight * 0.45 },
+        width: { xs: '100%', lg: document.documentElement.clientWidth * 0.40 }
+      }}>
         <LineChart
           title="Delta from Pitch to Pitch"
-          xAxis={[{ data: pitchCount,scaleType: 'band' }]}
+          xAxis={[{ data: pitchCount, scaleType: 'band' }]}
           yAxis={[{
             min: -500,   // Set the minimum value for Y-Axis
             max: 500,    // Set the maximum value for Y-Axis
@@ -37,16 +42,16 @@ const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches }) => {
               label: "Delta", data: deltaNumbers, color: "teal"
             },
           ]}
-          height={document.documentElement.clientHeight * 0.75}
           tooltip={{ trigger: 'item' }}
         >
           <ChartsReferenceLine y={0} label="0" labelAlign="end" />
         </LineChart>
-      )
-    }
-    else {
-      return null;
-    }
+      </Container>
+    )
+  }
+  else {
+    return null;
+  }
 
 };
 

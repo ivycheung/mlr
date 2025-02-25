@@ -26,7 +26,7 @@ const SessionDataTable: React.FC<SessionDataTableProps> = ({ pitches, showSeason
 
   return (
     <div>
-      <TableContainer component={Paper} sx={{ maxHeight: { xs: document.documentElement.clientHeight * 0.6, lg: document.documentElement.clientHeight * 0.4 } }} >
+      <TableContainer component={Paper} sx={{ maxHeight: { xs: document.documentElement.clientHeight * 0.6, md: document.documentElement.clientHeight * 0.3, lg: document.documentElement.clientHeight * 0.35 } }} >
         <Table stickyHeader sx={{ minWidth: document.documentElement.clientWidth * 0.80 }} size="small" aria-label="a dense table" >
           <TableHead>
             <TableRow>

@@ -117,8 +117,8 @@ export default function MILRPitchers() {
     setMilrSeasonOption(0);
   }, []);
 
-  const handleChangePlayer = React.useCallback((newPlayerOption: string) => {
-    setPlayerOption(Number(newPlayerOption));
+  const handleChangePlayer = React.useCallback((newPlayerOption: number) => {
+    setPlayerOption(newPlayerOption);
     setMlrPitches([]);
     setMilrPitches([]);
   }, []);

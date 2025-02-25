@@ -2,17 +2,11 @@ import * as React from 'react';
 
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Grid from '@mui/material/Grid2';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import HistogramChart from '../components/HistogramChart';
-import Grid2 from '@mui/material/Grid2';
-import Stack from '@mui/material/Stack';
 import FormGroup from '@mui/material/FormGroup';
 // import Slider from '@mui/material/Slider';
 import Accordion from '@mui/material/Accordion';
@@ -26,15 +20,18 @@ import blueGrey from '@mui/material/colors/blueGrey';
 import { useGetPlayer } from '../api/use-get-player';
 import TeamsDropdown from '../components/TeamsDropdown';
 import PlayersDropdown from '../components/PlayersDropdown';
+import SeasonsDropdown from '../components/SeasonsDropdown';
+import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
+import WorkOutlinedIcon from '@mui/icons-material/WorkOutlined';
+import useTheme from '@mui/material/styles/useTheme';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 export default function MLRPitchers() {
   const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
   const [playerOption, setPlayerOption] = React.useState<number>(0);
   const [teamOption, setTeamOption] = React.useState('')
-  const [seasons, setSeasons] = React.useState<number[]>([]);
   const [seasonOption, setSeasonOption] = React.useState<number>(0)
   const [careerOption, setCareerOption] = React.useState(false);
-  // const [error, setError] = React.useState<string>('');
   const [showSeason, setShowSeason] = React.useState<boolean>(false);
   const league = 'mlr';
   const playerType = 'pitching';
@@ -43,20 +40,8 @@ export default function MLRPitchers() {
   const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
   const { data: plateAppearances } = useGetPlayer(playerType, league, playerOption);
 
-  // Update Player Data based on fetched data
-  React.useEffect(() => {
-    if (Array.isArray(players) && plateAppearances !== undefined && Array.isArray(plateAppearances)) {
-      const seasons = new Set<number>();
-      for (let i = 0; i < plateAppearances.length; i++) {
-        seasons.add(plateAppearances[i].season)
-      }
-
-      setSeasons([...seasons].reverse())
-      const latestSeason = Number([...seasons].slice(-1));
-      setSeasonOption(latestSeason) // set latest season first
-      setPitches(plateAppearances);
-    }
-  }, [playerOption, plateAppearances, players]);
+  const theme = useTheme();
+  const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
 
   // Seasons
   React.useEffect(() => {
@@ -78,10 +63,10 @@ export default function MLRPitchers() {
     }
   }, [careerOption, plateAppearances, players, seasonOption])
 
-  async function handleChangeSeason(event: SelectChangeEvent) {
-    const season = Number(event.target.value);
-    setSeasonOption(season)
-  }
+  const handleChangeSeason = React.useCallback((newSeasonOption: number) => {
+    setSeasonOption(newSeasonOption);
+  }, []);
+
 
   async function handleCareerStatsChange(_event: React.ChangeEvent<HTMLInputElement>, checked: boolean) {
     setCareerOption(checked);
@@ -91,12 +76,12 @@ export default function MLRPitchers() {
   const handleChangeTeam = React.useCallback((newTeamOption: string) => {
     setTeamOption(newTeamOption);
     setPlayerOption(0);
-    setSeasons([]);
     setSeasonOption(0);
   }, []);
 
-  const handleChangePlayer = React.useCallback((newPlayerOption: string) => {
-    setPlayerOption(Number(newPlayerOption));
+  const handleChangePlayer = React.useCallback((newPlayerOption: number) => {
+    setPlayerOption(newPlayerOption);
+    setSeasonOption(0);
     setPitches([]);
   }, []);
 
@@ -114,34 +99,18 @@ export default function MLRPitchers() {
           <Grid>
             <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} />
             <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} />
-            <FormControl sx={{ m: 1, minWidth: 150 }}>
-              <InputLabel id="season-input-select-label">Season</InputLabel>
-              <Select
-                labelId="season-input-select-label"
-                id="season-input-select"
-                label={seasonOption}
-                onChange={handleChangeSeason}
-                value={seasonOption ? seasonOption.toString() : ''}
-              >
-                {
-                  seasons.map((season) => {
-                    return (
-                      <MenuItem key={season} value={(season === undefined || season === null || seasons.length === 0) ? '' : season}>
-                        {season}
-                      </MenuItem>
-                    )
-                  })
+            <SeasonsDropdown seasonOption={seasonOption} plateAppearances={plateAppearances || []} handleChangeSeason={handleChangeSeason} sx={{ minWidth: { xs: 70, lg: 175 } }} />
+            <FormControl sx={{ height: '100%' }}>
+              <FormGroup aria-label="position" row sx={{ ml: 2, minWidth: { xs: 50, lg: 150 }, minHeight: 75 }}>
+                {notDesktop ?
+                  <FormControlLabel label="" labelPlacement="end"
+                    control={<Checkbox onChange={handleCareerStatsChange} icon={<WorkOutlineOutlinedIcon fontSize={'large'} />} checkedIcon={<WorkOutlinedIcon fontSize={'large'} />} />}
+                  />
+                  :
+                  <FormControlLabel control={<Checkbox size="small" onChange={handleCareerStatsChange} />} label="Career Stats" labelPlacement="end" />
                 }
-              </Select>
-              <FormHelperText>{seasonOption ? '' : 'Select Season'}</FormHelperText>
-            </FormControl>
-            <FormControl sx={{ m: 1, minWidth: 150 }}>
-              <FormGroup aria-label="position" row>
-                <FormControlLabel
-                  control={<Checkbox size="small" onChange={handleCareerStatsChange} />} label="Career Stats" labelPlacement="end" />
               </FormGroup>
             </FormControl>
-
           </Grid>
           {
             ((!pitches || pitches.length != 0) ?
@@ -149,12 +118,19 @@ export default function MLRPitchers() {
                 justifyContent: "flex-start",
                 alignItems: "center"
               }}>
-                <Accordion style={{ maxHeight: '500px' }}>
+                <Accordion style={{ maxHeight: '500px' }} >
                   <AccordionSummary
                     expandIcon={<ArrowDropDownIcon />}
                     aria-controls="panel2-content"
                     id="panel2-header"
-                    style={{ backgroundColor: blueGrey[50] }}>
+                    sx={
+                      [
+                        (theme) =>
+                          theme.applyStyles('light', {
+                            backgroundColor: blueGrey[50]
+                          }),]
+                    }
+                    >
                     <Typography component="span">Data Table</Typography>
                   </AccordionSummary>
                   <AccordionDetails>
@@ -164,28 +140,14 @@ export default function MLRPitchers() {
               </Grid>
               : '')
           }
-
-          <Grid container spacing={2} style={{ padding: 30 }} size={{ lg: 12 }}
+          <Grid container spacing={2} style={{ padding: 30 }} size={{ xs: 12 }}
             sx={{
               justifyContent: "flex-start",
               alignItems: "center"
             }}>
-            <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
+            <Grid size={{ xs: 12, lg: 6 }} >
               <HistogramChart pitches={pitches} />
-            </Grid2>
-            <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
-              { /* heatmap */}
-              <Stack
-                direction={'column'}
-                sx={{
-                  alignItems: 'center',
-                  justifyContent: 'space-evenly',
-                  height: '100%',
-
-                }}>
-                {/* <HeatmapChart pitches={pitches} /> */}
-              </Stack>
-            </Grid2>
+            </Grid>
           </Grid>
           {/* <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
               <PitchByPitchDelta pitches={pitches} />
