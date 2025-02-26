@@ -44,9 +44,7 @@ const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches }) => {
             },
           ]}
           tooltip={{ trigger: 'item' }}
-          grid={{ horizontal: true }}
           slots={{ mark: CircleMarkElement }}
-          
         >
           <ChartsReferenceLine y={0} />
         </LineChart>
