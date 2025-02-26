@@ -68,7 +68,7 @@ const PitchesByInning: React.FC<PitchesByInningProps> = ({ pitches }) => {
     return (
       <Container sx={{
         height: { xs: document.documentElement.clientHeight, md: document.documentElement.clientHeight * 0.5, lg: document.documentElement.clientHeight * 0.45 },
-        width: { xs: '100%', lg: document.documentElement.clientWidth * 0.40 }
+        width: { xs: '100%', lg: document.documentElement.clientWidth * 0.45 }
       }}>
         <LineChart
           title="Pitches by Inning"

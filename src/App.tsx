@@ -11,7 +11,7 @@ import MLRPitchersSeason from './views/MLRPitchersSeason';
 import MILRPitchersSeason from './views/MILRPitchersSeason';
 import Nav from './views/Nav';
 import Home from './views/Home';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
 
@@ -63,7 +63,7 @@ export default function App() {
             <Route path="/milrpitchersseason" element={<MILRPitchersSeason />} />
           </Routes>
         </HashRouter>
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </QueryClientProvider>
     </ThemeProvider>
   );

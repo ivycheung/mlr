@@ -152,3 +152,4 @@ export function populatePlayersList(players: FormSchemaPlayers, league: string, 
   playerList.sort((a, b) => a.playerName.localeCompare(b.playerName));
   return playerList;
 }
+
