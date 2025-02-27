@@ -13,12 +13,12 @@ const PitchByPlacementInInning: React.FC<PitchByPlacementInInningProps> = ({ pit
     let p1 = 1
     let p2 = 1
     let p3 = 1
-    const p1Numbers = [] // first pitch
-    const p1Count = [] // # of first pitch
-    const p2Numbers = [] // second pitch
-    const p2Count = [] // # of second pitch
-    const p3Numbers = [] // third pitch
-    const p3Count = [] // # of third pitch
+    const p1Numbers: number[] = [] // first pitch
+    const p1Count: number[] = [] // # of first pitch
+    const p2Numbers: number[] = [] // second pitch
+    const p2Count: number[] = [] // # of second pitch
+    const p3Numbers: number[] = [] // third pitch
+    const p3Count: number[] = [] // # of third pitch
 
     for (let i = 0; i < pitches.length; i++) {
 
@@ -42,11 +42,11 @@ const PitchByPlacementInInning: React.FC<PitchByPlacementInInningProps> = ({ pit
     return (
       <Container sx={{
         height: { xs: document.documentElement.clientHeight, md: document.documentElement.clientHeight * 0.5, lg: document.documentElement.clientHeight * 0.45 },
-        width: { xs: '100%', lg: document.documentElement.clientWidth * 0.45 }
+        width: { xs: document.documentElement.clientWidth * 0.9, lg: document.documentElement.clientWidth * 0.45 }
       }}>
         <LineChart
           title="Pitches by Placement in Inning"
-          xAxis={[{ label: "Inning", data: p1Count, tickInterval: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }]}
+          xAxis={[{ label: "Inning", data: p1Count, scaleType: 'band', tickPlacement: 'middle' }]}
           series={[
             {
               label: "First Pitches", data: p1Numbers, color: "red"

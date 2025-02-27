@@ -9,12 +9,14 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 interface PitchSwingChartProps {
   pitches: FormSchemaPitches;
+  showMarkers?: boolean
 }
 
-const PitchSwingChart: React.FC<PitchSwingChartProps> = ({ pitches }) => {
+const PitchSwingChart: React.FC<PitchSwingChartProps> = ({ pitches, showMarkers = false }) => {
   const pitchNumbers: number[] = []
   const swingNumbers: number[] = []
   const pitchCount: number[] = []
+  const abResult: string[] = []
 
   const theme = useTheme();
   const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
@@ -23,29 +25,36 @@ const PitchSwingChart: React.FC<PitchSwingChartProps> = ({ pitches }) => {
     pitches.forEach((pitch, i) => {
       pitchNumbers.push(pitch.pitch)
       swingNumbers.push(pitch.swing)
-      pitchCount.push(i+1)
+      pitchCount.push(i + 1)
+      abResult.push(`${i + 1} - ${pitch.exactResult}`)
     })
 
     return (
       <Container sx={{
         height: { xs: document.documentElement.clientHeight, md: document.documentElement.clientHeight * 0.5, lg: document.documentElement.clientHeight * 0.45 },
-        width: { xs: '100%', lg: document.documentElement.clientWidth * 0.45 }
+        width: { xs: document.documentElement.clientWidth * 0.9, lg: document.documentElement.clientWidth * 0.45 }
       }}>
         <LineChart
-          xAxis={[{ data: pitchCount, scaleType: 'band', tickPlacement: 'middle' },]}
-          grid={{ horizontal: (pitchCount.length <=10) ? false: true }}
+          xAxis={[{
+            data: abResult, scaleType: 'band', tickPlacement: 'middle',
+            tickLabelStyle: {
+              angle: -25,
+              textAnchor: 'end',
+              fontSize: 12,
+            }
+          }]}
+          grid={{ horizontal: (pitchCount.length <= 10) ? false : true }}
           series={[
             {
               data: pitchNumbers,
               label: "Pitch",
-
             },
             {
               data: swingNumbers,
               label: "Swing",
             },
           ]}
-          slots={{ mark: (pitchCount.length <= 10 || notDesktop) ? CircleMarkElement : undefined }}
+          slots={{ mark: showMarkers || (pitchCount.length <= 10 || notDesktop) ? CircleMarkElement : undefined }}
         />
       </Container>
 

@@ -16,9 +16,11 @@ const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches }) => {
     const pitchCount: number[] = [];
     const deltaNumbers: number[] = [];
     let delta: number = 0;
+    const abResult: string[] = []
 
     for (let i = 0; i < pitches.length; i++) {
-      pitchCount.push(i+1);
+      pitchCount.push(i + 1);
+      abResult.push(`${i + 1} - ${pitches[i].exactResult}`)
       delta = Number((i > 0 ? calculatePitchCircleDelta(pitches, i, false) : 0));
       if (isNumber(delta)) {
         deltaNumbers.push(delta);
@@ -28,11 +30,19 @@ const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches }) => {
     return (
       <Container sx={{
         height: { xs: document.documentElement.clientHeight, md: document.documentElement.clientHeight * 0.5, lg: document.documentElement.clientHeight * 0.45 },
-        width: { xs: '100%', lg: document.documentElement.clientWidth * 0.45 }
+        width: { xs: document.documentElement.clientWidth * 0.9, lg: document.documentElement.clientWidth * 0.45 }
       }}>
         <LineChart
           title="Delta from Pitch to Pitch"
-          xAxis={[{ data: pitchCount, scaleType: 'band' }]}
+          xAxis={[{
+            data: abResult, scaleType: 'band', tickPlacement: 'middle',
+            // https://mui.com/x/react-charts/axis/#text-customization
+            tickLabelStyle: {
+              angle: -25,
+              textAnchor: 'end',
+              fontSize: 12,
+            }
+           }]}
           yAxis={[{
             min: -500,   // Set the minimum value for Y-Axis
             max: 500,    // Set the maximum value for Y-Axis

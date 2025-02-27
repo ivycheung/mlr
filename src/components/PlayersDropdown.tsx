@@ -16,10 +16,11 @@ type PlayersDropdownProps = {
   teamOption: string;
   playerOption: number, // for callback
   handleChangePlayer: (newPlayerOption: number) => void;
+  hideLabel?: boolean;
   sx?: SxProps<Theme>;
 };
 
-const PlayersDropdown: React.FC<PlayersDropdownProps> = ({ league, players, playerType, teamOption, playerOption, handleChangePlayer, sx }) => {
+const PlayersDropdown: React.FC<PlayersDropdownProps> = ({ league, players, playerType, teamOption, playerOption, hideLabel = false, handleChangePlayer, sx }) => {
   const validLeagues = ['milr', 'mlr'];
   if (!validLeagues.includes(league)) {
     throw new Error('Invalid league or position type');
@@ -42,7 +43,7 @@ const PlayersDropdown: React.FC<PlayersDropdownProps> = ({ league, players, play
 
   return (
     <FormControl sx={{ m: 1, minWidth: { xs: 150, sm: 200, lg: 240 }, ...sx }}>
-      {notDesktop ?
+      {hideLabel || notDesktop ?
         <InputLabel id="player-input-select-label" shrink>Player</InputLabel> :
         <InputLabel id="player-input-select-label">Player</InputLabel>
       }
@@ -62,7 +63,7 @@ const PlayersDropdown: React.FC<PlayersDropdownProps> = ({ league, players, play
           })
         }
       </Select>
-      {notDesktop ? '' : <FormHelperText>{playerOption ? '' : `Select ${playerType}`}</FormHelperText>}
+      { hideLabel || notDesktop ? '' : <FormHelperText>{playerOption ? '' : `Select ${playerType}`}</FormHelperText>}
     </FormControl>
   )
 }

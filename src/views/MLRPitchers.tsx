@@ -95,13 +95,13 @@ export default function MLRPitchers() {
             <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
               <PitchByPlacementInInning pitches={pitches} />
             </Grid>
-          
-          <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
-            <PitchByPitchDelta pitches={pitches} />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
-            <PitchesByInning pitches={pitches} />
-          </Grid>
+
+            <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+              <PitchByPitchDelta pitches={pitches} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
+              <PitchesByInning pitches={pitches} />
+            </Grid>
           </Grid>
         </Grid>
       }
