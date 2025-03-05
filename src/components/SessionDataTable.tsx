@@ -26,12 +26,19 @@ const SessionDataTable: React.FC<SessionDataTableProps> = ({ pitches, showSeason
 
   return (
     <div>
-      <TableContainer component={Paper} sx={{ maxHeight: { xs: typeof document !== 'undefined' ? document.documentElement.clientHeight * 0.6 : 600, md: typeof document !== 'undefined' ? document.documentElement.clientHeight * 0.3 : 300, lg: typeof document !== 'undefined' ? document.documentElement.clientHeight * 0.35 : 350 } }} >
+      <TableContainer component={Paper}
+        sx={{
+          maxHeight: {
+            xs: '50vh',
+            md: '30vh',
+            lg: '35vh'
+          }
+        }} >
         <Table stickyHeader sx={{ minWidth: document.documentElement.clientWidth * 0.80 }} size="small" aria-label="a dense table" >
           <TableHead>
             <TableRow>
-              <TableCell width={75}>Pitch</TableCell>
-              <TableCell width={75}>Swing</TableCell>
+              <TableCell sx={{width: {xs: 90, sm: 85, lg: 75}}}>Pitch</TableCell>
+              <TableCell sx={{ width: { xs: 90, sm: 85, lg: 75 } }}>Swing</TableCell>
               <TableCell width={50} align="center">
                 {notDesktop ? 'Res' : 'Result'}
               </TableCell>
@@ -40,7 +47,7 @@ const SessionDataTable: React.FC<SessionDataTableProps> = ({ pitches, showSeason
               </TableCell>
               <TableCell width={50} align="center">Outs</TableCell>
               <TableCell width={50} align="center">OBC</TableCell>
-              {showSeason ? <TableCell width={50} align="center">Season</TableCell> : null}
+              {showSeason ? <TableCell width={50} align="center">Sea</TableCell> : null}
               <TableCell width={50} align="center" style={{ borderRightWidth: 1, borderRightColor: 'lightgrey', borderRightStyle: 'solid' }}>
                 {notDesktop ? 'Ses' : 'Session'}
               </TableCell>

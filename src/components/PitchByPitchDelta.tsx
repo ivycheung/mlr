@@ -2,25 +2,30 @@ import { ChartsReferenceLine } from '@mui/x-charts/ChartsReferenceLine';
 import { LineChart } from '@mui/x-charts/LineChart';
 import React from 'react';
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
-import { calculatePitchCircleDelta } from '../utils/utils';
+import { calculatePitchCircleDelta, getResultCategory } from '../utils/utils';
 import { isNumber } from 'chart.js/helpers';
 import Container from '@mui/material/Container';
 import { CircleMarkElement } from '../utils/rUtils';
 
 interface PitchByPitchDeltaProps {
   pitches: FormSchemaPitches;
+  showMarkers?: boolean
 }
 
-const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches }) => {
+const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches, showMarkers = false }) => {
   if (pitches.length != 0) {
     const pitchCount: number[] = [];
     const deltaNumbers: number[] = [];
     let delta: number = 0;
     const abResult: string[] = []
+    const abResultWithAB: string[] = []
+    const exactResult: string[] = []
 
     for (let i = 0; i < pitches.length; i++) {
       pitchCount.push(i + 1);
-      abResult.push(`${i + 1} - ${pitches[i].exactResult}`)
+      abResult.push(pitches[i].exactResult)
+      abResultWithAB.push(`${i + 1} - ${pitches[i].exactResult}`)
+      exactResult.push(getResultCategory(pitches[i]) || '')
       delta = Number((i > 0 ? calculatePitchCircleDelta(pitches, i, false) : 0));
       if (isNumber(delta)) {
         deltaNumbers.push(delta);
@@ -29,20 +34,21 @@ const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches }) => {
 
     return (
       <Container sx={{
-        height: { xs: document.documentElement.clientHeight, md: document.documentElement.clientHeight * 0.5, lg: document.documentElement.clientHeight * 0.45 },
-        width: { xs: document.documentElement.clientWidth * 0.9, lg: document.documentElement.clientWidth * 0.45 }
+        height: { xs: '90vh', md: '50vh' },
+        width: { xs: '90vw', lg: '45vw' },
+        maxHeight: { xs: '350px' }
       }}>
         <LineChart
-          title="Delta from Pitch to Pitch"
+          // title="Delta from Pitch to Pitch"
           xAxis={[{
-            data: abResult, scaleType: 'band', tickPlacement: 'middle',
+            data: abResultWithAB, scaleType: 'band', tickPlacement: 'middle',
             // https://mui.com/x/react-charts/axis/#text-customization
             tickLabelStyle: {
               angle: -25,
               textAnchor: 'end',
               fontSize: 12,
             }
-           }]}
+          }]}
           yAxis={[{
             min: -500,   // Set the minimum value for Y-Axis
             max: 500,    // Set the maximum value for Y-Axis
@@ -50,11 +56,11 @@ const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches }) => {
           },]}
           series={[
             {
-              label: "Delta", data: deltaNumbers, color: "teal"
-            },
+              label: "Delta", data: deltaNumbers, color: "#b36200",
+            }
           ]}
-          tooltip={{ trigger: 'item' }}
-          slots={{ mark: CircleMarkElement }}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          slots={{ mark: showMarkers ? (props: any) => <CircleMarkElement {...props} customData={exactResult} /> : undefined }}
         >
           <ChartsReferenceLine y={0} />
         </LineChart>

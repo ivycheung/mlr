@@ -36,14 +36,14 @@ const TeamsDropdown: React.FC<TeamsDropdownProps> = ({ league, teamOption, handl
     teams.sort((a, b) => a.teamName.localeCompare(b.teamName));
   }
 
-  const handleDropdownChange = (e: { target: { value: string; }; }) => {
+  const handleDropdownChange = (e: { target: { value: string } }) => {
     const teamOption = e.target.value;
     handleChangeTeam(teamOption);
   }
 
   const theme = useTheme();
   const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
-console.log(hideLabel)
+
   return (
     <FormControl sx={{ m: 1, minWidth: { xs: 150, sm: 200, lg: 240 }, ml: { lg: 0 }, ...sx }}>
       {hideLabel || notDesktop ?

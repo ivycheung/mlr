@@ -10,43 +10,50 @@ interface PitchByPlacementInInningProps {
 
 const PitchByPlacementInInning: React.FC<PitchByPlacementInInningProps> = ({ pitches }) => {
   if (pitches.length != 0) {
-    let p1 = 1
-    let p2 = 1
-    let p3 = 1
-    const p1Numbers: number[] = [] // first pitch
-    const p1Count: number[] = [] // # of first pitch
-    const p2Numbers: number[] = [] // second pitch
-    const p2Count: number[] = [] // # of second pitch
-    const p3Numbers: number[] = [] // third pitch
-    const p3Count: number[] = [] // # of third pitch
+    let p1Numbers: number[] = [] // first pitch
+    let p2Numbers: number[] = [] // second pitch
+    let p3Numbers: number[] = [] // third pitch
+    // const p4Count: number[] = [] // # of third pitch
 
-    for (let i = 0; i < pitches.length; i++) {
+    const inningsPitches: Record<number, Array<number>> = {};
+    pitches.forEach(entry => {
+      const { inning, pitch } = entry as { inning: string, pitch: number };
+      const inningInteger = Number(inning.slice(1));
+      if (!inningsPitches[Number(inning.slice(1))]) {
+        inningsPitches[inningInteger] = [];
+      }
+      inningsPitches[inningInteger].push(pitch);
+    });
 
-      if (pitches[i].inning !== (pitches[i - 1]?.inning ?? '0')) {
-        p1Numbers.push(pitches[i].pitch)
-        p1Count.push(p1)
-        p1++
-      }
-      if (pitches[i].inning === (pitches[i - 1]?.inning ?? '0') && pitches[i].inning !== (pitches[i - 2]?.inning ?? '0')) {
-        p2Numbers.push(pitches[i].pitch)
-        p2Count.push(p2)
-        p2++
-      }
-      if (pitches[i].inning === (pitches[i - 1]?.inning ?? '0') && pitches[i].inning === (pitches[i - 2]?.inning ?? '0') && pitches[i].inning !== (pitches[i - 3]?.inning ?? '0')) {
-        p3Numbers.push(pitches[i].pitch)
-        p3Count.push(p3)
-        p3++
-      }
+    const maxPitchesInInning = Math.max(...Object.values(inningsPitches).map(pitches => pitches.length));
+    const groupedPitchesByPosition = [];
 
+    for (let i = 0; i < maxPitchesInInning; i++) {
+      const pitchesAtPosition : number[] = [];
+      Object.values(inningsPitches).forEach(pitches => {
+        pitchesAtPosition.push(pitches[i] || 0); // `0` for missing pitches in some innings
+        if (pitchesAtPosition.length > 4) return;
+      });
+
+      groupedPitchesByPosition.push(pitchesAtPosition);
     }
+
+    const length = groupedPitchesByPosition[0].length || 0;
+    const maxPitchesInInningArray = Array.from({ length }, (_, index) => index+1);
+    p1Numbers = groupedPitchesByPosition[0] || [];
+    p2Numbers = groupedPitchesByPosition[1] || [];
+    p3Numbers = groupedPitchesByPosition[2] || [];
+    // p4Numbers = groupedPitchesByPosition[3] || [];
+
     return (
       <Container sx={{
-        height: { xs: document.documentElement.clientHeight, md: document.documentElement.clientHeight * 0.5, lg: document.documentElement.clientHeight * 0.45 },
-        width: { xs: document.documentElement.clientWidth * 0.9, lg: document.documentElement.clientWidth * 0.45 }
+        height: { xs: '90vh', md: '50vh' },
+        width: { xs: '90vw', lg: '45vw' },
+        maxHeight: { xs: '350px' }
       }}>
         <LineChart
           title="Pitches by Placement in Inning"
-          xAxis={[{ label: "Inning", data: p1Count, scaleType: 'band', tickPlacement: 'middle' }]}
+          xAxis={[{ label: "Inning", data: maxPitchesInInningArray, tickInterval: maxPitchesInInningArray, scaleType: 'point'}]}
           series={[
             {
               label: "First Pitches", data: p1Numbers, color: "red"
@@ -57,8 +64,12 @@ const PitchByPlacementInInning: React.FC<PitchByPlacementInInningProps> = ({ pit
             {
               label: "Third Pitches", data: p3Numbers, color: "magenta"
             },
+            // {
+            //   label: "Fourth Pitches", data: p4Numbers, color: "blue"
+            // },
           ]}
-          slots={{ mark: CircleMarkElement }}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          slots={{ mark: (props: any) => <CircleMarkElement {...props} /> }}
         />
       </Container>)
   }

@@ -37,6 +37,8 @@ const PitchesByInning: React.FC<PitchesByInningProps> = ({ pitches }) => {
     const innings = []
     const inningObject: { inning: number, pitches: number[] }[] = [];
 
+    let highestCount: number = 0;
+
     for (let i = 0; i < pitches.length; i++) {
       pitchCount.push(i);
       pitchNumbers.push(pitches[i].pitch);
@@ -56,8 +58,11 @@ const PitchesByInning: React.FC<PitchesByInningProps> = ({ pitches }) => {
 
     for (let i = 0; i < inningPitches.length; i++) {
       inningObject.push({ inning: i + 1, pitches: inningPitches[i] })
-      innings.push(i + 1)
+      innings.push(i + 1);
+      highestCount = (highestCount < inningPitches[i].length ? inningPitches[i].length : highestCount)
     }
+
+    const highestCountArray = Array.from({ length: highestCount }, (_, i) => i + 1)
 
     seriesArray = inningObject.map((series) => ({
       data: series.pitches,
@@ -67,15 +72,16 @@ const PitchesByInning: React.FC<PitchesByInningProps> = ({ pitches }) => {
 
     return (
       <Container sx={{
-        height: { xs: document.documentElement.clientHeight, md: document.documentElement.clientHeight * 0.5, lg: document.documentElement.clientHeight * 0.45 },
-        width: { xs: document.documentElement.clientWidth * 0.9, lg: document.documentElement.clientWidth * 0.45 }
+        height: { xs: '90vh', md: '50vh' },
+        width: { xs: '90vw', lg: '45vw' },
+        maxHeight: { xs: '350px' }
       }}>
         <LineChart
           title="Pitches by Inning"
-          xAxis={[{ data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], label: "Pitch Number", tickNumber: 15, tickInterval: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], scaleType: 'point', min: 1, max: 10 }
+          xAxis={[{ data: highestCountArray, label: "Pitch Number", tickInterval: highestCountArray, scaleType: 'point', min: 1, max: highestCount }
           ]}
           series={seriesArray}
-          margin={{ top: 100 }}
+          margin={{ top: 80 }}
         />
       </Container>
     )
