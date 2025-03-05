@@ -23,14 +23,16 @@ let theme = createTheme({
     light: {
       palette: {
         primary: {
-          main: "#C6011F"
+          main: "#C6011F",
+          dark: '#000'
         },
       }
     },
     dark: {
       palette: {
         primary: {
-          main: "#C6011F"
+          main: "#C6011F",
+          dark: '#FFF'
         },
       },
     },

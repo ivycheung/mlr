@@ -63,9 +63,7 @@ export default function MLRBatters() {
       {isLoading && <p>Loading...</p>}
       {isError && <p>{apiError?.message}</p>}
       {!isLoading && !isError &&
-        <Grid container style={{
-          padding: 30
-        }}>
+        <Grid container style={{ padding: 30 }}>
           <Grid size={12} sx={{ justifyContent: 'space-evenly', }}>
             <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} />
             <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} />
@@ -75,7 +73,7 @@ export default function MLRBatters() {
             <SessionDataTable pitches={pitches} />
           </Grid>
           <Grid container justifyContent="center" style={{ padding: 30 }} >
-            <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+            <Grid size={{ xs: 12 }} alignItems="center" justifyContent="center">
               <PitchSwingChart pitches={pitches} />
             </Grid>
           </Grid>

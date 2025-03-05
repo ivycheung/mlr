@@ -16,7 +16,6 @@ import PlayersDropdown from '../components/PlayersDropdown';
 import Grid from '@mui/material/Grid2';
 import SeasonsDropdown from '../components/SeasonsDropdown';
 import SessionsDropdown from '../components/SessionsDropdown';
-// import Slider from '@mui/material/Slider';
 
 export default function MLRPitchers() {
   const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
@@ -84,10 +83,10 @@ export default function MLRPitchers() {
             <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} sx={{ maxWidth: { xs: 150, sm: 175, lg: 240 } }} />
             <SeasonsDropdown seasonOption={seasonOption} plateAppearances={plateAppearances || []} handleChangeSeason={handleChangeSeason} sx={{ minWidth: { xs: 70, lg: 175 } }} />
             <SessionsDropdown seasonOption={seasonOption} sessionOption={sessionOption} plateAppearances={plateAppearances || []} handleChangeSession={handleChangeSession} sx={{ minWidth: { xs: 70, lg: 175 } }} />
-
+          </Grid>
+          <Grid size={12}>
             <SessionDataTable pitches={pitches} />
           </Grid>
-
           <Grid container justifyContent="center" style={{ padding: 30 }} >
             <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
               <PitchSwingChart pitches={pitches} />
@@ -95,13 +94,13 @@ export default function MLRPitchers() {
             <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
               <PitchByPlacementInInning pitches={pitches} />
             </Grid>
-          
-          <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
-            <PitchByPitchDelta pitches={pitches} />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
-            <PitchesByInning pitches={pitches} />
-          </Grid>
+
+            <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+              <PitchByPitchDelta pitches={pitches} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
+              <PitchesByInning pitches={pitches} />
+            </Grid>
           </Grid>
         </Grid>
       }

@@ -13,10 +13,11 @@ interface TeamsDropdownProps {
   league: string;
   teamOption: string;
   handleChangeTeam: (newTeamOption: string) => void
+  hideLabel?: boolean;
   sx?: SxProps<Theme>;
 }
 
-const TeamsDropdown: React.FC<TeamsDropdownProps> = ({ league, teamOption, handleChangeTeam, sx }) => {
+const TeamsDropdown: React.FC<TeamsDropdownProps> = ({ league, teamOption, handleChangeTeam, hideLabel = false, sx }) => {
   const validLeagues = ['milr', 'mlr'];
   if (!validLeagues.includes(league)) {
     throw new Error('Invalid league or position type');
@@ -35,7 +36,7 @@ const TeamsDropdown: React.FC<TeamsDropdownProps> = ({ league, teamOption, handl
     teams.sort((a, b) => a.teamName.localeCompare(b.teamName));
   }
 
-  const handleDropdownChange = (e: { target: { value: string; }; }) => {
+  const handleDropdownChange = (e: { target: { value: string } }) => {
     const teamOption = e.target.value;
     handleChangeTeam(teamOption);
   }
@@ -45,7 +46,7 @@ const TeamsDropdown: React.FC<TeamsDropdownProps> = ({ league, teamOption, handl
 
   return (
     <FormControl sx={{ m: 1, minWidth: { xs: 150, sm: 200, lg: 240 }, ml: { lg: 0 }, ...sx }}>
-      {notDesktop ?
+      {hideLabel || notDesktop ?
         <InputLabel id="team-input-select-label" shrink>Team</InputLabel> :
         <InputLabel id="team-input-select-label">Team</InputLabel>
       }
@@ -66,7 +67,7 @@ const TeamsDropdown: React.FC<TeamsDropdownProps> = ({ league, teamOption, handl
           })
         }
       </Select>
-      {notDesktop ? '' : <FormHelperText>{teamOption ? '' : 'Select Team'}</FormHelperText>}
+      { hideLabel || notDesktop ? '' : <FormHelperText>{teamOption ? '' : 'Select Team'}</FormHelperText>}
     </FormControl>
   )
 }

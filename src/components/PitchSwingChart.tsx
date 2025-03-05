@@ -1,20 +1,24 @@
-import { LineChart } from '@mui/x-charts/LineChart';
-import { FormSchemaPitches } from '../types/schemas/pitches-schema';
-import Container from '@mui/material/Container';
 import React from 'react';
-import { CircleMarkElement } from '../utils/rUtils';
+import { LineChart } from '@mui/x-charts/LineChart';
+import Container from '@mui/material/Container';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
+import { CircleMarkElement } from '../utils/rUtils';
+import { FormSchemaPitches } from '../types/schemas/pitches-schema';
+import { getResultCategory } from '../utils/utils';
 
 interface PitchSwingChartProps {
   pitches: FormSchemaPitches;
+  showMarkers?: boolean
 }
 
-const PitchSwingChart: React.FC<PitchSwingChartProps> = ({ pitches }) => {
+const PitchSwingChart: React.FC<PitchSwingChartProps> = ({ pitches, showMarkers = false }) => {
   const pitchNumbers: number[] = []
   const swingNumbers: number[] = []
   const pitchCount: number[] = []
+  const abResult: string[] = []
+  const exactResult: string[] = []
 
   const theme = useTheme();
   const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
@@ -23,29 +27,48 @@ const PitchSwingChart: React.FC<PitchSwingChartProps> = ({ pitches }) => {
     pitches.forEach((pitch, i) => {
       pitchNumbers.push(pitch.pitch)
       swingNumbers.push(pitch.swing)
-      pitchCount.push(i+1)
+      pitchCount.push(i + 1)
+      abResult.push(`${i + 1} - ${pitch.exactResult}`)
+      exactResult.push(getResultCategory(pitch) || '')
     })
 
     return (
       <Container sx={{
-        height: { xs: document.documentElement.clientHeight, md: document.documentElement.clientHeight * 0.5, lg: document.documentElement.clientHeight * 0.45 },
-        width: { xs: '100%', lg: document.documentElement.clientWidth * 0.45 }
+        height: { xs: '90vh', md: '50vh' },
+        width: { xs: '90vw', lg: '45vw' },
+        maxHeight: { xs: '350px' }
       }}>
         <LineChart
-          xAxis={[{ data: pitchCount, scaleType: 'band', tickPlacement: 'middle' },]}
-          grid={{ horizontal: (pitchCount.length <=10) ? false: true }}
+          xAxis={[{
+            data: abResult, scaleType: 'band', tickPlacement: 'middle',
+            tickLabelStyle: {
+              angle: -25,
+              textAnchor: 'end',
+              fontSize: 12,
+            }
+          }]}
+          grid={{ horizontal: (pitchCount.length <= 10) ? false : true }}
           series={[
             {
               data: pitchNumbers,
               label: "Pitch",
-
+              id: 'pitchNumbers'
             },
             {
               data: swingNumbers,
               label: "Swing",
+              id: 'swingNumbers'
             },
           ]}
-          slots={{ mark: (pitchCount.length <= 10 || notDesktop) ? CircleMarkElement : undefined }}
+          sx={{
+            '.MuiLineElement-series-swingNumbers': {
+              strokeDasharray: '3 3',
+            },
+          }}
+          slots={{
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            mark: showMarkers || (pitchCount.length <= 10 || notDesktop) ? (props: any) => <CircleMarkElement {...props} customData={exactResult} /> : undefined,
+          }}
         />
       </Container>
 
