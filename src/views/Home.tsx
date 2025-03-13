@@ -4,6 +4,7 @@ import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 
 import { useGetPlayers } from '../api/use-get-players';
 import { useGetPlayer } from '../api/use-get-player';
+import useRefetchQuery from '../api/use-refetch-query';
 
 import PitchSwingChart from '../components/PitchSwingChart';
 import SessionDataTable from '../components/SessionDataTable';
@@ -13,6 +14,7 @@ import PitchByPitchDelta from '../components/PitchByPitchDelta';
 import TeamsDropdown from '../components/TeamsDropdown';
 import PlayersDropdown from '../components/PlayersDropdown';
 import HistogramPitchChart from '../components/HistogramPitchChart';
+import NumberOfPitchesDropdown from '../components/NumberOfPitchesDropdown';
 
 import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
@@ -21,16 +23,12 @@ import AutorenewIcon from '@mui/icons-material/Autorenew';
 import useTheme from '@mui/material/styles/useTheme';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-import { useLocalStorage } from '@mantine/hooks';
-import NumberOfPitchesDropdown from '../components/NumberOfPitchesDropdown';
-
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import useRefetchQuery from '../api/use-refetch-query';
 
+import { useLocalStorage } from '@mantine/hooks';
 import ReactGA from 'react-ga4';
-ReactGA.send({ hitType: "pageview", page: "/home", title: "Home" });
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -54,6 +52,10 @@ export default function Home() {
 
   const theme = useTheme();
   const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
+
+  React.useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: "/home", title: "Home" });
+  }, []);
 
   // Seasons
   React.useEffect(() => {
@@ -109,7 +111,6 @@ export default function Home() {
               :
               <><Button variant="contained" onClick={handleRefreshPlayer} sx={{ ml: 1 }}>Refresh</Button><Button variant="contained" onClick={handleResetLocalStorage} sx={{ ml: 1 }}>Reset</Button></>
             }
-            
           </Grid>
           <Grid size={12} sx={{ pb: 2 }}>
             <SessionDataTable pitches={pitches} showSeason />
@@ -133,19 +134,17 @@ export default function Home() {
                   </Grid>
                 </Grid>
               </CustomTabPanel><CustomTabPanel value={tabOption} index={1}>
-                  <Grid container justifyContent="center">
+                <Grid container justifyContent="center">
                   <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
                     <HistogramPitchChart pitches={pitches} />
                   </Grid>
-
-                  </Grid>
-                </CustomTabPanel><CustomTabPanel value={tabOption} index={2}>
-                  <Grid container justifyContent="center">
-                  </Grid>
-                </CustomTabPanel>
+                </Grid>
+              </CustomTabPanel><CustomTabPanel value={tabOption} index={2}>
+                <Grid container justifyContent="center">
+                </Grid>
+              </CustomTabPanel>
             </Box>
           }
-
         </Grid>
       }
     </>

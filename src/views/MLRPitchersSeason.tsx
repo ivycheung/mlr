@@ -4,10 +4,13 @@ import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 
 import { useGetPlayer } from '../api/use-get-player';
 import { useGetPlayers } from '../api/use-get-players';
+import useRefetchQuery from '../api/use-refetch-query';
+
 import SessionDataTable from '../components/SessionDataTable';
 import TeamsDropdown from '../components/TeamsDropdown';
 import PlayersDropdown from '../components/PlayersDropdown';
 import SeasonsDropdown from '../components/SeasonsDropdown';
+import HistogramPitchChart from '../components/HistogramPitchChart';
 // import HistogramDeltaChartByResult from '../components/HistogramDeltaChartByResult';
 // import HistogramPitchChartByResult from '../components/HistogramPitchChartByResult';
 
@@ -23,18 +26,14 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import blueGrey from '@mui/material/colors/blueGrey';
 import useTheme from '@mui/material/styles/useTheme';
 import useMediaQuery from '@mui/material/useMediaQuery';
-
 import RestartAlt from '@mui/icons-material/RestartAlt';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
-import useRefetchQuery from '../api/use-refetch-query';
-import { useLocalStorage } from '@mantine/hooks';
 import Button from '@mui/material/Button';
 import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 
+import { useLocalStorage } from '@mantine/hooks';
 import ReactGA from 'react-ga4';
-import HistogramChart from '../components/HistogramPitchChart';
-ReactGA.send({ hitType: "pageview", page: "/mlrpitchersseasons", title: "MLR Pitchers Seasons" });
 
 export default function MLRPitchers() {
   const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
@@ -53,6 +52,10 @@ export default function MLRPitchers() {
 
   const theme = useTheme();
   const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
+
+  React.useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: "/mlrpitchersseasons", title: "MLR Pitchers Seasons" });
+  }, []);
 
   // Seasons
   React.useEffect(() => {
@@ -78,7 +81,6 @@ export default function MLRPitchers() {
     setSeasonOption(newSeasonOption);
   }, []);
 
-
   async function handleCareerStatsChange(_event: React.ChangeEvent<HTMLInputElement>, checked: boolean) {
     setCareerOption(checked);
     setShowSeason(checked);
@@ -102,8 +104,6 @@ export default function MLRPitchers() {
     setPitches([]);
   }
 
-  
-
   return (
     <>
       {isLoading && <p>Loading...</p>}
@@ -115,7 +115,7 @@ export default function MLRPitchers() {
             <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} sx={{ maxWidth: { xs: 150, sm: 175, lg: 240 } }} />
             <SeasonsDropdown seasonOption={seasonOption} plateAppearances={plateAppearances || []} handleChangeSeason={handleChangeSeason} sx={{ minWidth: { xs: 70, lg: 175 } }} />
             <FormControl sx={{ height: '100%' }}>
-              <FormGroup aria-label="position" row sx={{ minHeight: {xs: 62, lg: 65 } }}>
+              <FormGroup aria-label="position" row sx={{ minHeight: { xs: 62, lg: 65 } }}>
                 <FormControlLabel disableTypography control={<Android12Switch onChange={handleCareerStatsChange} checked={careerOption} />} label={<Typography sx={{ fontSize: 12, fontWeight: 600, mb: '-5px' }}>
                   Career
                 </Typography>} labelPlacement="top" />
@@ -126,7 +126,6 @@ export default function MLRPitchers() {
               :
               <><Button variant="contained" onClick={handleRefreshPlayer} sx={{ ml: 1 }}>Refresh</Button><Button variant="contained" onClick={handleResetLocalStorage} sx={{ ml: 1 }}>Reset</Button></>
             }
-            
           </Grid>
           {
             ((!pitches || pitches.length != 0) ?
@@ -146,7 +145,7 @@ export default function MLRPitchers() {
                             backgroundColor: blueGrey[50]
                           }),]
                     }
-                    >
+                  >
                     <Typography component="span">Data Table</Typography>
                   </AccordionSummary>
                   <AccordionDetails>
@@ -162,7 +161,7 @@ export default function MLRPitchers() {
               alignItems: "center"
             }}>
             <Grid size={{ xs: 12, lg: 6 }} >
-              <HistogramChart pitches={pitches} />
+              <HistogramPitchChart pitches={pitches} />
             </Grid>
             {/* <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center">
               <HistogramPitchChartByResult pitches={pitches} />

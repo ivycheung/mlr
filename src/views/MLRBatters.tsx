@@ -9,12 +9,10 @@ import PitchSwingChart from '../components/PitchSwingChart';
 import SessionDataTable from '../components/SessionDataTable';
 import TeamsDropdown from '../components/TeamsDropdown';
 import PlayersDropdown from '../components/PlayersDropdown';
-
-import Grid from '@mui/material/Grid2';
 import SeasonsDropdown from '../components/SeasonsDropdown';
 
+import Grid from '@mui/material/Grid2';
 import ReactGA from 'react-ga4';
-ReactGA.send({ hitType: "pageview", page: "/mlrbatters", title: "MLR Batters" });
 
 export default function MLRBatters() {
   const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
@@ -28,6 +26,10 @@ export default function MLRBatters() {
   // Get a list of players on page load
   const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
   const { data: plateAppearances } = useGetPlayer(playerType, league, playerOption);
+
+  React.useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: "/mlrbatters", title: "MLR Batters" });
+  }, []);
 
   // Get pitches
   React.useEffect(() => {

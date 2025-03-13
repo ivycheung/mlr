@@ -17,6 +17,7 @@ import SeasonsDropdown from '../components/SeasonsDropdown';
 import SessionsDropdown from '../components/SessionsDropdown';
 
 import { useLocalStorage } from '@mantine/hooks';
+import ReactGA from 'react-ga4';
 
 import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
@@ -25,8 +26,6 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import RestartAlt from '@mui/icons-material/RestartAlt';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 
-import ReactGA from 'react-ga4';
-ReactGA.send({ hitType: "pageview", page: "/mlrpitchers", title: "MLR Pitchers" });
 
 export default function MLRPitchers() {
   const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
@@ -44,6 +43,10 @@ export default function MLRPitchers() {
 
   const theme = useTheme();
   const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
+
+  React.useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: "/mlrpitchers", title: "MLR Pitchers" });
+  }, []);
 
   // Seasons
   React.useEffect(() => {
