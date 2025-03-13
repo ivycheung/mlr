@@ -15,6 +15,10 @@ import Home from './views/Home';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
 
+import ReactGA from 'react-ga4';
+
+ReactGA.initialize('G-BHPXTN74B2');
+
 const queryClient = new QueryClient();
 
 let theme = createTheme({

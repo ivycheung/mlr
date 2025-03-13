@@ -5,7 +5,7 @@ import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from "@mui/material/TableContainer";
 import Paper from "@mui/material/Paper";
-import { calculatePitchCircleDelta, calculateSwingCircleDelta, getNextPitch, getResultCategory } from "../utils/utils";
+import { calculatePitchCircleDelta, calculateSwingCircleDelta, getResultCategory } from "../utils/utils";
 import { FormSchemaPitches } from "../types/schemas/pitches-schema";
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -55,8 +55,8 @@ const SessionDataTable: React.FC<SessionDataTableProps> = ({ pitches, showSeason
               {notDesktop ? '' :
                 <>
                   <TableCell width={50} align="center">Result</TableCell>
-                  <TableCell width={50} align="center">Next</TableCell>
-                  <TableCell width={50} align="center">Delta</TableCell>
+                  {/* <TableCell width={50} align="center">Next</TableCell> */}
+                  {/* <TableCell width={50} align="center">Delta</TableCell> */}
                 </>
               }
             </TableRow>
@@ -85,8 +85,8 @@ const SessionDataTable: React.FC<SessionDataTableProps> = ({ pitches, showSeason
                 {notDesktop ? '' :
                   <>
                     <TableCell align="center">{getResultCategory(pitch)}</TableCell>
-                    <TableCell align="center">{getNextPitch(array, i)}</TableCell>
-                    <TableCell align="center">{calculatePitchCircleDelta(array, i)}</TableCell>
+                    {/* <TableCell align="center">{getNextPitch(array, i)}</TableCell> */}
+                    {/* <TableCell align="center">{calculatePitchCircleDelta(array, i)}</TableCell> */}
                   </>
                 }
               </TableRow>

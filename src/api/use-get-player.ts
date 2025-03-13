@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { FormSchemaPitches } from "../types/schemas/pitches-schema";
 
+
 const fetchPlayer = async (type: string, league: string, playerId: number): Promise<FormSchemaPitches> => {
   const url = `https://api.mlr.gg/legacy/api/plateappearances/${type}/${league}/${playerId}`;
   const response = await axios.get(url);
@@ -18,7 +19,8 @@ export function useGetPlayer(type: string, league: string, playerOption: number)
   const result = useQuery({
     queryKey: ['player', playerOption, league],
     queryFn: () => fetchPlayer(type, league, playerOption),
-    staleTime: Infinity,
+    enabled: playerOption !== 0,
+    staleTime: 60 * (60 * 1000), // 60 mins ,
   });
 
   return {

@@ -35,7 +35,7 @@ const PitchSwingChart: React.FC<PitchSwingChartProps> = ({ pitches, showMarkers 
     return (
       <Container sx={{
         height: { xs: '90vh', md: '50vh' },
-        width: { xs: '90vw', lg: '45vw' },
+        width: { xs: '90vw', lg: '100%' },
         maxHeight: { xs: '350px' }
       }}>
         <LineChart
@@ -47,7 +47,7 @@ const PitchSwingChart: React.FC<PitchSwingChartProps> = ({ pitches, showMarkers 
               fontSize: 12,
             }
           }]}
-          grid={{ horizontal: (pitchCount.length <= 10) ? false : true }}
+          grid={{ horizontal: true }}
           series={[
             {
               data: pitchNumbers,
@@ -69,7 +69,8 @@ const PitchSwingChart: React.FC<PitchSwingChartProps> = ({ pitches, showMarkers 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             mark: showMarkers || (pitchCount.length <= 10 || notDesktop) ? (props: any) => <CircleMarkElement {...props} customData={exactResult} /> : undefined,
           }}
-        />
+        >
+          </LineChart>
       </Container>
 
     );
