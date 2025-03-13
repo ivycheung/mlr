@@ -11,15 +11,6 @@ import SeasonsDropdown from '../components/SeasonsDropdown';
 // import HistogramDeltaChartByResult from '../components/HistogramDeltaChartByResult';
 // import HistogramPitchChartByResult from '../components/HistogramPitchChartByResult';
 
-import { useGetPlayer } from '../api/use-get-player';
-import { useGetPlayers } from '../api/use-get-players';
-import SessionDataTable from '../components/SessionDataTable';
-import TeamsDropdown from '../components/TeamsDropdown';
-import PlayersDropdown from '../components/PlayersDropdown';
-import SeasonsDropdown from '../components/SeasonsDropdown';
-// import HistogramDeltaChartByResult from '../components/HistogramDeltaChartByResult';
-// import HistogramPitchChartByResult from '../components/HistogramPitchChartByResult';
-
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid2';
 import FormControlLabel from '@mui/material/FormControlLabel';
