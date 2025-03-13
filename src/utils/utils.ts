@@ -78,9 +78,9 @@ export function getResultCategory(pitch: FormSchemaPitch) {
   let result: string = '';
   const outcome = pitch.exactResult;
 
-  if (!outcome) {
-    return null;
-  }
+  // if (!outcome) {
+  //   return null;
+  // }
 
   switch (outcome) {
     case 'BB':
@@ -102,7 +102,7 @@ export function getResultCategory(pitch: FormSchemaPitch) {
       result = 'XBH'
       break;
     case 'HR':
-      result = 'XBH'
+      result = 'HR'
       break;
     default:
       result = 'OUT'

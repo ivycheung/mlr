@@ -128,54 +128,54 @@ export default function MILRPitchers() {
       {isLoading && <p>Loading...</p>}
       {isError && <p>{apiError?.message}</p>}
       {!isLoading && !isError &&
-          <Grid container justifyContent="center" style={{ padding: 30 }}>
-            <Grid size={12}>
-              <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} />
-              <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} />
-              <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
-                <InputLabel id="mlrseason-input-select-label" sx={{ color: "grey.400", }}>MLR Season</InputLabel>
-                <Select
-                  labelId="mlrseason-input-select-label"
-                  id="mlrseason-input-select"
-                  label={mlrSeasonOption}
-                  onChange={handleChangeMlrSeason}
-                  value={mlrSeasonOption ? mlrSeasonOption.toString() : ''
-                  }
-                >
-                  {
-                    mlrSeasons.map((season) => {
-                      return (
-                        <MenuItem key={season} value={(season === undefined || season === null || mlrSeasons.length === 0) ? '' : season}>
-                          {season}
-                        </MenuItem>
-                      )
-                    })
-                  }
-                </Select>
-                <FormHelperText>{mlrSeasonOption ? '' : 'Select MLR Season'}</FormHelperText>
-              </FormControl>
-              <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
-                <InputLabel id="milrseason-input-select-label" sx={{ color: "red[500]", }}>MiLR Season</InputLabel>
-                <Select
-                  labelId="milrseason-input-select-label"
-                  id="milrseason-input-select"
-                  label={milrSeasonOption}
-                  onChange={handleChangeMilrSeason}
-                  value={milrSeasonOption ? milrSeasonOption.toString() : ''}
-                >
-                  {
-                    milrSeasons.map((season) => {
-                      return (
-                        <MenuItem key={season} value={(season === undefined || season === null || milrSeasons.length === 0) ? '' : season}>
-                          {season}
-                        </MenuItem>
-                      )
-                    })
-                  }
-                </Select>
-                <FormHelperText>{milrSeasonOption ? '' : 'Select MiLR Season'}</FormHelperText>
-              </FormControl>
-              {/* <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
+        <Grid container justifyContent="center" style={{ padding: 30 }}>
+          <Grid size={12}>
+            <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} />
+            <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} />
+            <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
+              <InputLabel id="mlrseason-input-select-label" sx={{ color: "grey.400", }}>MLR Season</InputLabel>
+              <Select
+                labelId="mlrseason-input-select-label"
+                id="mlrseason-input-select"
+                label={mlrSeasonOption}
+                onChange={handleChangeMlrSeason}
+                value={mlrSeasonOption ? mlrSeasonOption.toString() : ''
+                }
+              >
+                {
+                  mlrSeasons.map((season) => {
+                    return (
+                      <MenuItem key={season} value={(season === undefined || season === null || mlrSeasons.length === 0) ? '' : season}>
+                        {season}
+                      </MenuItem>
+                    )
+                  })
+                }
+              </Select>
+              <FormHelperText>{mlrSeasonOption ? '' : 'Select MLR Season'}</FormHelperText>
+            </FormControl>
+            <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
+              <InputLabel id="milrseason-input-select-label" sx={{ color: "red[500]", }}>MiLR Season</InputLabel>
+              <Select
+                labelId="milrseason-input-select-label"
+                id="milrseason-input-select"
+                label={milrSeasonOption}
+                onChange={handleChangeMilrSeason}
+                value={milrSeasonOption ? milrSeasonOption.toString() : ''}
+              >
+                {
+                  milrSeasons.map((season) => {
+                    return (
+                      <MenuItem key={season} value={(season === undefined || season === null || milrSeasons.length === 0) ? '' : season}>
+                        {season}
+                      </MenuItem>
+                    )
+                  })
+                }
+              </Select>
+              <FormHelperText>{milrSeasonOption ? '' : 'Select MiLR Season'}</FormHelperText>
+            </FormControl>
+            {/* <FormControl sx={{ m: 1, minWidth: 240, color: "blue" }}>
                 <InputLabel id="season-input-select-label">Session</InputLabel>
                 <Select
                   labelId="season-input-select-label"
@@ -195,24 +195,24 @@ export default function MILRPitchers() {
                   }
                 </Select>
               </FormControl> */}
-              <SessionDataTable pitches={combinedPitches} />
-            </Grid>
+            <SessionDataTable pitches={combinedPitches} />
+          </Grid>
 
-            <Grid container justifyContent="center" style={{ padding: 30 }}>
-              <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
-                <PitchSwingChart pitches={combinedPitches} />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
-                <PitchByPlacementInInning pitches={combinedPitches} />
-              </Grid>
+          <Grid container justifyContent="center" style={{ padding: 30 }}>
+            <Grid size={{ xs: 12 }} alignItems="center" justifyContent="center">
+              <PitchSwingChart pitches={combinedPitches} showMarkers />
             </Grid>
-            <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
-              <PitchByPitchDelta pitches={combinedPitches} />
+            <Grid size={{ xs: 12 }} alignItems="center" justifyContent="center" >
+              <PitchByPlacementInInning pitches={combinedPitches} />
             </Grid>
-            {/* <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
+          </Grid>
+          <Grid size={{ xs: 12 }} alignItems="center" justifyContent="center">
+            <PitchByPitchDelta pitches={combinedPitches} showMarkers />
+          </Grid>
+          {/* <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
               <PitchesByInning pitches={combinedPitches} />
             </Grid> */}
-          </Grid>
+        </Grid>
       }
     </>
   );

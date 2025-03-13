@@ -15,8 +15,6 @@ import Grid from '@mui/material/Grid2';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Grid2 from '@mui/material/Grid2';
-import Stack from '@mui/material/Stack';
 import FormGroup from '@mui/material/FormGroup';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -24,8 +22,7 @@ import Typography from '@mui/material/Typography';
 import blueGrey from '@mui/material/colors/blueGrey';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import SessionDataTable from '../components/SessionDataTable';
-import HistogramChart from '../components/HistogramChart';
-// import Slider from '@mui/material/Slider';
+import HistogramChart from '../components/HistogramPitchChart';
 
 export default function MILRPitchers() {
   const [playerOption, setPlayerOption] = React.useState<number>(0)
@@ -256,23 +253,10 @@ export default function MILRPitchers() {
               justifyContent: "flex-start",
               alignItems: "center"
             }}>
-            <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
+            <Grid size={{ xs: 12, lg: 6 }} >
               { /* histogram */}
               <HistogramChart pitches={pitches} />
-            </Grid2>
-            <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 6 }} >
-              { /* heatmap */}
-              <Stack
-                direction={'column'}
-                sx={{
-                  alignItems: 'center',
-                  justifyContent: 'space-evenly',
-                  height: '100%',
-
-                }}>
-                {/* <HeatmapChart pitches={pitches} /> */}
-              </Stack>
-            </Grid2>
+            </Grid>
           </Grid>
           {/* <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
               <PitchByPitchDelta pitches={pitches} />
