@@ -13,6 +13,9 @@ import PlayersDropdown from '../components/PlayersDropdown';
 import Grid from '@mui/material/Grid2';
 import SeasonsDropdown from '../components/SeasonsDropdown';
 
+import ReactGA from 'react-ga4';
+ReactGA.send({ hitType: "pageview", page: "/mlrbatters", title: "MLR Batters" });
+
 export default function MLRBatters() {
   const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
   const [playerOption, setPlayerOption] = React.useState<number>(0)

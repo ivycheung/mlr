@@ -35,19 +35,27 @@ export function CircleMarkElement(props: CircleMarkElementProps & MarkElementPro
     switch (customData[dataIndex]) {
       case 'BB/1B':
       case 'STEAL':
-        circleColor = '#d5b60a'
+        circleColor = '#df1c44'
+        fill = circleColor;
         strokeWidth = 2;
-        radius = 5;
+        radius = 3;
         break;
       case 'XBH':
-        circleColor = 'green'
+        circleColor = '#fdbc2e'
         strokeWidth = 2;
-        // circleColor = '';
-        radius = 5;
+        fill = circleColor;
+        radius = 4;
+        break;
+      case 'HR':
+        strokeWidth = 2;
+        circleColor = '#288810';
+        fill = circleColor
+        radius = 4;
         break;
       case 'OUT':
-        circleColor = 'red'
-        // fill = color
+        circleColor = '#9e9e9e'
+        strokeWidth = 1;
+        // fill = circleColor
         break;
       default:
         circleColor = ''
@@ -55,7 +63,6 @@ export function CircleMarkElement(props: CircleMarkElementProps & MarkElementPro
         break;
     }
   }
-
 
   return (
     <>

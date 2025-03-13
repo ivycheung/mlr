@@ -73,7 +73,7 @@ const PitchesByInning: React.FC<PitchesByInningProps> = ({ pitches }) => {
     return (
       <Container sx={{
         height: { xs: '90vh', md: '50vh' },
-        width: { xs: '90vw', lg: '45vw' },
+        width: { xs: '90vw', lg: '100%' },
         maxHeight: { xs: '350px' }
       }}>
         <LineChart

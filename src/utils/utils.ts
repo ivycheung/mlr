@@ -102,7 +102,7 @@ export function getResultCategory(pitch: FormSchemaPitch) {
       result = 'XBH'
       break;
     case 'HR':
-      result = 'XBH'
+      result = 'HR'
       break;
     default:
       result = 'OUT'

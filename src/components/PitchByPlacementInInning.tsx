@@ -5,14 +5,15 @@ import { CircleMarkElement } from "../utils/rUtils";
 
 interface PitchByPlacementInInningProps {
   pitches: FormSchemaPitches;
-
 }
+
+type DataPoint = number | null;
 
 const PitchByPlacementInInning: React.FC<PitchByPlacementInInningProps> = ({ pitches }) => {
   if (pitches.length != 0) {
-    let p1Numbers: number[] = [] // first pitch
-    let p2Numbers: number[] = [] // second pitch
-    let p3Numbers: number[] = [] // third pitch
+    let p1Numbers: DataPoint[] = [] // first pitch
+    let p2Numbers: DataPoint[] = [] // second pitch
+    let p3Numbers: DataPoint[] = [] // third pitch
     // const p4Count: number[] = [] // # of third pitch
 
     const inningsPitches: Record<number, Array<number>> = {};
@@ -29,9 +30,9 @@ const PitchByPlacementInInning: React.FC<PitchByPlacementInInningProps> = ({ pit
     const groupedPitchesByPosition = [];
 
     for (let i = 0; i < maxPitchesInInning; i++) {
-      const pitchesAtPosition : number[] = [];
+      const pitchesAtPosition: DataPoint[] = [];
       Object.values(inningsPitches).forEach(pitches => {
-        pitchesAtPosition.push(pitches[i] || 0); // `0` for missing pitches in some innings
+        pitchesAtPosition.push(pitches[i] || null); // `0` for missing pitches in some innings
         if (pitchesAtPosition.length > 4) return;
       });
 
@@ -48,7 +49,7 @@ const PitchByPlacementInInning: React.FC<PitchByPlacementInInningProps> = ({ pit
     return (
       <Container sx={{
         height: { xs: '90vh', md: '50vh' },
-        width: { xs: '90vw', lg: '45vw' },
+        width: { xs: '90vw', lg: '100%' },
         maxHeight: { xs: '350px' }
       }}>
         <LineChart
