@@ -84,33 +84,51 @@ export function getResultCategory(pitch: FormSchemaPitch) {
 
   switch (outcome) {
     case 'BB':
-      result = 'BB/1B'
-      break;
     case '1B':
-      result = 'BB/1B'
-      break;
     case 'IF1B':
       result = 'BB/1B'
       break;
     case 'IBB':
-      result = 'BB/1B'
+      result = ''
       break;
     case '2B':
-      result = 'XBH'
-      break;
     case '3B':
       result = 'XBH'
       break;
     case 'HR':
       result = 'HR'
       break;
-    default:
+    case 'STEAL':
+    case 'STEAL 2B':
+    case 'STEAL 3B':
+    case 'Steal':
+    case 'Steal 2B':
+    case 'Steal 3B':
+    case 'Steal 2b':
+    case 'Steal 3b':
+      result = 'STEAL'
+      break;
+    case 'RGO':
+    case 'LGO':
+    case 'FO':
+    case 'PO':
+    case 'Bunt DP':
+    case 'DP':
+    case 'K':
+    case 'CS 2B':
+    case 'CS 1B':
+    case 'CS 3B':
+    case 'Sac Fly':
+    case 'CMS Home':
+    case 'CS Home':
       result = 'OUT'
       break;
-  }
-
-  if (outcome.includes('STEAL') || outcome.includes('Steal')) {
-    result = 'STEAL';
+    case 'Bunt Sac':
+      result = 'BUNT SAC'
+      break;
+    default:
+      result = ''
+      break;
   }
 
   return result;

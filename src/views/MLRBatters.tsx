@@ -10,6 +10,7 @@ import SessionDataTable from '../components/SessionDataTable';
 import TeamsDropdown from '../components/TeamsDropdown';
 import PlayersDropdown from '../components/PlayersDropdown';
 import SeasonsDropdown from '../components/SeasonsDropdown';
+import HistogramSwingChart from '../components/HistogramSwingChart';
 
 import Grid from '@mui/material/Grid2';
 import ReactGA from 'react-ga4';
@@ -78,8 +79,11 @@ export default function MLRBatters() {
             <SessionDataTable pitches={pitches} />
           </Grid>
           <Grid container justifyContent="center" style={{ padding: 30 }} >
-            <Grid size={{ xs: 12 }} alignItems="center" justifyContent="center">
+            <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center">
               <PitchSwingChart pitches={pitches} />
+            </Grid>
+            <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center">
+              <HistogramSwingChart pitches={pitches} />
             </Grid>
           </Grid>
         </Grid>

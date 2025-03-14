@@ -35,7 +35,7 @@ const PitchSwingChart: React.FC<PitchSwingChartProps> = ({ pitches, showMarkers 
     return (
       <Container sx={{
         height: { xs: '90vh', md: '50vh' },
-        width: { xs: '90vw', lg: '100%' },
+        width: { xs: '90vw', lg: '50vw' },
         maxHeight: { xs: '350px' }
       }}>
         <LineChart

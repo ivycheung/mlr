@@ -8,8 +8,15 @@ import CssBaseline from "@mui/material/CssBaseline/CssBaseline";
 import Box from "@mui/material/Box";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import useTheme from "@mui/material/styles/useTheme";
+import Slide from "@mui/material/Slide";
+import useScrollTrigger from "@mui/material/useScrollTrigger";
 
-export default function Nav() {
+interface Props {
+  window?: () => Window;
+  children?: React.ReactElement<unknown>;
+}
+
+export default function Nav(props: Props) {
   const navigate = useNavigate();
 
   const handleLogoClick = () => {
@@ -44,9 +51,27 @@ export default function Nav() {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
 
+  // https://mui.com/material-ui/react-app-bar/#hide-app-bar
+  function HideOnScroll(props: Props) {
+    const { children, window } = props;
+
+    const trigger = useScrollTrigger({
+      target: window ? window() : undefined,
+    });
+
+    if (!isMobile) return children;
+
+    return (
+      <Slide appear={false} direction="down" in={!trigger}>
+        {children ?? <div />}
+      </Slide>
+    );
+  }
+
   return (
     <React.Fragment>
       <CssBaseline />
+      <HideOnScroll {...props}>
       <AppBar position="sticky" enableColorOnDark>
         <Toolbar variant={notDesktop ? 'dense' : 'regular'} sx={{
           justifyContent: 'space-between',
@@ -79,6 +104,7 @@ export default function Nav() {
           </Box>
         </Toolbar>
       </AppBar>
+      </HideOnScroll>
     </React.Fragment>
   );
 }
