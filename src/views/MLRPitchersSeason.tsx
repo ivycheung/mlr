@@ -115,7 +115,7 @@ export default function MLRPitchers() {
             <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} sx={{ maxWidth: { xs: 150, sm: 175, lg: 240 } }} />
             <SeasonsDropdown seasonOption={seasonOption} plateAppearances={plateAppearances || []} handleChangeSeason={handleChangeSeason} sx={{ minWidth: { xs: 70, lg: 175 } }} />
             <FormControl sx={{ height: '100%' }}>
-              <FormGroup aria-label="position" row sx={{ minHeight: { xs: 62, lg: 65 } }}>
+              <FormGroup aria-label="position" row sx={{ minHeight: { xs: 62, lg: 63 } }}>
                 <FormControlLabel disableTypography control={<Android12Switch onChange={handleCareerStatsChange} checked={careerOption} />} label={<Typography sx={{ fontSize: 12, fontWeight: 600, mb: '-5px' }}>
                   Career
                 </Typography>} labelPlacement="top" />
