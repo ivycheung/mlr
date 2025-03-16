@@ -121,25 +121,26 @@ export default function Home() {
                 <Tabs value={tabOption} onChange={handleTabChange} aria-label="Tabs">
                   <Tab label="One" {...a11yProps(0)} />
                   <Tab label="Two" {...a11yProps(1)} />
-                  {/* <Tab label="Three" {...a11yProps(2)} /> */}
                 </Tabs>
               </Box>
               <CustomTabPanel value={tabOption} index={0}>
                 <Grid container justifyContent="center">
-                  <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+                  <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center">
                     <PitchSwingChart pitches={pitches} showMarkers />
                   </Grid>
-                  <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+                  <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center">
                     <PitchByPitchDelta pitches={pitches} showMarkers />
                   </Grid>
                 </Grid>
-              </CustomTabPanel><CustomTabPanel value={tabOption} index={1}>
+              </CustomTabPanel>
+              <CustomTabPanel value={tabOption} index={1}>
                 <Grid container justifyContent="center">
-                  <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+                  <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center">
                     <HistogramPitchChart pitches={pitches} />
                   </Grid>
                 </Grid>
-              </CustomTabPanel><CustomTabPanel value={tabOption} index={2}>
+              </CustomTabPanel>
+              <CustomTabPanel value={tabOption} index={2}>
                 <Grid container justifyContent="center">
                 </Grid>
               </CustomTabPanel>
@@ -162,7 +163,7 @@ function CustomTabPanel(props: TabPanelProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && <Box sx={{ pt: 3 }}>{children}</Box>}
     </div>
   );
 }

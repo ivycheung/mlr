@@ -90,6 +90,7 @@ export default function MLRPitchers() {
     setTeamOption(newTeamOption);
     setPlayerOption(0);
     setSeasonOption(0);
+    setPitches([]);
   }, []);
 
   const handleChangePlayer = React.useCallback((newPlayerOption: number) => {
@@ -114,8 +115,8 @@ export default function MLRPitchers() {
             <TeamsDropdown league={league} teamOption={teamOption} handleChangeTeam={handleChangeTeam} sx={{ maxWidth: { xs: 150, sm: 175, lg: 240 } }} />
             <PlayersDropdown league={league} players={players || []} playerType={playerType} teamOption={teamOption} playerOption={playerOption} handleChangePlayer={handleChangePlayer} sx={{ maxWidth: { xs: 150, sm: 175, lg: 240 } }} />
             <SeasonsDropdown seasonOption={seasonOption} plateAppearances={plateAppearances || []} handleChangeSeason={handleChangeSeason} sx={{ minWidth: { xs: 70, lg: 175 } }} />
-            <FormControl sx={{ height: '100%' }}>
-              <FormGroup aria-label="position" row sx={{ minHeight: { xs: 62, lg: 63 } }}>
+            <FormControl >
+              <FormGroup aria-label="position" row>
                 <FormControlLabel disableTypography control={<Android12Switch onChange={handleCareerStatsChange} checked={careerOption} />} label={<Typography sx={{ fontSize: 12, fontWeight: 600, mb: '-5px' }}>
                   Career
                 </Typography>} labelPlacement="top" />
@@ -129,7 +130,7 @@ export default function MLRPitchers() {
           </Grid>
           {
             ((!pitches || pitches.length != 0) ?
-              <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }} sx={{
+              <Grid size={{ xs: 12 }} sx={{
                 justifyContent: "flex-start",
                 alignItems: "center"
               }}>
@@ -155,10 +156,11 @@ export default function MLRPitchers() {
               </Grid>
               : '')
           }
-          <Grid container spacing={2} style={{ padding: 30 }} size={{ xs: 12 }}
+          <Grid container spacing={2} size={{ xs: 12 }}
             sx={{
               justifyContent: "flex-start",
-              alignItems: "center"
+              alignItems: "center",
+              pt: 3
             }}>
             <Grid size={{ xs: 12, lg: 6 }} >
               <HistogramPitchChart pitches={pitches} />

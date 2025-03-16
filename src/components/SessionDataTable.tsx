@@ -30,7 +30,7 @@ const SessionDataTable: React.FC<SessionDataTableProps> = ({ pitches, showSeason
         sx={{
           maxHeight: {
             xs: '50vh',
-            md: '30vh',
+            md: '40vh',
             lg: '35vh'
           }
         }} >

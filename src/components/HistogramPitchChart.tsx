@@ -103,7 +103,7 @@ const HistogramPitchChart: React.FC<HistogramPitchProps> = ({ pitches }) => {
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="h6">Histogram of Pitches</Typography>
           </Box>
-          <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }}>
+          <Grid size={{ xs: 12 }}>
             <div>
               <ResponsiveChartContainer height={300}
                 series={[{ type: 'bar', data: yArray, color: '#e0998f' }]}

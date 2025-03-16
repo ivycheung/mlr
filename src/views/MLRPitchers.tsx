@@ -113,21 +113,21 @@ export default function MLRPitchers() {
               <><Button variant="contained" onClick={handleRefreshPlayer} sx={{ ml: 1 }}>Refresh</Button><Button variant="contained" onClick={handleResetLocalStorage} sx={{ ml: 1 }}>Reset</Button></>
             }
           </Grid>
-          <Grid size={12} sx={{ pb: 2 }}>
+          <Grid size={12} sx={{ pb: 3 }}>
             <SessionDataTable pitches={pitches} />
           </Grid>
-          <Grid container justifyContent="center" style={{ padding: 30 }} >
-            <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+          <Grid container justifyContent="center" >
+            <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center">
               <PitchSwingChart pitches={pitches} />
             </Grid>
-            <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
+            <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center" >
               <PitchByPlacementInInning pitches={pitches} />
             </Grid>
 
-            <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+            <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center">
               <PitchByPitchDelta pitches={pitches} />
             </Grid>
-            <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
+            <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center" >
               <PitchesByInning pitches={pitches} />
             </Grid>
           </Grid>
