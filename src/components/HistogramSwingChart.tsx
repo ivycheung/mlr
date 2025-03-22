@@ -14,16 +14,15 @@ import { styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
 import { getResultCategory } from '../utils/utils';
 
-interface HistogramSwingChartProps {
+type HistogramSwingChartProps = {
   pitches: FormSchemaPitches
 }
 
-interface AtBatResultData {
+type AtBatResultData = {
   key: number;
   label: string;
   status: boolean;
 }
-
 
 const HistogramSwingChart: React.FC<HistogramSwingChartProps> = ({ pitches }) => {
   const [abResultOption, setAbResultOption] = React.useState<readonly AtBatResultData[]>([

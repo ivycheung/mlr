@@ -7,7 +7,7 @@ import mlrTeamsJson from '../utils/mlrteams.json';
 import milrTeamsJson from '../utils/milrteams.json';
 import { SxProps, Theme } from "@mui/material/styles";
 
-interface TeamsDropdownProps {
+type TeamsDropdownProps = {
   league: string;
   teamOption: string;
   handleChangeTeam: (newTeamOption: string) => void

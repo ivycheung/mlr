@@ -11,9 +11,9 @@ import TeamsDropdown from '../components/TeamsDropdown';
 import PlayersDropdown from '../components/PlayersDropdown';
 import SeasonsDropdown from '../components/SeasonsDropdown';
 import HistogramSwingChart from '../components/HistogramSwingChart';
+import useGoogleAnalytics from '../hooks/google-analytics';
 
 import Grid from '@mui/material/Grid2';
-import ReactGA from 'react-ga4';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -38,20 +38,14 @@ export default function MLRBatters() {
   const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
   const { data: plateAppearances } = useGetPlayer(playerType, league, playerOption);
 
-  React.useEffect(() => {
-    ReactGA.send({ hitType: "pageview", page: "/mlrbatters", title: "MLR Batters" });
-  }, []);
+  useGoogleAnalytics("MLR Batters");
 
   // Get pitches
   React.useEffect(() => {
     if (plateAppearances !== undefined && plateAppearances.length != 0) {
       // filter the pitches based on season
       let filteredPitches: FormSchemaPitches = [];
-      filteredPitches = (plateAppearances || []).filter(e => {
-        if (e.season == seasonOption) {
-          return true;
-        }
-      });
+      filteredPitches = (plateAppearances || []).filter(e => e.season === seasonOption);
 
       setPitches(filteredPitches);
     }
@@ -98,7 +92,6 @@ export default function MLRBatters() {
                 <Tabs value={tabOption} onChange={handleTabChange} aria-label="Tabs">
                   <Tab label="One" {...a11yProps(0)} />
                   <Tab label="Two" {...a11yProps(1)} />
-                  {/* <Tab label="Three" {...a11yProps(2)} /> */}
                 </Tabs>
               </Box>
               <CustomTabPanel value={tabOption} index={0}>

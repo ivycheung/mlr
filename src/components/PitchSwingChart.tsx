@@ -8,7 +8,7 @@ import { CircleMarkElement } from '../utils/rUtils';
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 import { getResultCategory } from '../utils/utils';
 
-interface PitchSwingChartProps {
+type PitchSwingChartProps = {
   pitches: FormSchemaPitches;
   showMarkers?: boolean
 }

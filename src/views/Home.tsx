@@ -15,6 +15,7 @@ import TeamsDropdown from '../components/TeamsDropdown';
 import PlayersDropdown from '../components/PlayersDropdown';
 import HistogramPitchChart from '../components/HistogramPitchChart';
 import NumberOfPitchesDropdown from '../components/NumberOfPitchesDropdown';
+import useGoogleAnalytics from '../hooks/google-analytics';
 
 import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
@@ -28,7 +29,6 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
 import { useLocalStorage } from '@mantine/hooks';
-import ReactGA from 'react-ga4';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -49,13 +49,10 @@ export default function Home() {
   const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
   const { data: plateAppearances } = useGetPlayer(playerType, league, playerOption);
   const handleRefreshPlayer = useRefetchQuery(['player']);
+  useGoogleAnalytics("Home");
 
   const theme = useTheme();
   const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
-
-  React.useEffect(() => {
-    ReactGA.send({ hitType: "pageview", page: "/home", title: "Home" });
-  }, []);
 
   // Seasons
   React.useEffect(() => {

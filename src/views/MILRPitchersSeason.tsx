@@ -23,10 +23,18 @@ import blueGrey from '@mui/material/colors/blueGrey';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import SessionDataTable from '../components/SessionDataTable';
 import HistogramChart from '../components/HistogramPitchChart';
+import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
+import { useTheme } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import useRefetchQuery from '../api/use-refetch-query';
+import RestartAlt from '@mui/icons-material/RestartAlt';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
+import PitchesByInning from '../components/PitchesByInning';
+import useGoogleAnalytics from '../hooks/google-analytics';
 
 export default function MILRPitchers() {
-  const [playerOption, setPlayerOption] = React.useState<number>(0)
-  const [teamOption, setTeamOption] = React.useState('')
+  const [playerOption, setPlayerOption, removePlayerOption] = useLocalStorage<number>({ key: 'milrPlayerId', defaultValue: 0 })
+  const [teamOption, setTeamOption, removeTeamOption] = useLocalStorage<string>({ key: 'milrTeamId', defaultValue: '' })
 
   const [mlrSeasons, setMlrSeasons] = React.useState<number[]>([]);
   const [mlrSeasonOption, setMlrSeasonOption] = React.useState<number>(0)
@@ -44,64 +52,63 @@ export default function MILRPitchers() {
   const leagueMLR = 'mlr';
   const playerType = 'pitching';
 
+    const theme = useTheme();
+    const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
+
   // Get a list of players on page load
   const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
   const { data: plateAppearancesMLR } = useGetPlayer(playerType, leagueMLR, playerOption);
   const { data: plateAppearancesMiLR } = useGetPlayer(playerType, league, playerOption);
+  const handleRefreshPlayer = useRefetchQuery(['player']);
+
+  useGoogleAnalytics("MiLR Pitchers Season");
 
   // Update Player Data based on fetched data
   React.useEffect(() => {
     if (Array.isArray(players)) {
-      // Determine how many seasons per league for dropdowns
-      for (const l of ['mlr', 'milr']) {
-        if (l == 'mlr') {
-          const seasons = new Set<number>();
-          if (plateAppearancesMLR !== undefined && Array.isArray(plateAppearancesMLR)) {
-            for (let i = 0; i < plateAppearancesMLR.length; i++) {
-              seasons.add(plateAppearancesMLR[i].season);
-            }
-            setMlrPitches(plateAppearancesMLR);
-            setMlrSeasons([...seasons].sort((a, b) => a - b))
-            setMlrSeasonOption(0)
+      for (const league of ['mlr', 'milr']) {
+        const seasons = new Set<number>();
+
+        if (league == 'mlr' && plateAppearancesMLR !== undefined && Array.isArray(plateAppearancesMLR)) {
+          for (let i = 0; i < plateAppearancesMLR.length; i++) {
+            seasons.add(plateAppearancesMLR[i].season);
           }
+          setMlrPitches(plateAppearancesMLR);
+
+          setMlrSeasons([...seasons].sort((a, b) => a - b));
+          setMlrSeasonOption(0);
         }
-        else if (l == 'milr') {
-          const seasons = new Set<number>();
-          if (plateAppearancesMiLR !== undefined && Array.isArray(plateAppearancesMiLR)) {
-            for (let i = 0; i < plateAppearancesMiLR.length; i++) {
-              seasons.add(plateAppearancesMiLR[i].season);
-            }
-            setMilrPitches(plateAppearancesMiLR);
-            setMilrSeasons([...seasons].sort((a, b) => a - b))
-            setMilrSeasonOption(Number([...seasons].slice(-1))) // last season
+        else if (league == 'milr' && plateAppearancesMiLR !== undefined && Array.isArray(plateAppearancesMiLR)) {
+          for (let i = 0; i < plateAppearancesMiLR.length; i++) {
+            seasons.add(plateAppearancesMiLR[i].season);
           }
+          setMilrPitches(plateAppearancesMiLR);
+
+          setMilrSeasons([...seasons].sort((a, b) => a - b));
+          setMilrSeasonOption(Number([...seasons].slice(-1)));
         }
       }
 
       if (milrSeasons.length == 0 && mlrSeasons.length != 0) {
-        setMlrSeasonOption(Number([...mlrSeasons].slice(-1))) // last season
-        setMilrSeasonOption(0) // last season
+        setMlrSeasonOption(Number([...mlrSeasons].slice(-1)));
+        setMilrSeasonOption(0);
       }
     }
-  }, [playerOption, players, mlrpitches, milrpitches, plateAppearancesMLR, plateAppearancesMiLR]);
+  }, [playerOption, players, plateAppearancesMLR, plateAppearancesMiLR, milrSeasons.length]);
 
   // Seasons
   React.useEffect(() => {
-    if (Array.isArray(players)) {
+    if (Array.isArray(players) && (mlrpitches.length > 0 || milrpitches.length > 0)) {
       let filteredPitches: FormSchemaPitches = []
       if (mlrSeasonOption != 0 && milrSeasonOption == 0) {
-        filteredPitches = mlrpitches.filter(e => {
-          if (e.season == mlrSeasonOption) {
-            return true;
-          }
-        });
+        filteredPitches = mlrpitches.filter(e =>
+          e.season === mlrSeasonOption
+        );
       }
       else if (mlrSeasonOption == 0 && milrSeasonOption != 0) {
-        filteredPitches = milrpitches.filter(e => {
-          if (e.season == milrSeasonOption) {
-            return true;
-          }
-        });
+        filteredPitches = milrpitches.filter(e =>
+          e.season === milrSeasonOption
+        );
       }
 
       setPitches(filteredPitches);
@@ -159,13 +166,23 @@ export default function MILRPitchers() {
     setMlrSeasonOption(0);
     setMilrSeasons([]);
     setMilrSeasonOption(0);
-
+    setPitches([]);
   }, []);
 
   const handleChangePlayer = React.useCallback((newPlayerOption: number) => {
     setPlayerOption(newPlayerOption);
     setPitches([]);
   }, []);
+
+  const handleResetLocalStorage = function () {
+    removePlayerOption();
+    removeTeamOption();
+    setPitches([]);
+    setMlrSeasons([]);
+    setMlrSeasonOption(0);
+    setMilrSeasons([]);
+    setMilrSeasonOption(0);
+  }
 
   return (
     <>
@@ -183,7 +200,7 @@ export default function MILRPitchers() {
                 id="mlrseason-input-select"
                 label={mlrSeasonOption}
                 onChange={handleChangeMlrSeason}
-                value={mlrSeasonOption !== undefined && mlrSeasonOption !== null ? mlrSeasonOption.toString() : ''
+                value={mlrSeasonOption ? mlrSeasonOption.toString() : ''
                 }
               >
                 {
@@ -225,6 +242,11 @@ export default function MILRPitchers() {
                   control={<Checkbox size="small" onChange={handleCareerStatsChange} />} label="Career Stats" labelPlacement="end" />
               </FormGroup>
             </FormControl>
+            {notDesktop ?
+              <><Button variant="contained" onClick={handleRefreshPlayer} sx={{ ml: 1 }} ><AutorenewIcon /></Button><Button variant="contained" sx={{ ml: 1 }} onClick={handleResetLocalStorage}><RestartAlt /></Button></>
+              :
+              <><Button variant="contained" onClick={handleRefreshPlayer} sx={{ ml: 1 }}>Refresh</Button><Button variant="contained" onClick={handleResetLocalStorage} sx={{ ml: 1 }}>Reset</Button></>
+            }
           </Grid>
           {
             ((!pitches || pitches.length != 0) ?
@@ -254,8 +276,10 @@ export default function MILRPitchers() {
               alignItems: "center"
             }}>
             <Grid size={{ xs: 12, lg: 6 }} >
-              { /* histogram */}
               <HistogramChart pitches={pitches} />
+            </Grid>
+            <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center" >
+              <PitchesByInning pitches={pitches} />
             </Grid>
           </Grid>
           {/* <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">

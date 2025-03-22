@@ -3,7 +3,7 @@ import { FormSchemaPitches } from "../types/schemas/pitches-schema";
 import Container from "@mui/material/Container";
 import { CircleMarkElement } from "../utils/rUtils";
 
-interface PitchByPlacementInInningProps {
+type PitchByPlacementInInningProps = {
   pitches: FormSchemaPitches;
 }
 

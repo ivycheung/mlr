@@ -9,7 +9,7 @@ import { CircleMarkElement } from '../utils/rUtils';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-interface PitchByPitchDeltaProps {
+type PitchByPitchDeltaProps = {
   pitches: FormSchemaPitches;
   showMarkers?: boolean
 }

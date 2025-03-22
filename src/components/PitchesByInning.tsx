@@ -3,7 +3,7 @@ import React from 'react';
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 import Container from '@mui/material/Container';
 
-interface PitchesByInningProps {
+type PitchesByInningProps = {
   pitches: FormSchemaPitches;
 }
 

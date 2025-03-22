@@ -33,7 +33,7 @@ import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 
 import { useLocalStorage } from '@mantine/hooks';
-import ReactGA from 'react-ga4';
+import useGoogleAnalytics from '../hooks/google-analytics';
 
 export default function MLRPitchers() {
   const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
@@ -53,9 +53,7 @@ export default function MLRPitchers() {
   const theme = useTheme();
   const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
 
-  React.useEffect(() => {
-    ReactGA.send({ hitType: "pageview", page: "/mlrpitchersseasons", title: "MLR Pitchers Seasons" });
-  }, []);
+  useGoogleAnalytics("MLR Pitchers Seasons");
 
   // Seasons
   React.useEffect(() => {
@@ -63,11 +61,7 @@ export default function MLRPitchers() {
       // filter the pitches based on season
       let filteredPitches: FormSchemaPitches = []
       if (!careerOption) {
-        filteredPitches = (plateAppearances || []).filter(e => {
-          if (e.season == seasonOption) {
-            return true;
-          }
-        });
+        filteredPitches = (plateAppearances || []).filter(e => e.season === seasonOption);
       }
       else {
         filteredPitches = plateAppearances;

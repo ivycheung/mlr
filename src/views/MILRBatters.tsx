@@ -15,6 +15,7 @@ import { useGetPlayers } from '../api/use-get-players';
 import { useGetPlayer } from '../api/use-get-player';
 import TeamsDropdown from '../components/TeamsDropdown';
 import PlayersDropdown from '../components/PlayersDropdown';
+import useGoogleAnalytics from '../hooks/google-analytics';
 
 export default function MILRBatters() {
   const [combinedPitches, setCombinedPitches] = React.useState<FormSchemaPitches>([])
@@ -36,6 +37,8 @@ export default function MILRBatters() {
   const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
   const { data: plateAppearancesMLR } = useGetPlayer(playerType, leagueMLR, playerOption);
   const { data: plateAppearancesMiLR } = useGetPlayer(playerType, league, playerOption);
+
+  useGoogleAnalytics("MiLR Batters");
 
   // Update Player Data based on fetched data
   React.useEffect(() => {
@@ -70,18 +73,10 @@ export default function MILRBatters() {
     if (Array.isArray(players)) {
       let filteredPitches: FormSchemaPitches = []
       if (mlrSeasonOption != 0 && milrSeasonOption == 0) {
-        filteredPitches = mlrpitches.filter(e => {
-          if (e.season == mlrSeasonOption) {
-            return true;
-          }
-        });
+        filteredPitches = (mlrpitches || []).filter(e => e.season === mlrSeasonOption);
       }
       else if (mlrSeasonOption == 0 && milrSeasonOption != 0) {
-        filteredPitches = milrpitches.filter(e => {
-          if (e.season == milrSeasonOption) {
-            return true;
-          }
-        });
+        filteredPitches = (milrpitches || []).filter(e => e.season === milrSeasonOption);
       }
 
       setCombinedPitches(filteredPitches);
