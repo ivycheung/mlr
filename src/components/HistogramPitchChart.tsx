@@ -14,16 +14,15 @@ import { styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
 import { getResultCategory } from '../utils/utils';
 
-interface HistogramPitchProps {
+type HistogramPitchProps = {
   pitches: FormSchemaPitches
 }
 
-interface AtBatResultData {
+type AtBatResultData = {
   key: number;
   label: string;
   status: boolean;
 }
-
 
 const HistogramPitchChart: React.FC<HistogramPitchProps> = ({ pitches }) => {
   const [abResultOption, setAbResultOption] = React.useState<readonly AtBatResultData[]>([
@@ -103,7 +102,7 @@ const HistogramPitchChart: React.FC<HistogramPitchProps> = ({ pitches }) => {
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="h6">Histogram of Pitches</Typography>
           </Box>
-          <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }}>
+          <Grid size={{ xs: 12 }}>
             <div>
               <ResponsiveChartContainer height={300}
                 series={[{ type: 'bar', data: yArray, color: '#e0998f' }]}

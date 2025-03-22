@@ -3,7 +3,7 @@ import React from 'react';
 import { FormSchemaPitches } from '../types/schemas/pitches-schema';
 import Container from '@mui/material/Container';
 
-interface PitchesByInningProps {
+type PitchesByInningProps = {
   pitches: FormSchemaPitches;
 }
 
@@ -74,7 +74,8 @@ const PitchesByInning: React.FC<PitchesByInningProps> = ({ pitches }) => {
       <Container sx={{
         height: { xs: '90vh', md: '50vh' },
         width: { xs: '90vw', lg: '100%' },
-        maxHeight: { xs: '350px' }
+        maxHeight: { xs: '350px' },
+        px: { xs: 0, md: 3 }
       }}>
         <LineChart
           title="Pitches by Inning"
@@ -82,6 +83,14 @@ const PitchesByInning: React.FC<PitchesByInningProps> = ({ pitches }) => {
           ]}
           series={seriesArray}
           margin={{ top: 80 }}
+          slotProps={{
+            legend: {
+              position: { vertical: 'top', horizontal: 'middle' },
+              labelStyle: {
+                fontSize: 14,
+              },
+            }
+          }}
         />
       </Container>
     )

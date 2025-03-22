@@ -15,6 +15,7 @@ import TeamsDropdown from '../components/TeamsDropdown';
 import PlayersDropdown from '../components/PlayersDropdown';
 import HistogramPitchChart from '../components/HistogramPitchChart';
 import NumberOfPitchesDropdown from '../components/NumberOfPitchesDropdown';
+import useGoogleAnalytics from '../hooks/google-analytics';
 
 import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
@@ -28,7 +29,6 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
 import { useLocalStorage } from '@mantine/hooks';
-import ReactGA from 'react-ga4';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -49,13 +49,10 @@ export default function Home() {
   const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
   const { data: plateAppearances } = useGetPlayer(playerType, league, playerOption);
   const handleRefreshPlayer = useRefetchQuery(['player']);
+  useGoogleAnalytics("Home");
 
   const theme = useTheme();
   const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
-
-  React.useEffect(() => {
-    ReactGA.send({ hitType: "pageview", page: "/home", title: "Home" });
-  }, []);
 
   // Seasons
   React.useEffect(() => {
@@ -121,25 +118,26 @@ export default function Home() {
                 <Tabs value={tabOption} onChange={handleTabChange} aria-label="Tabs">
                   <Tab label="One" {...a11yProps(0)} />
                   <Tab label="Two" {...a11yProps(1)} />
-                  {/* <Tab label="Three" {...a11yProps(2)} /> */}
                 </Tabs>
               </Box>
               <CustomTabPanel value={tabOption} index={0}>
                 <Grid container justifyContent="center">
-                  <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+                  <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center">
                     <PitchSwingChart pitches={pitches} showMarkers />
                   </Grid>
-                  <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+                  <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center">
                     <PitchByPitchDelta pitches={pitches} showMarkers />
                   </Grid>
                 </Grid>
-              </CustomTabPanel><CustomTabPanel value={tabOption} index={1}>
+              </CustomTabPanel>
+              <CustomTabPanel value={tabOption} index={1}>
                 <Grid container justifyContent="center">
-                  <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center">
+                  <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center">
                     <HistogramPitchChart pitches={pitches} />
                   </Grid>
                 </Grid>
-              </CustomTabPanel><CustomTabPanel value={tabOption} index={2}>
+              </CustomTabPanel>
+              <CustomTabPanel value={tabOption} index={2}>
                 <Grid container justifyContent="center">
                 </Grid>
               </CustomTabPanel>
@@ -162,7 +160,7 @@ function CustomTabPanel(props: TabPanelProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && <Box sx={{ pt: 3 }}>{children}</Box>}
     </div>
   );
 }

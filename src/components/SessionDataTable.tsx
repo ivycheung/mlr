@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import useTheme from '@mui/material/styles/useTheme';
 
-interface SessionDataTableProps {
+type SessionDataTableProps = {
   pitches: FormSchemaPitches,
   showSeason?: boolean
 }
@@ -30,7 +30,7 @@ const SessionDataTable: React.FC<SessionDataTableProps> = ({ pitches, showSeason
         sx={{
           maxHeight: {
             xs: '50vh',
-            md: '30vh',
+            md: '40vh',
             lg: '35vh'
           }
         }} >

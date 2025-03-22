@@ -9,7 +9,7 @@ import { CircleMarkElement } from '../utils/rUtils';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-interface PitchByPitchDeltaProps {
+type PitchByPitchDeltaProps = {
   pitches: FormSchemaPitches;
   showMarkers?: boolean
 }
@@ -48,7 +48,8 @@ const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches, showMark
       <Container sx={{
         height: { xs: '90vh', md: '50vh' },
         width: { xs: '90vw', lg: '100%' },
-        maxHeight: { xs: '350px' }
+        maxHeight: { xs: '350px' },
+        px: { xs: 0, md: 3 }
       }}>
         <LineChart
           // title="Delta from Pitch to Pitch"
@@ -74,6 +75,14 @@ const PitchByPitchDelta: React.FC<PitchByPitchDeltaProps> = ({ pitches, showMark
           ]}
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           slots={{ mark: showMarkers || (pitchCount.length <= 10 || notDesktop) ? (props: any) => <CircleMarkElement {...props} customData={exactResult} /> : undefined }}
+          slotProps={{
+            legend: {
+              position: { vertical: 'top', horizontal: 'middle' },
+              labelStyle: {
+                fontSize: 14,
+              },
+            }
+          }}
         >
           <ChartsReferenceLine y={0} />
         </LineChart>

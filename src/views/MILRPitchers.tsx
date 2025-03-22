@@ -13,16 +13,18 @@ import PitchSwingChart from '../components/PitchSwingChart';
 import SessionDataTable from '../components/SessionDataTable';
 import PitchByPlacementInInning from '../components/PitchByPlacementInInning';
 import PitchByPitchDelta from '../components/PitchByPitchDelta';
-// import PitchesByInning from '../components/PitchesByInning';
+import PitchesByInning from '../components/PitchesByInning';
 import { useGetPlayers } from '../api/use-get-players';
 import TeamsDropdown from '../components/TeamsDropdown';
 import PlayersDropdown from '../components/PlayersDropdown';
 import { useGetPlayer } from '../api/use-get-player';
-// import Slider from '@mui/material/Slider';
+import { useLocalStorage } from '@mantine/hooks';
+import useGoogleAnalytics from '../hooks/google-analytics';
 
 export default function MILRPitchers() {
-  const [playerOption, setPlayerOption] = React.useState<number>(0)
-  const [teamOption, setTeamOption] = React.useState('')
+  const [playerOption, setPlayerOption] = useLocalStorage<number>({ key: 'milrPlayerId', defaultValue: 0 })
+  const [teamOption, setTeamOption] = useLocalStorage<string>({ key: 'milrTeamId', defaultValue: '' })
+
   const [mlrSeasons, setMlrSeasons] = React.useState<number[]>([]);
   const [mlrSeasonOption, setMlrSeasonOption] = React.useState<number>(0)
   const [milrSeasons, setMilrSeasons] = React.useState<number[]>([]);
@@ -30,7 +32,7 @@ export default function MILRPitchers() {
   const [combinedPitches, setCombinedPitches] = React.useState<FormSchemaPitches>([])
   const [mlrpitches, setMlrPitches] = React.useState<FormSchemaPitches>([])
   const [milrpitches, setMilrPitches] = React.useState<FormSchemaPitches>([])
-  // const [error, setError] = React.useState<string>('');
+
   const league = 'milr';
   const leagueMLR = 'mlr';
   const playerType = 'pitching';
@@ -39,6 +41,8 @@ export default function MILRPitchers() {
   const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
   const { data: plateAppearancesMLR } = useGetPlayer(playerType, leagueMLR, playerOption);
   const { data: plateAppearancesMiLR } = useGetPlayer(playerType, league, playerOption);
+
+  useGoogleAnalytics("MiLR Pitchers");
 
   // Update Player Data based on fetched data
   React.useEffect(() => {
@@ -78,18 +82,14 @@ export default function MILRPitchers() {
     if (Array.isArray(players) && (mlrpitches.length > 0 || milrpitches.length > 0)) {
       let filteredPitches: FormSchemaPitches = []
       if (mlrSeasonOption != 0 && milrSeasonOption == 0) {
-        filteredPitches = mlrpitches.filter(e => {
-          if (e.season == mlrSeasonOption) {
-            return true;
-          }
-        });
+        filteredPitches = mlrpitches.filter(e =>
+          e.season === mlrSeasonOption
+        );
       }
       else if (mlrSeasonOption == 0 && milrSeasonOption != 0) {
-        filteredPitches = milrpitches.filter(e => {
-          if (e.season == milrSeasonOption) {
-            return true;
-          }
-        });
+        filteredPitches = milrpitches.filter(e =>
+          e.season === milrSeasonOption
+        );
       }
 
       setCombinedPitches(filteredPitches);
@@ -209,9 +209,9 @@ export default function MILRPitchers() {
           <Grid size={{ xs: 12 }} alignItems="center" justifyContent="center">
             <PitchByPitchDelta pitches={combinedPitches} showMarkers />
           </Grid>
-          {/* <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
+          <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }} alignItems="center" justifyContent="center" >
               <PitchesByInning pitches={combinedPitches} />
-            </Grid> */}
+            </Grid>
         </Grid>
       }
     </>

@@ -50,6 +50,7 @@ export default function Nav(props: Props) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
+  const mobileSideways = useMediaQuery(theme.breakpoints.down('lg'));
 
   // https://mui.com/material-ui/react-app-bar/#hide-app-bar
   function HideOnScroll(props: Props) {
@@ -59,7 +60,7 @@ export default function Nav(props: Props) {
       target: window ? window() : undefined,
     });
 
-    if (!isMobile) return children;
+    if (!mobileSideways) return children;
 
     return (
       <Slide appear={false} direction="down" in={!trigger}>

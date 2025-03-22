@@ -3,7 +3,7 @@ import { FormSchemaPitches } from "../types/schemas/pitches-schema";
 import Container from "@mui/material/Container";
 import { CircleMarkElement } from "../utils/rUtils";
 
-interface PitchByPlacementInInningProps {
+type PitchByPlacementInInningProps = {
   pitches: FormSchemaPitches;
 }
 
@@ -50,7 +50,9 @@ const PitchByPlacementInInning: React.FC<PitchByPlacementInInningProps> = ({ pit
       <Container sx={{
         height: { xs: '90vh', md: '50vh' },
         width: { xs: '90vw', lg: '100%' },
-        maxHeight: { xs: '350px' }
+        maxHeight: { xs: '350px' },
+        px: { xs: 0, md: 3 },
+        pt: {xs: 2 }
       }}>
         <LineChart
           title="Pitches by Placement in Inning"
@@ -71,6 +73,15 @@ const PitchByPlacementInInning: React.FC<PitchByPlacementInInningProps> = ({ pit
           ]}
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           slots={{ mark: (props: any) => <CircleMarkElement {...props} /> }}
+          slotProps={{
+            legend: {
+              position: { vertical: 'top', horizontal: 'middle' },
+              padding: -2,
+              labelStyle: {
+                fontSize: 14,
+              },
+            },
+          }}
         />
       </Container>)
   }

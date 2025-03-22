@@ -6,11 +6,10 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 
-
-interface NumberOfPitchesDropdownProps {
+type NumberOfPitchesDropdownProps = {
   handleChangeNumberOfPitches: (nopOption: number) => void;
   nopOption: number;
-  hideLabel: boolean;
+  hideLabel?: boolean;
 }
 
 const NumberOfPitchesDropdown: React.FC<NumberOfPitchesDropdownProps> = ({ handleChangeNumberOfPitches, nopOption, hideLabel = false }) => {
