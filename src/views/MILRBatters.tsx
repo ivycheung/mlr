@@ -15,7 +15,7 @@ import { useGetPlayers } from '../api/use-get-players';
 import { useGetPlayer } from '../api/use-get-player';
 import TeamsDropdown from '../components/TeamsDropdown';
 import PlayersDropdown from '../components/PlayersDropdown';
-import useGoogleAnalytics from '../hooks/google-analytics';
+// import useGoogleAnalytics from '../hooks/google-analytics';
 
 export default function MILRBatters() {
   const [combinedPitches, setCombinedPitches] = React.useState<FormSchemaPitches>([])
@@ -38,7 +38,7 @@ export default function MILRBatters() {
   const { data: plateAppearancesMLR } = useGetPlayer(playerType, leagueMLR, playerOption);
   const { data: plateAppearancesMiLR } = useGetPlayer(playerType, league, playerOption);
 
-  useGoogleAnalytics("MiLR Batters");
+  // useGoogleAnalytics("MiLR Batters");
 
   // Update Player Data based on fetched data
   React.useEffect(() => {

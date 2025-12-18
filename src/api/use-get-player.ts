@@ -4,8 +4,10 @@ import { FormSchemaPitches } from "../types/schemas/pitches-schema";
 
 
 const fetchPlayer = async (type: string, league: string, playerId: number): Promise<FormSchemaPitches> => {
-  const url = `https://api.mlr.gg/legacy/api/plateappearances/${type}/${league}/${playerId}`;
-  const response = await axios.get(url);
+  const reverseProxy = import.meta.env.VITE_APP_REVERSE_PROXY || 'https://leafy-puppy-fdb4a2.netlify.app/.netlify/functions/proxy?url=';
+  const url = `https://www.rslashfakebaseball.com/api/plateappearances/${type}/${league}/${playerId}`;
+  
+  const response = await axios.get(reverseProxy + url);
   return response.data;
 }
 

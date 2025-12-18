@@ -15,7 +15,7 @@ import TeamsDropdown from '../components/TeamsDropdown';
 import PlayersDropdown from '../components/PlayersDropdown';
 import HistogramPitchChart from '../components/HistogramPitchChart';
 import NumberOfPitchesDropdown from '../components/NumberOfPitchesDropdown';
-import useGoogleAnalytics from '../hooks/google-analytics';
+// import useGoogleAnalytics from '../hooks/google-analytics';
 
 import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
@@ -29,6 +29,9 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
 import { useLocalStorage } from '@mantine/hooks';
+import HeatmapNextPitchChart from '../components/HeatmapNextPitchChart';
+import HeatmapPitchChart from '../components/HeatmapPitchChart';
+import HeatmapPitchDeltaChart from '../components/HeatmapPitchDeltaChart';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -38,6 +41,7 @@ interface TabPanelProps {
 
 export default function Home() {
   const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
+  const [filteredPitches, setFilteredPitches] = React.useState<FormSchemaPitches>([])
   const [playerOption, setPlayerOption, removePlayerOption] = useLocalStorage<number>({ key: 'playerId', defaultValue: 0 })
   const [teamOption, setTeamOption, removeTeamOption] = useLocalStorage<string>({ key: 'teamId', defaultValue: '' })
   const [numberOfAtBatsOption, setNumberofAtBatsOption, removeNumberOfAtBatsOption] = useLocalStorage<number>({ key: 'numberOfAtBats', defaultValue: 10 }); // how many at bats to show
@@ -49,7 +53,7 @@ export default function Home() {
   const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
   const { data: plateAppearances } = useGetPlayer(playerType, league, playerOption);
   const handleRefreshPlayer = useRefetchQuery(['player']);
-  useGoogleAnalytics("Home");
+  // useGoogleAnalytics("Home");
 
   const theme = useTheme();
   const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
@@ -58,23 +62,27 @@ export default function Home() {
   React.useEffect(() => {
     if (plateAppearances !== undefined && plateAppearances.length != 0) {
       // filter the pitches based on season + session
-      let filteredPitches: FormSchemaPitches = []
+      let filteredPitches: FormSchemaPitches = [];
+
+      setPitches(plateAppearances);
 
       filteredPitches = (plateAppearances || []).slice((numberOfAtBatsOption * -1));
 
-      setPitches(filteredPitches);
+      setFilteredPitches(filteredPitches);
     }
   }, [numberOfAtBatsOption, plateAppearances]);
 
   const handleChangeTeam = React.useCallback((newTeamOption: string) => {
     setTeamOption(newTeamOption);
     setPitches([]);
+    setFilteredPitches([]);
     setPlayerOption(0);
   }, [setPlayerOption, setTeamOption]);
 
   const handleChangePlayer = React.useCallback((newPlayerOption: number) => {
     setPlayerOption(newPlayerOption);
     setPitches([]);
+    setFilteredPitches([]);
   }, [setPlayerOption]);
 
   const handleResetLocalStorage = function () {
@@ -83,6 +91,7 @@ export default function Home() {
     removeNumberOfAtBatsOption();
     removeTabOption();
     setPitches([]);
+    setFilteredPitches([]);
   }
 
   const handleChangeNumberOfPitches = React.useCallback((nopOption: number) => {
@@ -110,7 +119,7 @@ export default function Home() {
             }
           </Grid>
           <Grid size={12} sx={{ pb: 2 }}>
-            <SessionDataTable pitches={pitches} showSeason />
+            <SessionDataTable pitches={filteredPitches} showSeason />
           </Grid>
           {pitches && pitches.length > 0 &&
             <Box sx={{ width: '100%' }}>
@@ -118,27 +127,34 @@ export default function Home() {
                 <Tabs value={tabOption} onChange={handleTabChange} aria-label="Tabs">
                   <Tab label="One" {...a11yProps(0)} />
                   <Tab label="Two" {...a11yProps(1)} />
+                  <Tab label="Career" {...a11yProps(2)} />
                 </Tabs>
               </Box>
               <CustomTabPanel value={tabOption} index={0}>
                 <Grid container justifyContent="center">
                   <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center">
-                    <PitchSwingChart pitches={pitches} showMarkers />
+                    <PitchSwingChart pitches={filteredPitches} showMarkers />
                   </Grid>
                   <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center">
-                    <PitchByPitchDelta pitches={pitches} showMarkers />
+                    <PitchByPitchDelta pitches={filteredPitches} showMarkers />
                   </Grid>
                 </Grid>
               </CustomTabPanel>
               <CustomTabPanel value={tabOption} index={1}>
                 <Grid container justifyContent="center">
                   <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center">
-                    <HistogramPitchChart pitches={pitches} />
+                    <HistogramPitchChart pitches={filteredPitches} />
                   </Grid>
                 </Grid>
               </CustomTabPanel>
               <CustomTabPanel value={tabOption} index={2}>
-                <Grid container justifyContent="center">
+                <Grid container justifyContent="center"spacing={1}>
+                  <Grid size={{ xs: 6, lg: 3 }} alignItems="center" justifyContent="center">
+                    <HeatmapNextPitchChart pitches={pitches} />
+                  </Grid>
+                  <Grid size={{ xs: 6, lg: 3 }} alignItems="center" justifyContent="center">
+                    <HeatmapPitchChart pitches={pitches} />
+                  </Grid>
                 </Grid>
               </CustomTabPanel>
             </Box>

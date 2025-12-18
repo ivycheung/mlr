@@ -33,7 +33,9 @@ import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 
 import { useLocalStorage } from '@mantine/hooks';
-import useGoogleAnalytics from '../hooks/google-analytics';
+// import useGoogleAnalytics from '../hooks/google-analytics';
+import HeatmapPitchChart from '../components/HeatmapPitchChart';
+import HeatmapPitchDeltaChart from '../components/HeatmapPitchDeltaChart';
 
 export default function MLRPitchers() {
   const [pitches, setPitches] = React.useState<FormSchemaPitches>([])
@@ -53,7 +55,7 @@ export default function MLRPitchers() {
   const theme = useTheme();
   const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
 
-  useGoogleAnalytics("MLR Pitchers Seasons");
+  // useGoogleAnalytics("MLR Pitchers Seasons");
 
   // Seasons
   React.useEffect(() => {
@@ -85,13 +87,13 @@ export default function MLRPitchers() {
     setPlayerOption(0);
     setSeasonOption(0);
     setPitches([]);
-  }, []);
+  }, [setPlayerOption, setTeamOption]);
 
   const handleChangePlayer = React.useCallback((newPlayerOption: number) => {
     setPlayerOption(newPlayerOption);
     setSeasonOption(0);
     setPitches([]);
-  }, []);
+  }, [setPlayerOption]);
 
   const handleResetLocalStorage = function () {
     removePlayerOption();
@@ -159,10 +161,13 @@ export default function MLRPitchers() {
             <Grid size={{ xs: 12, lg: 6 }} >
               <HistogramPitchChart pitches={pitches} />
             </Grid>
-            {/* <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center">
-              <HistogramPitchChartByResult pitches={pitches} />
+            <Grid size={{ xs: 6, lg: 3 }} alignItems="center" justifyContent="center">
+              <HeatmapPitchChart pitches={pitches} />
             </Grid>
-            <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center">
+            <Grid size={{ xs: 6, lg: 3 }} alignItems="center" justifyContent="center">
+              <HeatmapPitchDeltaChart pitches={pitches} />
+            </Grid>
+            {/* <Grid size={{ xs: 12, lg: 6 }} alignItems="center" justifyContent="center">
               <HistogramDeltaChartByResult pitches={pitches} />
             </Grid> */}
           </Grid>

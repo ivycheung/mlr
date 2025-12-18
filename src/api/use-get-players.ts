@@ -3,7 +3,8 @@ import axios from "axios";
 import { FormSchemaPlayers } from "../types/schemas/player-schema";
 
 const fetchPlayers = async (): Promise<FormSchemaPlayers> => {
-  const response = await axios.get('https://api.mlr.gg/legacy/api/players');
+  const reverseProxy = import.meta.env.VITE_APP_REVERSE_PROXY || 'https://leafy-puppy-fdb4a2.netlify.app/.netlify/functions/proxy?url=';
+  const response = await axios.get(reverseProxy + 'https://www.rslashfakebaseball.com/api/players');
   return response.data;
 }
 

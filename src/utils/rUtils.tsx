@@ -1,13 +1,18 @@
 import { MarkElementProps, unstable_useLineSeries } from '@mui/x-charts';
 import { animated, useSpring } from "@react-spring/web";
 import { useTheme } from '@mui/material/styles';
+import Grid from "@mui/material/Grid2";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
 
 // from: https://codesandbox.io/p/sandbox/adoring-water-lrzsn3?file=%2Fsrc%2FDemo.tsx%3A3%2C1-3%2C57
 
 interface CircleMarkElementProps {
   customData?: string[];
 }
-
 export function CircleMarkElement(props: CircleMarkElementProps & MarkElementProps) {
   const theme = useTheme();
   const {
@@ -87,5 +92,40 @@ export function CircleMarkElement(props: CircleMarkElementProps & MarkElementPro
         {series.data[dataIndex]}
       </animated.text>
     </>
+  );
+}
+
+interface HeatmapColumnDataProps {
+  label: string;
+  percentage: number;
+}
+
+export function HeatmapTableColumnGenerate(columnData : HeatmapColumnDataProps[], getBackgroundColorFn : (n: number) => string) {
+  return (
+    <Grid size={6}>
+      <TableContainer>
+        <Table size="small">
+          <TableBody>
+            {columnData.map((row: HeatmapColumnDataProps) => (
+              <TableRow key={row.label}>
+                <TableCell sx={{ textAlign: "center", border: 1 }}>
+                  {row.label}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    backgroundColor: getBackgroundColorFn(row.percentage),
+                    textAlign: "center",
+                    border: 1,
+                    padding: 1,
+                  }}
+                >
+                  {row.percentage}%
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Grid>
   );
 }

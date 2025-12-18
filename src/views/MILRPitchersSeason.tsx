@@ -30,7 +30,7 @@ import useRefetchQuery from '../api/use-refetch-query';
 import RestartAlt from '@mui/icons-material/RestartAlt';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import PitchesByInning from '../components/PitchesByInning';
-import useGoogleAnalytics from '../hooks/google-analytics';
+// import useGoogleAnalytics from '../hooks/google-analytics';
 
 export default function MILRPitchers() {
   const [playerOption, setPlayerOption, removePlayerOption] = useLocalStorage<number>({ key: 'milrPlayerId', defaultValue: 0 })
@@ -61,7 +61,7 @@ export default function MILRPitchers() {
   const { data: plateAppearancesMiLR } = useGetPlayer(playerType, league, playerOption);
   const handleRefreshPlayer = useRefetchQuery(['player']);
 
-  useGoogleAnalytics("MiLR Pitchers Season");
+  // useGoogleAnalytics("MiLR Pitchers Season");
 
   // Update Player Data based on fetched data
   React.useEffect(() => {

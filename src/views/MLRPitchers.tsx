@@ -17,7 +17,7 @@ import SeasonsDropdown from '../components/SeasonsDropdown';
 import SessionsDropdown from '../components/SessionsDropdown';
 
 import { useLocalStorage } from '@mantine/hooks';
-import useGoogleAnalytics from '../hooks/google-analytics';
+// import useGoogleAnalytics from '../hooks/google-analytics';
 
 import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
@@ -43,7 +43,7 @@ export default function MLRPitchers() {
   const theme = useTheme();
   const notDesktop = useMediaQuery(theme.breakpoints.down('md'));
 
-  useGoogleAnalytics("MLR Pitchers");
+  // useGoogleAnalytics("MLR Pitchers");
 
   // Seasons
   React.useEffect(() => {
