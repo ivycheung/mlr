@@ -31,7 +31,7 @@ import Box from '@mui/material/Box';
 import { useLocalStorage } from '@mantine/hooks';
 import HeatmapNextPitchChart from '../components/HeatmapNextPitchChart';
 import HeatmapPitchChart from '../components/HeatmapPitchChart';
-import HeatmapPitchDeltaChart from '../components/HeatmapPitchDeltaChart';
+// import HeatmapPitchDeltaChart from '../components/HeatmapPitchDeltaChart';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -148,7 +148,7 @@ export default function Home() {
                 </Grid>
               </CustomTabPanel>
               <CustomTabPanel value={tabOption} index={2}>
-                <Grid container justifyContent="center"spacing={1}>
+                <Grid container justifyContent="center" spacing={1}>
                   <Grid size={{ xs: 6, lg: 3 }} alignItems="center" justifyContent="center">
                     <HeatmapNextPitchChart pitches={pitches} />
                   </Grid>

@@ -210,7 +210,7 @@ export function getBinIndex(number: number, binSize: number = 100, minValue: num
 // Helper to sort numbers into bins
 export function sortIntoBins(pitches: Array<FormSchemaPitch>, bins: Bin[], binSize: number = 100, minValue: number = 0) {
   pitches.forEach((num, index) => {
-    if (num.exactResult == 'Auto K' || num.exactResult == 'Auto BB' || num.exactResult == 'AUTO BB' || num.exactResult == 'IBB') {
+    if (num.exactResult === 'Auto K' || num.exactResult === 'Auto BB' || num.exactResult === 'AUTO BB' || num.exactResult === 'IBB') {
       return;
     }
     const binIndex = getBinIndex(num.pitch, binSize, minValue);
@@ -226,9 +226,6 @@ export function sortIntoBins(pitches: Array<FormSchemaPitch>, bins: Bin[], binSi
       const nextPitch = pitches[index + 1]?.pitch;
       if (nextPitch !== undefined) {
         bins[binIndex].nextPitches.push(nextPitch);
-        if (nextPitch == 0) {
-          console.log(pitches[index + 1])
-        }
       }
     }
   });
@@ -253,9 +250,9 @@ export function sortResultPitchesInBins(pitches: Array<number>, bins: Bin[], bin
   return bins;
 }
 
-export function excludeResults(exactResult: string) {
-      if (exactResult.exactResult == 'Auto K' || exactResult.exactResult == 'Auto BB' || exactResult.exactResult == 'AUTO BB' || exactResult.exactResult == 'IBB') {
-      return;
-    }
-  return
-}
+// export function excludeResults(exactResult: string) {
+//       if (exactResult.exactResult == 'Auto K' || exactResult.exactResult == 'Auto BB' || exactResult.exactResult == 'AUTO BB' || exactResult.exactResult == 'IBB') {
+//       return;
+//     }
+//   return
+// }
