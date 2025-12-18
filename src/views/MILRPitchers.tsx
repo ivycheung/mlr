@@ -19,7 +19,7 @@ import TeamsDropdown from '../components/TeamsDropdown';
 import PlayersDropdown from '../components/PlayersDropdown';
 import { useGetPlayer } from '../api/use-get-player';
 import { useLocalStorage } from '@mantine/hooks';
-import useGoogleAnalytics from '../hooks/google-analytics';
+// import useGoogleAnalytics from '../hooks/google-analytics';
 
 export default function MILRPitchers() {
   const [playerOption, setPlayerOption] = useLocalStorage<number>({ key: 'milrPlayerId', defaultValue: 0 })
@@ -42,7 +42,7 @@ export default function MILRPitchers() {
   const { data: plateAppearancesMLR } = useGetPlayer(playerType, leagueMLR, playerOption);
   const { data: plateAppearancesMiLR } = useGetPlayer(playerType, league, playerOption);
 
-  useGoogleAnalytics("MiLR Pitchers");
+  // useGoogleAnalytics("MiLR Pitchers");
 
   // Update Player Data based on fetched data
   React.useEffect(() => {

@@ -11,7 +11,7 @@ import TeamsDropdown from '../components/TeamsDropdown';
 import PlayersDropdown from '../components/PlayersDropdown';
 import SeasonsDropdown from '../components/SeasonsDropdown';
 import HistogramSwingChart from '../components/HistogramSwingChart';
-import useGoogleAnalytics from '../hooks/google-analytics';
+// import useGoogleAnalytics from '../hooks/google-analytics';
 
 import Grid from '@mui/material/Grid2';
 import Box from '@mui/material/Box';
@@ -38,7 +38,7 @@ export default function MLRBatters() {
   const { data: players, isLoading: isLoading, isError: isError, error: apiError } = useGetPlayers();
   const { data: plateAppearances } = useGetPlayer(playerType, league, playerOption);
 
-  useGoogleAnalytics("MLR Batters");
+  // useGoogleAnalytics("MLR Batters");
 
   // Get pitches
   React.useEffect(() => {
